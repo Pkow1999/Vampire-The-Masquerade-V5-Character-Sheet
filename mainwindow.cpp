@@ -268,6 +268,9 @@ void MainWindow::on_actionSave_triggered()
         array->append(skill);
         json[bt->text()] = *array;
     }
+    QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
+    json[hungerLabel->text()] = QString::number(countDots(ui->Hunger));
+
     if (!saveFile.open(QIODevice::WriteOnly)) {
             qWarning("Couldn't open save file.");
             return;
@@ -307,7 +310,21 @@ void MainWindow::on_actionOpen_triggered()
            }
        }
    }
-
+   QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
+   if(json.contains(hungerLabel->text()) && json[hungerLabel->text()].isString())
+   {
+       int dots = json[hungerLabel->text()].toString().toInt();
+       if(dots > 0)
+       {
+           for(QAbstractButton *but : ui->Hunger->buttons())//CZEMU TO DIALA A NIE DZIALA ui->Hunger->button(dots - 1) ?!?!?!!?
+           {//najwidoczniej id nie ustawia sie samo czy cos...
+               if(dots == 0)
+                   break;
+               dots--;
+               but->click();
+           }
+       }
+   }
    for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
    {
        if(json.contains(bt->text()) && json[bt->text()].isArray())
