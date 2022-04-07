@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QAbstractButton>
+#include <QLayout>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -30,5 +31,8 @@ private:
     int hunger = 0;
     Ui::MainWindow *ui;
     int countDots(QButtonGroup *grp);
+    QLayout* findParentLayout(QWidget *widget, QLayout *parent);
+    QLayout* findParentLayout(QWidget *widget);
+    void clear();
 };
 #endif // MAINWINDOW_H

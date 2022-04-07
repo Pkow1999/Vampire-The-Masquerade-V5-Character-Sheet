@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QAbstractButton>
 #include <QDir>
+#include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -65,6 +66,7 @@ MainWindow::~MainWindow()
 void MainWindow::slotLanguageChanged(QAction *action)
 {
     qDebug() << action->objectName();
+    qDebug() << QLocale().name();
 }
 
 void MainWindow::func(QAbstractButton *bt)
@@ -112,7 +114,7 @@ int MainWindow::countDots(QButtonGroup *grp)
     return counter;
 }
 
-QLayout* findParentLayout(QWidget* w, QLayout* topLevelLayout)
+QLayout* MainWindow::findParentLayout(QWidget* w, QLayout* topLevelLayout)
 {
   for (QObject* qo: topLevelLayout->children())
   {
@@ -132,13 +134,37 @@ QLayout* findParentLayout(QWidget* w, QLayout* topLevelLayout)
   return nullptr;
 }
 
-QLayout* findParentLayout(QWidget* w)
+QLayout* MainWindow::findParentLayout(QWidget* w)
 {
     if (w->parentWidget() != nullptr)
         if (w->parentWidget()->layout() != nullptr)
             return findParentLayout(w, w->parentWidget()->layout());
     return nullptr;
 }
+
+
+void MainWindow::clear()
+{
+    for(QAbstractButton *bt : ui->buttonGroup->buttons())
+    {
+        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
+        for(QAbstractButton *dot : but->group()->buttons())
+        {
+            dot->setChecked(false);
+        }
+    }
+    for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+    {
+        QJsonObject skill;
+        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        for(QAbstractButton *dot : but->group()->buttons())
+        {
+            dot->setChecked(false);
+        }
+    }
+}
+
+
 
 
 void MainWindow::on_pushButton_clicked()
@@ -151,6 +177,7 @@ void MainWindow::on_pushButton_clicked()
         }
         ui->Rolls->itemAt(i)->layout()->deleteLater();
     }
+
     counter = 0;
     hunger = countDots(ui->Hunger);
     for(int i = 0; i < ui->buttonGroup->buttons().size(); i++)
@@ -215,7 +242,13 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_actionSave_triggered()
 {
-    QFile saveFile(QStringLiteral("save.json"));
+    QString filename = QFileDialog::getSaveFileName(nullptr,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    if(filename.isEmpty())
+    {
+        qWarning() << "Couldn't Save";
+        return;
+    }
+    QFile saveFile(filename);
     QJsonObject json;
     for(QAbstractButton *bt : ui->buttonGroup->buttons())
     {
@@ -246,7 +279,15 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-   QFile loadFile(QStringLiteral("save.json"));
+
+   QString filename = QFileDialog::getOpenFileName(nullptr,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+   clear();
+   if(filename.isEmpty())
+   {
+       qWarning("Name of the save file is empty.");
+       return;
+   }
+   QFile loadFile(filename);
    if (!loadFile.open(QIODevice::ReadOnly)) {
            qWarning("Couldn't open save file.");
            return;
@@ -284,4 +325,5 @@ void MainWindow::on_actionOpen_triggered()
        }
    }
 }
+
 
