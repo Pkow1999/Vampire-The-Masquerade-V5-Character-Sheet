@@ -19,7 +19,9 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    VtM_sheet_pl_PL.ts
+    VtM_sheet_pl_PL.ts \
+    VtM_sheet_en_US.ts
+
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -27,3 +29,6 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    VtM_sheet_en_US.ts
