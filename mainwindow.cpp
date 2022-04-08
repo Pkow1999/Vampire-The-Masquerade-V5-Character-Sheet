@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QLayout>
 #include <QRandomGenerator>
+#include <QTranslator>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -64,8 +65,24 @@ MainWindow::~MainWindow()
 }
 void MainWindow::slotLanguageChanged(QAction *action)
 {
-    qDebug() << action->objectName();
-    qDebug() << QLocale().name();
+    QTranslator translator;
+    if(action->objectName() == "actionPolish")
+    {
+        const QString baseName = "VtM_sheet_pl_PL";
+        if (translator.load(":/i18n/" + baseName)) {
+            QCoreApplication::installTranslator(&translator);
+            setLocale(QLocale::Polish);
+        }
+    }
+    else if(action->objectName() == "actionEnglish")
+    {
+            const QString baseName = "VtM_sheet_en_US";
+            if (translator.load(":/i18n/" + baseName)) {
+                QCoreApplication::installTranslator(&translator);
+            }
+            setLocale(QLocale::English);
+    }
+    ui->retranslateUi(this);
 }
 
 void MainWindow::func(QAbstractButton *bt)
@@ -95,6 +112,9 @@ void MainWindow::func(QAbstractButton *bt)
             bt->group()->buttons().at(i)->setChecked(false);
         }
     }
+}
+void MainWindow::translateSkills()
+{
 }
 int MainWindow::countDots(QButtonGroup *grp)
 {
@@ -269,7 +289,7 @@ void MainWindow::on_actionSave_triggered()
     }
     QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
     json[hungerLabel->text()] = QString::number(countDots(ui->Hunger));
-
+    json["LANGUAGEOPTION"] = locale().languageToString(locale().language());
     if (!saveFile.open(QIODevice::WriteOnly)) {
             qWarning("Couldn't open save file.");
             return;
@@ -297,6 +317,10 @@ void MainWindow::on_actionOpen_triggered()
    QByteArray saveData = loadFile.readAll();
    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
    QJsonObject json = loadDoc.object();
+   if(json.contains("LANGUAGEOPTION") && json["LANGUAGEOPTION"] == "English")
+       ui->actionEnglish->trigger();
+   if(json.contains("LANGUAGEOPTION") && json["LANGUAGEOPTION"] == "Polish")
+       ui->actionPolish->trigger();
    for(QAbstractButton *bt : ui->buttonGroup->buttons())
    {
        if(json.contains(bt->text()) && json[bt->text()].isString())

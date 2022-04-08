@@ -254,7 +254,7 @@
     <message>
         <location filename="mainwindow.cpp" line="243"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="281"/>

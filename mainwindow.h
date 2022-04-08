@@ -34,5 +34,6 @@ private:
     QLayout* findParentLayout(QWidget *widget, QLayout *parent);
     QLayout* findParentLayout(QWidget *widget);
     void clear();
+    void translateSkills();
 };
 #endif // MAINWINDOW_H
