@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::func);
     connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::func);
     connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::func);
