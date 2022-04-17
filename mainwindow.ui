@@ -3522,6 +3522,9 @@
     <property name="text">
      <string>0 Dices</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
@@ -3561,6 +3564,17 @@
      </rect>
     </property>
     <layout class="QHBoxLayout" name="Rolls"/>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>510</y>
+      <width>160</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_7"/>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -3614,17 +3628,17 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="Com">
+  <buttongroup name="TalentsGroup_24">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_8">
+  <buttongroup name="TalentsGroup_9">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_4">
+  <buttongroup name="TalentsGroup_7">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -3634,22 +3648,7 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="Str">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_22">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_16">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Man">
+  <buttongroup name="TalentsGroup_19">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -3659,27 +3658,27 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_2">
+  <buttongroup name="TalentsGroup_21">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_20">
+  <buttongroup name="TalentsGroup_5">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_24">
+  <buttongroup name="TalentsGroup_18">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_15">
+  <buttongroup name="TalentsGroup_16">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_19">
+  <buttongroup name="Hunger">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -3689,22 +3688,32 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_21">
+  <buttongroup name="TalentsGroup_14">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_26">
+  <buttongroup name="TalentsGroup_10">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="buttonGroup">
+  <buttongroup name="TalentsGroup_11">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="buttonGroup_2">
+  <buttongroup name="Com">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_27">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Sta">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -3719,12 +3728,67 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="Wit">
+  <buttongroup name="TalentsGroup_4">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_27">
+  <buttongroup name="TalentsGroup_20">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_6">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_15">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="buttonGroup_2">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Chr">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Str">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_26">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_8">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_13">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Res">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="buttonGroup">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Man">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -3739,22 +3803,7 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_5">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_14">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Sta">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_10">
+  <buttongroup name="Wit">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -3764,47 +3813,12 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_13">
+  <buttongroup name="TalentsGroup_22">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_6">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_7">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_18">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_11">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Res">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Hunger">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_9">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Chr">
+  <buttongroup name="TalentsGroup_2">
    <property name="exclusive">
     <bool>false</bool>
    </property>

@@ -34,6 +34,13 @@ private:
     QLayout* findParentLayout(QWidget *widget, QLayout *parent);
     QLayout* findParentLayout(QWidget *widget);
     void clear();
-    void translateSkills();
+    void createDices(int size_);
+    void deleteDices(int size_);
+    QJsonObject saveSkills();
+    QJsonObject saveAttributes();
+    QJsonObject saveRest();
+    bool loadRest(QJsonObject json);
+    bool loadAttributes(QJsonObject json);
+    bool loadSkills(QJsonObject json);
 };
 #endif // MAINWINDOW_H

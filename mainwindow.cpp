@@ -79,8 +79,8 @@ void MainWindow::slotLanguageChanged(QAction *action)
             const QString baseName = "VtM_sheet_en_US";
             if (translator.load(":/i18n/" + baseName)) {
                 QCoreApplication::installTranslator(&translator);
+                setLocale(QLocale::English);
             }
-            setLocale(QLocale::English);
     }
     ui->retranslateUi(this);
 }
@@ -113,9 +113,7 @@ void MainWindow::func(QAbstractButton *bt)
         }
     }
 }
-void MainWindow::translateSkills()
-{
-}
+
 int MainWindow::countDots(QButtonGroup *grp)
 {
     int counter = 0;
@@ -183,44 +181,9 @@ void MainWindow::clear()
     }
 }
 
-
-
-
-void MainWindow::on_pushButton_clicked()
+void MainWindow::createDices(int size_)
 {
-    for(int i = 0; i < counter; i++)
-    {
-        for(int j = 0; j < 2; j++)
-        {
-            ui->Rolls->itemAt(i)->layout()->itemAt(j)->widget()->deleteLater();
-        }
-        ui->Rolls->itemAt(i)->layout()->deleteLater();
-    }
-
-    counter = 0;
-    hunger = countDots(ui->Hunger);
-    for(int i = 0; i < ui->buttonGroup->buttons().size(); i++)
-    {
-        if(ui->buttonGroup->buttons().at(i)->isChecked())
-        {
-            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest drugi element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
-            QAbstractButton * bt = static_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup->buttons().at(i)->focusWidget())->layout()->itemAt(1)->layout()->itemAt(0)->widget());
-            counter += countDots(bt->group());
-        }
-    }
-
-    for(int i = 0; i < ui->buttonGroup_2->buttons().size(); i++)
-    {
-        if(ui->buttonGroup_2->buttons().at(i)->isChecked())
-        {
-            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
-            QAbstractButton * bt = static_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_2->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
-            counter += countDots(bt->group());
-        }
-    }
-    counter += ui->spinBox->value();
-    ui->label_2->setText(QString::number(counter) + tr(" Dices"));
-    for(int i = 0; i < counter; i++)
+    for(int i = 0; i < size_; i++)
     {
 
         QCheckBox *dynCheck = new QCheckBox();
@@ -240,7 +203,49 @@ void MainWindow::on_pushButton_clicked()
         dynLayout->addWidget(dynCheck);
         ui->Rolls->addLayout(dynLayout);
     }
+}
 
+void MainWindow::deleteDices(int size_)
+{
+    for(int i = 0; i < size_; i++)
+    {
+        for(int j = 0; j < 2; j++)
+        {
+            ui->Rolls->itemAt(i)->layout()->itemAt(j)->widget()->deleteLater();
+        }
+        ui->Rolls->itemAt(i)->layout()->deleteLater();
+    }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    deleteDices(counter);
+    counter = 0;
+    hunger = countDots(ui->Hunger);
+
+    for(int i = 0; i < ui->buttonGroup->buttons().size(); i++)
+    {
+        if(ui->buttonGroup->buttons().at(i)->isChecked())
+        {
+            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest drugi element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
+            QAbstractButton * bt = static_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup->buttons().at(i)->focusWidget())->layout()->itemAt(1)->layout()->itemAt(0)->widget());
+            counter += countDots(bt->group());
+        }
+    }
+
+    for(int i = 0; i < ui->buttonGroup_2->buttons().size(); i++)
+    {
+        if(ui->buttonGroup_2->buttons().at(i)->isChecked())
+        {
+            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
+            QAbstractButton * bt = static_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_2->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
+            counter += countDots(bt->group());
+        }
+    }
+
+    counter += ui->spinBox->value();
+    ui->label_2->setText(QString::number(counter) + tr(" Dices"));
+    createDices(counter);
 }
 
 
@@ -258,23 +263,9 @@ void MainWindow::on_pushButton_2_clicked()
     }
 }
 
-
-void MainWindow::on_actionSave_triggered()
+QJsonObject MainWindow::saveSkills()
 {
-    QString filename = QFileDialog::getSaveFileName(nullptr,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
-    if(filename.isEmpty())
-    {
-        qWarning() << "Couldn't Save";
-        return;
-    }
-    QFile saveFile(filename);
     QJsonObject json;
-    for(QAbstractButton *bt : ui->buttonGroup->buttons())
-    {
-        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
-        int dots = countDots(but->group());
-        json[bt->text()] = QString::number(dots);
-    }
     for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
     {
         QJsonObject skill;
@@ -286,10 +277,54 @@ void MainWindow::on_actionSave_triggered()
         QJsonArray *array = new QJsonArray();
         array->append(skill);
         json[bt->text()] = *array;
+        delete array;
     }
+    return json;
+}
+QJsonObject MainWindow::saveAttributes()
+{
+    QJsonObject json;
+    for(QAbstractButton *bt : ui->buttonGroup->buttons())
+    {
+        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
+        int dots = countDots(but->group());
+        json[bt->text()] = QString::number(dots);
+    }
+    return json;
+}
+QJsonObject MainWindow::saveRest()
+{
+    QJsonObject json;
     QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
     json[hungerLabel->text()] = QString::number(countDots(ui->Hunger));
     json["LANGUAGEOPTION"] = locale().languageToString(locale().language());
+    return json;
+}
+void MainWindow::on_actionSave_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(nullptr,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    if(filename.isEmpty())
+    {
+        qWarning() << "Couldn't Save";
+        return;
+    }
+    QFile saveFile(filename);
+    QJsonObject json;
+
+    QJsonArray *array = new QJsonArray();
+    array->append(saveAttributes());
+    json["Attributes"] = *array;
+    array->pop_back();
+
+    array->append(saveSkills());
+    json["Skills"] = *array;
+    array->pop_back();
+
+    array->append(saveRest());
+    json["Rest"] = *array;
+    delete array;
+
+
     if (!saveFile.open(QIODevice::WriteOnly)) {
             qWarning("Couldn't open save file.");
             return;
@@ -297,13 +332,93 @@ void MainWindow::on_actionSave_triggered()
     saveFile.write(QJsonDocument(json).toJson());
     saveFile.close();
 }
+bool MainWindow::loadRest(QJsonObject json)
+{
+    if(json.contains("Rest") && json["Rest"].isArray())
+    {
+        QJsonArray restArray = json["Rest"].toArray();
+        if(restArray.first()["LANGUAGEOPTION"].isString())
+        {
+            if(restArray.first()["LANGUAGEOPTION"].toString() == "Polish")
+                ui->actionPolish->trigger();
+            if(restArray.first()["LANGUAGEOPTION"].toString() == "English")
+                ui->actionEnglish->trigger();
+        }
 
+        QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
+        if(restArray.first()[hungerLabel->text()].isString())
+        {
+            int dots = restArray.first()[hungerLabel->text()].toString().toInt();
+            if(dots > 0)
+            {
+                for(QAbstractButton *but : ui->Hunger->buttons())//CZEMU TO DIALA A NIE DZIALA ui->Hunger->button(dots - 1) ?!?!?!!?
+                {//najwidoczniej id nie ustawia sie samo czy cos...
+                    if(dots == 0)
+                        break;
+                    dots--;
+                    but->click();
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+
+bool MainWindow::loadAttributes(QJsonObject json)
+{
+    if(json.contains("Attributes") && json["Attributes"].isArray())
+    {
+        QJsonArray attributesArray = json["Attributes"].toArray();
+        for(QAbstractButton *bt : ui->buttonGroup->buttons())
+        {
+            if(attributesArray.first()[bt->text()].isString())
+            {
+                int dots = attributesArray.first()[bt->text()].toString().toInt();
+                if(dots > 0)
+                {
+
+                    QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+
+}
+bool MainWindow::loadSkills(QJsonObject json)
+{
+    if(json.contains("Skills") && json["Skills"].isArray())
+    {
+        QJsonArray array = json["Skills"].toArray();
+        for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+        {
+            if(array.first()[bt->text()].isArray())
+            {
+                QJsonArray skillArray = array.first()[bt->text()].toArray();
+                int dots = skillArray.first()["dots"].toString().toInt();
+                if(dots > 0)
+                {
+                    QLayout *lay = findParentLayout(bt);
+                    QLineEdit *line = static_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    line->setText(skillArray.first()["specialization"].toString());
+                    QAbstractButton * but = static_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+}
 
 void MainWindow::on_actionOpen_triggered()
 {
 
    QString filename = QFileDialog::getOpenFileName(nullptr,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
-   clear();
    if(filename.isEmpty())
    {
        qWarning("Name of the save file is empty.");
@@ -317,52 +432,21 @@ void MainWindow::on_actionOpen_triggered()
    QByteArray saveData = loadFile.readAll();
    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
    QJsonObject json = loadDoc.object();
-   if(json.contains("LANGUAGEOPTION") && json["LANGUAGEOPTION"] == "English")
-       ui->actionEnglish->trigger();
-   if(json.contains("LANGUAGEOPTION") && json["LANGUAGEOPTION"] == "Polish")
-       ui->actionPolish->trigger();
-   for(QAbstractButton *bt : ui->buttonGroup->buttons())
+   clear();
+   if(!loadRest(json))
    {
-       if(json.contains(bt->text()) && json[bt->text()].isString())
-       {
-           int dots = json[bt->text()].toString().toInt();
-           if(dots > 0)
-           {
-               QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(dots - 1)->widget());
-               but->click();
-           }
-       }
+       qWarning("Couldn't load Language/Hunger");
+       return;
    }
-   QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
-   if(json.contains(hungerLabel->text()) && json[hungerLabel->text()].isString())
+   if(!loadAttributes(json))
    {
-       int dots = json[hungerLabel->text()].toString().toInt();
-       if(dots > 0)
-       {
-           for(QAbstractButton *but : ui->Hunger->buttons())//CZEMU TO DIALA A NIE DZIALA ui->Hunger->button(dots - 1) ?!?!?!!?
-           {//najwidoczniej id nie ustawia sie samo czy cos...
-               if(dots == 0)
-                   break;
-               dots--;
-               but->click();
-           }
-       }
+       qWarning("Couldn't load Attributes");
+       return;
    }
-   for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+   if(!loadSkills(json))
    {
-       if(json.contains(bt->text()) && json[bt->text()].isArray())
-       {
-           QJsonArray skillsArray = json[bt->text()].toArray();
-           int dots = skillsArray.first()["dots"].toString().toInt();
-           if(dots > 0)
-           {
-               QLayout *lay = findParentLayout(bt);
-               QLineEdit *line = static_cast<QLineEdit *>(lay->itemAt(1)->widget());
-               line->setText(skillsArray.first()["specialization"].toString());
-               QAbstractButton * but = static_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
-               but->click();
-           }
-       }
+       qWarning("Couldn't load Skills");
+       return;
    }
 }
 
