@@ -95,11 +95,11 @@ void MainWindow::slotLanguageChanged(QAction *action)
     }
     else if(action->objectName() == "actionEnglish")
     {
-            const QString baseName = "VtM_sheet_en_US";
-            if (translator.load(":/i18n/" + baseName)) {
-                QCoreApplication::installTranslator(&translator);
-                setLocale(QLocale::English);
-            }
+        const QString baseName = "VtM_sheet_en_US";
+        if (translator.load(":/i18n/" + baseName)) {
+            QCoreApplication::installTranslator(&translator);
+            setLocale(QLocale::English);
+        }
     }
     ui->retranslateUi(this);
 }
@@ -108,7 +108,8 @@ void MainWindow::deleteHealth(int size_)
 {
     for(int i = 0; i < size_; i++)
     {
-        ui->Health->itemAt(i)->widget()->deleteLater();
+        ui->Health->itemAt(ui->Health->count() - 1)->widget()->deleteLater();
+        ui->Health->removeWidget(ui->Health->itemAt(ui->Health->count() - 1)->widget());
     }
 
 }
@@ -143,46 +144,39 @@ void MainWindow::deleteWP(int size_)
 {
     for(int i = 0; i < size_; i++)
     {
-        ui->Willpower->itemAt(i)->widget()->deleteLater();
+        ui->Willpower->itemAt(ui->Willpower->count() - 1)->widget()->deleteLater();
+        ui->Willpower->removeWidget(ui->Willpower->itemAt(ui->Willpower->count() - 1)->widget());
     }
 }
 
 void MainWindow::calculateWP()
 {
-    if(synchro)//najdwidoczniej sygnał mi się z jakiegoś powodu dubluje i pula nie jest usuwana jesli wczytam dwukrotnie plik
-    {//ale to w sumie generuje nowy błąd przez co tylko co druga modyfikacja jest pokazywana
-        deleteWP(willpowerPool);
-        willpowerPool = countDots(ui->Com) + countDots(ui->Res) + ui->wpModifier->value();
-        if(willpowerPool < 0)
-            willpowerPool = 0;
-        for(int i = 0; i < willpowerPool; i++)
-        {
-            QCheckBox *dynCheck = new QCheckBox();
-            dynCheck->setCheckable(true);
-            dynCheck->setTristate(true);
-            QString checkBoxStyle("QCheckBox::indicator::unchecked {background-image : url(images/checkbox_unchecked.png); }"
-                                  "QCheckBox::indicator::unchecked::hover {background-image : url(images/checkbox_unchecked_hover.png); }"
-                                  "QCheckBox::indicator::unchecked::pressed {background-image : url(images/checkbox_unchecked_pressed.png); }"
-
-                                  "QCheckBox::indicator::indeterminate {background-image : url(images/checkbox_indeterminate.png); }"
-                                  "QCheckBox::indicator::indeterminate::hover {background-image : url(images/checkbox_indeterminate_hover.png); }"
-                                  "QCheckBox::indicator::indeterminate::pressed {background-image : url(images/checkbox_indeterminate_pressed.png); }"
-
-                                  "QCheckBox::indicator::checked {background-image : url(images/checkbox_checked.png); }"
-                                  "QCheckBox::indicator::checked::hover {background-image : url(images/checkbox_checked_hover.png); }"
-                                  "QCheckBox::indicator::checked::pressed {background-image : url(images/checkbox_checked_pressed.png); }"
-
-                                  "QCheckBox::indicator {width: 16; height: 16 }");
-            dynCheck->setStyleSheet(checkBoxStyle);
-            dynCheck->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-            dynCheck->setAutoExclusive(false);
-            ui->Willpower->addWidget(dynCheck);
-        }
-        synchro = false;//semafor powinien rozwiazac sprawe
-    }
-    else
+    deleteWP(willpowerPool);
+    willpowerPool = countDots(ui->Com) + countDots(ui->Res) + ui->wpModifier->value();
+    if(willpowerPool < 0)
+        willpowerPool = 0;
+    for(int i = 0; i < willpowerPool; i++)
     {
-        synchro = true;
+        QCheckBox *dynCheck = new QCheckBox();
+        dynCheck->setCheckable(true);
+        dynCheck->setTristate(true);
+        QString checkBoxStyle("QCheckBox::indicator::unchecked {background-image : url(images/checkbox_unchecked.png); }"
+                              "QCheckBox::indicator::unchecked::hover {background-image : url(images/checkbox_unchecked_hover.png); }"
+                              "QCheckBox::indicator::unchecked::pressed {background-image : url(images/checkbox_unchecked_pressed.png); }"
+
+                              "QCheckBox::indicator::indeterminate {background-image : url(images/checkbox_indeterminate.png); }"
+                              "QCheckBox::indicator::indeterminate::hover {background-image : url(images/checkbox_indeterminate_hover.png); }"
+                              "QCheckBox::indicator::indeterminate::pressed {background-image : url(images/checkbox_indeterminate_pressed.png); }"
+
+                              "QCheckBox::indicator::checked {background-image : url(images/checkbox_checked.png); }"
+                              "QCheckBox::indicator::checked::hover {background-image : url(images/checkbox_checked_hover.png); }"
+                              "QCheckBox::indicator::checked::pressed {background-image : url(images/checkbox_checked_pressed.png); }"
+
+                              "QCheckBox::indicator {width: 16; height: 16 }");
+        dynCheck->setStyleSheet(checkBoxStyle);
+        dynCheck->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+        dynCheck->setAutoExclusive(false);
+        ui->Willpower->addWidget(dynCheck);
     }
 }
 void MainWindow::calculateHealth()
@@ -191,11 +185,6 @@ void MainWindow::calculateHealth()
     healthPool = 3 + countDots(ui->Sta) + ui->healthModifier->value();
     if(healthPool < 0)
         healthPool = 0;
-//    for(QAbstractButton *but : bt->group()->buttons())
-//    {
-//        if(but->isChecked())
-//            healthPool++;
-//    }
     for(int i = 0; i < healthPool; i++)
     {
         QCheckBox *dynCheck = new QCheckBox();
@@ -257,7 +246,7 @@ int MainWindow::countDots(QButtonGroup *grp)
     {
         if(grp->buttons().at(i)->isChecked())
         {
-           counter++;
+            counter++;
         }
         else
         {
@@ -284,22 +273,22 @@ QPair<int, int> MainWindow::countIndicators(QLayout *layout,int size_)
 
 QLayout* MainWindow::findParentLayout(QWidget* w, QLayout* topLevelLayout)
 {
-  for (QObject* qo: topLevelLayout->children())
-  {
-     QLayout* layout = qobject_cast<QLayout*>(qo);
-     if (layout != nullptr)
-     {
-        if (layout->indexOf(w) > -1)
-          return layout;
-        else if (!layout->children().isEmpty())
+    for (QObject* qo: topLevelLayout->children())
+    {
+        QLayout* layout = qobject_cast<QLayout*>(qo);
+        if (layout != nullptr)
         {
-          layout = findParentLayout(w, layout);
-          if (layout != nullptr)
-            return layout;
+            if (layout->indexOf(w) > -1)
+                return layout;
+            else if (!layout->children().isEmpty())
+            {
+                layout = findParentLayout(w, layout);
+                if (layout != nullptr)
+                    return layout;
+            }
         }
-     }
-  }
-  return nullptr;
+    }
+    return nullptr;
 }
 
 QLayout* MainWindow::findParentLayout(QWidget* w)
@@ -330,6 +319,21 @@ void MainWindow::clear()
             dot->setChecked(false);
         }
     }
+    for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+    {
+        QJsonObject skill;
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        for(QAbstractButton *dot : but->group()->buttons())
+        {
+            dot->setChecked(false);
+        }
+    }
+    deleteHealth(healthPool);
+    deleteWP(willpowerPool);
+    healthPool = 0;
+    willpowerPool = 0;
+    counter = 0;
+    hunger = 0;
 }
 
 void MainWindow::createDices(int size_)
@@ -347,8 +351,8 @@ void MainWindow::createDices(int size_)
         if(i > counter - hunger - 1)
         {
             dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-//            dynCheck->setCheckable(false);
-//            dynCheck->setEnabled(false);    pod pewnymi warunkami mozna je przerzucac
+            //            dynCheck->setCheckable(false);
+            //            dynCheck->setEnabled(false);    pod pewnymi warunkami mozna je przerzucac
         }
         dynLayout->addWidget(dynLabel);
         dynLayout->addWidget(dynCheck);
@@ -546,9 +550,9 @@ void MainWindow::on_actionSave_triggered()
     delete array;
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
-            qWarning("Couldn't open save file.");
-            return;
-        }
+        qWarning("Couldn't open save file.");
+        return;
+    }
     saveFile.write(QJsonDocument(mainJson).toJson());
     saveFile.close();
     MainWindow::setWindowTitle(QFileInfo(filename).baseName());
@@ -718,60 +722,60 @@ bool MainWindow::loadDiscipline(QJsonObject json)
 void MainWindow::on_actionOpen_triggered()
 {
 
-   QString filename = QFileDialog::getOpenFileName(this,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
-   if(filename.isEmpty())
-   {
-       qWarning("Name of the save file is empty.");
-       return;
-   }
-   QFile loadFile(filename);
-   if (!loadFile.open(QIODevice::ReadOnly)) {
-           qWarning("Couldn't open save file.");
-           return;
-       }
-   QByteArray saveData = loadFile.readAll();
-   QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
-   QJsonObject json = loadDoc.object();
-   clear();
+    QString filename = QFileDialog::getOpenFileName(this,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    if(filename.isEmpty())
+    {
+        qWarning("Name of the save file is empty.");
+        return;
+    }
+    QFile loadFile(filename);
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        qWarning("Couldn't open save file.");
+        return;
+    }
+    QByteArray saveData = loadFile.readAll();
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
+    QJsonObject json = loadDoc.object();
+    clear();
 
-   if(json.contains("Language") && json["Language"].isString())
-   {
-       if(json["Language"] == "Polish")
-           ui->actionPolish->trigger();
-       if(json["Language"] == "English")
-           ui->actionEnglish->trigger();
-   }
-   else
-   {
-       qWarning("Couldn't find language");
-       return;
-   }
+    if(json.contains("Language") && json["Language"].isString())
+    {
+        if(json["Language"] == "Polish")
+            ui->actionPolish->trigger();
+        if(json["Language"] == "English")
+            ui->actionEnglish->trigger();
+    }
+    else
+    {
+        qWarning("Couldn't find language");
+        return;
+    }
 
-   if(json.contains("Statistics") && json["Statistics"].isArray())
-   {
-       QJsonArray array = json["Statistics"].toArray();
-       if(!loadAttributes(array.first().toObject()))
-       {
-           qWarning("Couldn't load Attributes");
-           return;
-       }
-       if(!loadSkills(array.first().toObject()))
-       {
-           qWarning("Couldn't load Skills");
-           return;
-       }
-       if(!loadRest(array.first().toObject()))
-       {
-           qWarning("Couldn't load Rest");
-           return;
-       }
-       if(!loadDiscipline(array.first().toObject()))
-       {
-           qWarning("Couldn't load Disciplines");
-           return;
-       }
-   }
-   MainWindow::setWindowTitle(QFileInfo(filename).baseName());
+    if(json.contains("Statistics") && json["Statistics"].isArray())
+    {
+        QJsonArray array = json["Statistics"].toArray();
+        if(!loadAttributes(array.first().toObject()))
+        {
+            qWarning("Couldn't load Attributes");
+            return;
+        }
+        if(!loadSkills(array.first().toObject()))
+        {
+            qWarning("Couldn't load Skills");
+            return;
+        }
+        if(!loadRest(array.first().toObject()))
+        {
+            qWarning("Couldn't load Rest");
+            return;
+        }
+        if(!loadDiscipline(array.first().toObject()))
+        {
+            qWarning("Couldn't load Disciplines");
+            return;
+        }
+    }
+    MainWindow::setWindowTitle(QFileInfo(filename).baseName());
 }
 
 void MainWindow::dynamicDiscpilineCreator(QAbstractButton *bt)

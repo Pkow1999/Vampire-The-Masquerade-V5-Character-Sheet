@@ -30,7 +30,6 @@ private slots:
     void dynamicDiscpilineCreator(QAbstractButton *bt);
 
 private:
-    bool synchro = false;
     int counter = 0;
     int hunger = 0;
     int healthPool = 0;
