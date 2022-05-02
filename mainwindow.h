@@ -16,7 +16,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
-    void calculateHealth(QAbstractButton *bt);
+    void calculateHealth();
     void calculateWP();
     void dynamicRemoveDots(QAbstractButton *bt);
     void on_pushButton_clicked();
@@ -27,6 +27,7 @@ private slots:
     void on_actionSave_triggered();
 
     void on_actionOpen_triggered();
+    void dynamicDiscpilineCreator(QAbstractButton *bt);
 
 private:
     bool synchro = false;
@@ -45,10 +46,13 @@ private:
     QJsonObject saveSkills();
     QJsonObject saveAttributes();
     QJsonObject saveRest();
+    QJsonObject saveDiscipline();
     bool loadRest(QJsonObject json);
     bool loadAttributes(QJsonObject json);
     bool loadSkills(QJsonObject json);
+    bool loadDiscipline(QJsonObject json);
     void deleteWP(int size_);
     void deleteHealth(int size_);
+    void humanityGenerator();
 };
 #endif // MAINWINDOW_H

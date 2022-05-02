@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::calculateHealth);
 
+
     connect(ui->Chr,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Man,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
@@ -28,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Wit,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
-
 
     connect(ui->TalentsGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->TalentsGroup_2,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
@@ -60,9 +60,23 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->TalentsGroup_26,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->TalentsGroup_27,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
 
+    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+
     connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
 
+    connect(ui->wpModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateWP);
+    connect(ui->healthModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateHealth);
+
+
     connect(ui->menuChange_Language, &QMenu::triggered,this, &MainWindow::slotLanguageChanged);
+    humanityGenerator();
 }
 MainWindow::~MainWindow()
 {
@@ -98,6 +112,33 @@ void MainWindow::deleteHealth(int size_)
     }
 
 }
+
+void MainWindow::humanityGenerator()
+{
+    for(int i = 0; i < 10; i++)
+    {
+        QCheckBox *dynCheck = new QCheckBox();
+        dynCheck->setCheckable(true);
+        dynCheck->setTristate(true);
+        QString checkBoxStyle("QCheckBox::indicator::unchecked {background-image : url(images/checkbox_unchecked.png); }"
+                              "QCheckBox::indicator::unchecked::hover {background-image : url(images/checkbox_unchecked_hover.png); }"
+                              "QCheckBox::indicator::unchecked::pressed {background-image : url(images/checkbox_unchecked_pressed.png); }"
+
+                              "QCheckBox::indicator::indeterminate {background-image : url(images/checkbox_indeterminate.png); }"
+                              "QCheckBox::indicator::indeterminate::hover {background-image : url(images/checkbox_indeterminate_hover.png); }"
+                              "QCheckBox::indicator::indeterminate::pressed {background-image : url(images/checkbox_indeterminate_pressed.png); }"
+
+                              "QCheckBox::indicator::checked {background-image : url(images/checkbox_humanity_checked.png); }"
+                              "QCheckBox::indicator::checked::hover {background-image : url(images/checkbox_humanity_checked_hover.png); }"
+                              "QCheckBox::indicator::checked::pressed {background-image : url(images/checkbox_humanity_checked_pressed.png); }"
+
+                              "QCheckBox::indicator {width: 16; height: 16 }");
+        dynCheck->setStyleSheet(checkBoxStyle);
+        dynCheck->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+        dynCheck->setAutoExclusive(false);
+        ui->HumanityLayout->addWidget(dynCheck);
+    }
+}
 void MainWindow::deleteWP(int size_)
 {
     for(int i = 0; i < size_; i++)
@@ -109,9 +150,11 @@ void MainWindow::deleteWP(int size_)
 void MainWindow::calculateWP()
 {
     if(synchro)//najdwidoczniej sygnał mi się z jakiegoś powodu dubluje i pula nie jest usuwana jesli wczytam dwukrotnie plik
-    {
+    {//ale to w sumie generuje nowy błąd przez co tylko co druga modyfikacja jest pokazywana
         deleteWP(willpowerPool);
-        willpowerPool = countDots(ui->Com) + countDots(ui->Res);
+        willpowerPool = countDots(ui->Com) + countDots(ui->Res) + ui->wpModifier->value();
+        if(willpowerPool < 0)
+            willpowerPool = 0;
         for(int i = 0; i < willpowerPool; i++)
         {
             QCheckBox *dynCheck = new QCheckBox();
@@ -142,11 +185,12 @@ void MainWindow::calculateWP()
         synchro = true;
     }
 }
-void MainWindow::calculateHealth(QAbstractButton *bt)
+void MainWindow::calculateHealth()
 {
     deleteHealth(healthPool);
-    healthPool = 3 + countDots(ui->Sta);
-
+    healthPool = 3 + countDots(ui->Sta) + ui->healthModifier->value();
+    if(healthPool < 0)
+        healthPool = 0;
 //    for(QAbstractButton *but : bt->group()->buttons())
 //    {
 //        if(but->isChecked())
@@ -229,7 +273,7 @@ QPair<int, int> MainWindow::countIndicators(QLayout *layout,int size_)
     int agravated = 0;
     for(int i = 0; i < size_; i++)
     {
-        QCheckBox *check = static_cast<QCheckBox *>(layout->itemAt(i)->widget());
+        QCheckBox *check = qobject_cast<QCheckBox *>(layout->itemAt(i)->widget());
         if(check->checkState() == Qt::CheckState::Checked)
             agravated++;
         if(check->checkState() == Qt::CheckState::PartiallyChecked)
@@ -271,7 +315,7 @@ void MainWindow::clear()
 {
     for(QAbstractButton *bt : ui->buttonGroup->buttons())
     {
-        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
         for(QAbstractButton *dot : but->group()->buttons())
         {
             dot->setChecked(false);
@@ -280,7 +324,7 @@ void MainWindow::clear()
     for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
     {
         QJsonObject skill;
-        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         for(QAbstractButton *dot : but->group()->buttons())
         {
             dot->setChecked(false);
@@ -324,7 +368,7 @@ void MainWindow::deleteDices(int size_)
     }
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_pushButton_clicked()//roll dices
 {
     deleteDices(counter);
     counter = 0;
@@ -335,7 +379,7 @@ void MainWindow::on_pushButton_clicked()
         if(ui->buttonGroup->buttons().at(i)->isChecked())
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest drugi element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
-            QAbstractButton * bt = static_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup->buttons().at(i)->focusWidget())->layout()->itemAt(1)->layout()->itemAt(0)->widget());
+            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup->buttons().at(i)->focusWidget())->layout()->itemAt(1)->layout()->itemAt(0)->widget());
             counter += countDots(bt->group());
         }
     }
@@ -345,28 +389,41 @@ void MainWindow::on_pushButton_clicked()
         if(ui->buttonGroup_2->buttons().at(i)->isChecked())
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
-            QAbstractButton * bt = static_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_2->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
+            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_2->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
             counter += countDots(bt->group());
         }
     }
 
-    counter += ui->spinBox->value();
+    for(int i = 0; i < ui->buttonGroup_3->buttons().size(); i++)
+    {
+        if(ui->buttonGroup_3->buttons().at(i)->isChecked())
+        {
+            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
+            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_3->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
+            counter += countDots(bt->group());
+        }
+    }
+
+    counter += ui->diceModifier->value();
     ui->label_2->setText(QString::number(counter) + tr(" Dices"));
     createDices(counter);
 }
 
 
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_pushButton_2_clicked()//re roll / reroll dices
 {
-    for(int i = 0; i < counter - hunger; i++)
+    for(int i = 0; i < counter; i++)
     {
-        QAbstractButton *bt = static_cast<QAbstractButton *>(ui->Rolls->itemAt(i)->layout()->itemAt(1)->widget());
+        QAbstractButton *bt = qobject_cast<QAbstractButton *>(ui->Rolls->itemAt(i)->layout()->itemAt(1)->widget());
         if(bt->isChecked())
         {
-            QLabel *lb = static_cast<QLabel *>(ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
+            QLabel *lb = qobject_cast<QLabel *>(ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
             lb->setText(QString::number(QRandomGenerator::system()->bounded(10) + 1));
-            lb->setStyleSheet("QLabel{color : blue; font-size : 20px;}");
+            if(lb->styleSheet() == "QLabel { color : red; font-size : 20px;}"){
+                lb->setStyleSheet("QLabel { color : purple; font-size: 20px;}");
+            }
+            else lb->setStyleSheet(" QLabel{color : blue; font-size : 20px;}");
         }
     }
 }
@@ -377,8 +434,8 @@ QJsonObject MainWindow::saveSkills()
     for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
     {
         QJsonObject skill;
-        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
-        QLineEdit * line = static_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
         int dots = countDots(but->group());
         skill["specialization"] = line->text();
         skill["dots"] = QString::number(dots);
@@ -395,21 +452,47 @@ QJsonObject MainWindow::saveAttributes()
     QJsonObject json;
     for(QAbstractButton *bt : ui->buttonGroup->buttons())
     {
-        QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
         int dots = countDots(but->group());
         json[bt->text()] = QString::number(dots);
     }
     return json;
 }
-
+QJsonObject MainWindow::saveDiscipline()
+{
+    QJsonObject json;
+    for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+    {
+        QJsonArray *array = new QJsonArray();
+        QJsonArray *discp = new QJsonArray();
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        int dots = countDots(but->group());
+        QJsonObject discipline;
+        discipline["dots"] = QString::number(dots);
+        QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
+        for(int i = 0; i < lay->count(); i++)
+        {
+            QLineEdit *linePower = qobject_cast<QLineEdit* > (lay->itemAt(i)->widget());
+            discp->append(linePower->text());
+        }
+        discipline["powers"] = *discp;
+        array->append(discipline);
+        json[line->text()] = *array;
+        delete array;
+        delete discp;
+    }
+    return json;
+}
 QJsonObject MainWindow::saveRest()
 {
     QJsonObject json;
-    QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
+    QLabel *hungerLabel = qobject_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
     json[hungerLabel->text()] = QString::number(countDots(ui->Hunger));
 
     QJsonArray *array = new QJsonArray();
     QJsonObject healthPoints;
+    healthPoints["modifier"] = QString::number(ui->healthModifier->value());
     healthPoints["superficial"] = QString::number(countIndicators(ui->Health, healthPool).first);
     healthPoints["agravated"] = QString::number(countIndicators(ui->Health, healthPool).second);
     array->append(healthPoints);
@@ -417,10 +500,12 @@ QJsonObject MainWindow::saveRest()
     array->pop_back();
 
     QJsonObject willpowerPoints;
+    willpowerPoints["modifier"] = QString::number(ui->healthModifier->value());
     willpowerPoints["superficial"] = QString::number(countIndicators(ui->Willpower, willpowerPool).first);
     willpowerPoints["agravated"] = QString::number(countIndicators(ui->Willpower, willpowerPool).second);
     array->append(willpowerPoints);
     json["Willpower"] = *array;
+    json["Humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
     delete array;
 
     return json;
@@ -450,8 +535,14 @@ void MainWindow::on_actionSave_triggered()
     json["Rest"] = *array;
     array->pop_back();
 
+
+    array->append(saveDiscipline());
+    json["Discipline"] = *array;
+    array->pop_back();
+
     array->append(json);
     mainJson["Statistics"] = *array;
+
     delete array;
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -468,7 +559,7 @@ bool MainWindow::loadRest(QJsonObject json)
     if(json.contains("Rest") && json["Rest"].isArray())
     {
         QJsonArray restArray = json["Rest"].toArray();
-        QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
+        QLabel *hungerLabel = qobject_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
         if(restArray.first()[hungerLabel->text()].isString())
         {
             int dots = restArray.first()[hungerLabel->text()].toString().toInt();
@@ -486,35 +577,48 @@ bool MainWindow::loadRest(QJsonObject json)
         if(restArray.first()["Health"].isArray())
         {
             QJsonArray healthArray = restArray.first()["Health"].toArray();
+            int modifier = healthArray.first()["modifier"].toString().toInt();
             int agravated = healthArray.first()["agravated"].toString().toInt();
             int superficial = healthArray.first()["superficial"].toString().toInt();
-
+            ui->healthModifier->setValue(modifier);
+            calculateHealth();
             for(int i = 0 ; i < agravated + superficial; i++)
             {
-                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
                 but->click();
             }
             for(int i = 0 ; i < agravated; i++)
             {
-                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
                 but->click();
             }
         }
         if(restArray.first()["Willpower"].isArray())
         {
             QJsonArray willpowerArray = restArray.first()["Willpower"].toArray();
+            int modifier = willpowerArray.first()["modifier"].toString().toInt();
             int agravated = willpowerArray.first()["agravated"].toString().toInt();
             int superficial = willpowerArray.first()["superficial"].toString().toInt();
-
+            ui->wpModifier->setValue(modifier);
+            calculateWP();
             for(int i = 0 ; i < agravated + superficial; i++)
             {
-                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
                 but->click();
             }
             for(int i = 0 ; i < agravated; i++)
             {
-                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
                 but->click();
+            }
+        }
+        if(restArray.first()["Humanity"].isString())
+        {
+            int hum = restArray.first()["Humanity"].toString().toInt();
+            for(int i = 0; i < hum; i++)
+            {
+                QCheckBox *czek = qobject_cast <QCheckBox * >(ui->HumanityLayout->itemAt(i)->widget());
+                czek->setCheckState(Qt::CheckState::Checked);
             }
         }
         return true;
@@ -536,7 +640,7 @@ bool MainWindow::loadAttributes(QJsonObject json)
                 if(dots > 0)
                 {
 
-                    QAbstractButton * but = static_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(dots - 1)->widget());
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(dots - 1)->widget());
                     but->click();
                 }
             }
@@ -560,12 +664,51 @@ bool MainWindow::loadSkills(QJsonObject json)
                 if(dots > 0)
                 {
                     QLayout *lay = findParentLayout(bt);
-                    QLineEdit *line = static_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
                     line->setText(skillArray.first()["specialization"].toString());
-                    QAbstractButton * but = static_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
                     but->click();
                 }
             }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool MainWindow::loadDiscipline(QJsonObject json)
+{
+    int keyIndex = 0;
+    if(json.contains("Discipline") && json["Discipline"].isArray())
+    {
+        QJsonArray array = json["Discipline"].toArray();
+        for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+        {
+            QString key = array.first().toObject().keys().at(keyIndex);
+            QLineEdit *line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+            if(array.first()[key].isArray())
+            {
+                line->setText(key);
+                QJsonArray discipline = array.first()[key].toArray();
+                if(discipline.first()["dots"].isString())
+                {
+                    int dots = discipline.first()["dots"].toString().toInt();
+                    if(dots > 0)
+                    {
+                        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                        but->click();
+                        QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
+                        QJsonArray powers = discipline.first()["powers"].toArray();
+                        for(int i = 0 ; i < dots; i++)
+                        {
+                            QLineEdit *power = qobject_cast <QLineEdit *> (lay->itemAt(i)->widget());
+                            power->setText(powers.first().toString());
+                            powers.pop_front();
+                        }
+                    }
+                }
+            }
+            keyIndex++;
         }
         return true;
     }
@@ -622,8 +765,34 @@ void MainWindow::on_actionOpen_triggered()
            qWarning("Couldn't load Rest");
            return;
        }
+       if(!loadDiscipline(array.first().toObject()))
+       {
+           qWarning("Couldn't load Disciplines");
+           return;
+       }
    }
    MainWindow::setWindowTitle(QFileInfo(filename).baseName());
+}
+
+void MainWindow::dynamicDiscpilineCreator(QAbstractButton *bt)
+{
+    QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
+    int size_ = countDots(bt->group());
+    if(lay->count() > size_)
+    {
+        while(lay->count() != size_)
+        {
+            lay->itemAt(lay->count() - 1)->widget()->deleteLater();
+            lay->removeWidget(lay->itemAt(lay->count() - 1)->widget());
+        }
+    }
+    if(lay->count() < size_)
+    {
+        while(lay->count() != size_)
+        {
+            lay->addWidget(new QLineEdit());
+        }
+    }
 }
 
 
