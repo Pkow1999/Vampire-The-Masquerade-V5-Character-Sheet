@@ -16,7 +16,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
-    void func(QAbstractButton *bt);
+    void calculateHealth(QAbstractButton *bt);
+    void calculateWP();
+    void dynamicRemoveDots(QAbstractButton *bt);
     void on_pushButton_clicked();
     void slotLanguageChanged(QAction *action);
 
@@ -27,10 +29,14 @@ private slots:
     void on_actionOpen_triggered();
 
 private:
+    bool synchro = false;
     int counter = 0;
     int hunger = 0;
+    int healthPool = 0;
+    int willpowerPool = 0;
     Ui::MainWindow *ui;
     int countDots(QButtonGroup *grp);
+    QPair<int, int> countIndicators(QLayout *layout,int size_);
     QLayout* findParentLayout(QWidget *widget, QLayout *parent);
     QLayout* findParentLayout(QWidget *widget);
     void clear();
@@ -42,5 +48,7 @@ private:
     bool loadRest(QJsonObject json);
     bool loadAttributes(QJsonObject json);
     bool loadSkills(QJsonObject json);
+    void deleteWP(int size_);
+    void deleteHealth(int size_);
 };
 #endif // MAINWINDOW_H

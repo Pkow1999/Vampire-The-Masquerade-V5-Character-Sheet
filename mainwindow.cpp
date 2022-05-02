@@ -14,48 +14,53 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::func);
+    connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::calculateHealth);
 
-    connect(ui->Chr,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Man,&QButtonGroup::buttonClicked,this,&MainWindow::func);
+    connect(ui->Chr,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Man,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
 
-    connect(ui->Int,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Wit,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::func);
+    connect(ui->Int,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Wit,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
 
-    connect(ui->TalentsGroup,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_2,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_3,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_4,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_5,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_6,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_7,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_8,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_9,&QButtonGroup::buttonClicked,this,&MainWindow::func);
 
-    connect(ui->TalentsGroup_10,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_11,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_12,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_13,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_14,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_15,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_16,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_17,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_18,&QButtonGroup::buttonClicked,this,&MainWindow::func);
+    connect(ui->TalentsGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_2,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_3,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_4,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_5,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_6,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_7,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_8,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_9,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
 
-    connect(ui->TalentsGroup_19,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_20,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_21,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_22,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_23,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_24,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_25,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_26,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->TalentsGroup_27,&QButtonGroup::buttonClicked,this,&MainWindow::func);
-    connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::func);
+    connect(ui->TalentsGroup_10,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_11,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_12,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_13,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_14,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_15,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_16,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_17,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_18,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+    connect(ui->TalentsGroup_19,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_20,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_21,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_22,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_23,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_24,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_25,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_26,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_27,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+    connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
 
     connect(ui->menuChange_Language, &QMenu::triggered,this, &MainWindow::slotLanguageChanged);
 }
@@ -85,7 +90,94 @@ void MainWindow::slotLanguageChanged(QAction *action)
     ui->retranslateUi(this);
 }
 
-void MainWindow::func(QAbstractButton *bt)
+void MainWindow::deleteHealth(int size_)
+{
+    for(int i = 0; i < size_; i++)
+    {
+        ui->Health->itemAt(i)->widget()->deleteLater();
+    }
+
+}
+void MainWindow::deleteWP(int size_)
+{
+    for(int i = 0; i < size_; i++)
+    {
+        ui->Willpower->itemAt(i)->widget()->deleteLater();
+    }
+}
+
+void MainWindow::calculateWP()
+{
+    if(synchro)//najdwidoczniej sygnał mi się z jakiegoś powodu dubluje i pula nie jest usuwana jesli wczytam dwukrotnie plik
+    {
+        deleteWP(willpowerPool);
+        willpowerPool = countDots(ui->Com) + countDots(ui->Res);
+        for(int i = 0; i < willpowerPool; i++)
+        {
+            QCheckBox *dynCheck = new QCheckBox();
+            dynCheck->setCheckable(true);
+            dynCheck->setTristate(true);
+            QString checkBoxStyle("QCheckBox::indicator::unchecked {background-image : url(images/checkbox_unchecked.png); }"
+                                  "QCheckBox::indicator::unchecked::hover {background-image : url(images/checkbox_unchecked_hover.png); }"
+                                  "QCheckBox::indicator::unchecked::pressed {background-image : url(images/checkbox_unchecked_pressed.png); }"
+
+                                  "QCheckBox::indicator::indeterminate {background-image : url(images/checkbox_indeterminate.png); }"
+                                  "QCheckBox::indicator::indeterminate::hover {background-image : url(images/checkbox_indeterminate_hover.png); }"
+                                  "QCheckBox::indicator::indeterminate::pressed {background-image : url(images/checkbox_indeterminate_pressed.png); }"
+
+                                  "QCheckBox::indicator::checked {background-image : url(images/checkbox_checked.png); }"
+                                  "QCheckBox::indicator::checked::hover {background-image : url(images/checkbox_checked_hover.png); }"
+                                  "QCheckBox::indicator::checked::pressed {background-image : url(images/checkbox_checked_pressed.png); }"
+
+                                  "QCheckBox::indicator {width: 16; height: 16 }");
+            dynCheck->setStyleSheet(checkBoxStyle);
+            dynCheck->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+            dynCheck->setAutoExclusive(false);
+            ui->Willpower->addWidget(dynCheck);
+        }
+        synchro = false;//semafor powinien rozwiazac sprawe
+    }
+    else
+    {
+        synchro = true;
+    }
+}
+void MainWindow::calculateHealth(QAbstractButton *bt)
+{
+    deleteHealth(healthPool);
+    healthPool = 3 + countDots(ui->Sta);
+
+//    for(QAbstractButton *but : bt->group()->buttons())
+//    {
+//        if(but->isChecked())
+//            healthPool++;
+//    }
+    for(int i = 0; i < healthPool; i++)
+    {
+        QCheckBox *dynCheck = new QCheckBox();
+        dynCheck->setCheckable(true);
+        dynCheck->setTristate(true);
+        QString checkBoxStyle("QCheckBox::indicator::unchecked {background-image : url(images/checkbox_unchecked.png); }"
+                              "QCheckBox::indicator::unchecked::hover {background-image : url(images/checkbox_unchecked_hover.png); }"
+                              "QCheckBox::indicator::unchecked::pressed {background-image : url(images/checkbox_unchecked_pressed.png); }"
+
+                              "QCheckBox::indicator::indeterminate {background-image : url(images/checkbox_indeterminate.png); }"
+                              "QCheckBox::indicator::indeterminate::hover {background-image : url(images/checkbox_indeterminate_hover.png); }"
+                              "QCheckBox::indicator::indeterminate::pressed {background-image : url(images/checkbox_indeterminate_pressed.png); }"
+
+                              "QCheckBox::indicator::checked {background-image : url(images/checkbox_checked.png); }"
+                              "QCheckBox::indicator::checked::hover {background-image : url(images/checkbox_checked_hover.png); }"
+                              "QCheckBox::indicator::checked::pressed {background-image : url(images/checkbox_checked_pressed.png); }"
+
+                              "QCheckBox::indicator {width: 16; height: 16 }");
+        dynCheck->setStyleSheet(checkBoxStyle);
+        dynCheck->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+        dynCheck->setAutoExclusive(false);
+        ui->Health->addWidget(dynCheck);
+    }
+}
+
+void MainWindow::dynamicRemoveDots(QAbstractButton *bt)
 {
     if(bt->isChecked())
     {
@@ -129,6 +221,21 @@ int MainWindow::countDots(QButtonGroup *grp)
         }
     }
     return counter;
+}
+
+QPair<int, int> MainWindow::countIndicators(QLayout *layout,int size_)
+{
+    int superficial = 0;
+    int agravated = 0;
+    for(int i = 0; i < size_; i++)
+    {
+        QCheckBox *check = static_cast<QCheckBox *>(layout->itemAt(i)->widget());
+        if(check->checkState() == Qt::CheckState::Checked)
+            agravated++;
+        if(check->checkState() == Qt::CheckState::PartiallyChecked)
+            superficial++;
+    }
+    return QPair<int,int>(superficial, agravated);
 }
 
 QLayout* MainWindow::findParentLayout(QWidget* w, QLayout* topLevelLayout)
@@ -196,8 +303,8 @@ void MainWindow::createDices(int size_)
         if(i > counter - hunger - 1)
         {
             dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-            dynCheck->setCheckable(false);
-            dynCheck->setEnabled(false);
+//            dynCheck->setCheckable(false);
+//            dynCheck->setEnabled(false);    pod pewnymi warunkami mozna je przerzucac
         }
         dynLayout->addWidget(dynLabel);
         dynLayout->addWidget(dynCheck);
@@ -259,6 +366,7 @@ void MainWindow::on_pushButton_2_clicked()
         {
             QLabel *lb = static_cast<QLabel *>(ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
             lb->setText(QString::number(QRandomGenerator::system()->bounded(10) + 1));
+            lb->setStyleSheet("QLabel{color : blue; font-size : 20px;}");
         }
     }
 }
@@ -281,6 +389,7 @@ QJsonObject MainWindow::saveSkills()
     }
     return json;
 }
+
 QJsonObject MainWindow::saveAttributes()
 {
     QJsonObject json;
@@ -292,17 +401,33 @@ QJsonObject MainWindow::saveAttributes()
     }
     return json;
 }
+
 QJsonObject MainWindow::saveRest()
 {
     QJsonObject json;
     QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
     json[hungerLabel->text()] = QString::number(countDots(ui->Hunger));
-    json["LANGUAGEOPTION"] = locale().languageToString(locale().language());
+
+    QJsonArray *array = new QJsonArray();
+    QJsonObject healthPoints;
+    healthPoints["superficial"] = QString::number(countIndicators(ui->Health, healthPool).first);
+    healthPoints["agravated"] = QString::number(countIndicators(ui->Health, healthPool).second);
+    array->append(healthPoints);
+    json["Health"] = *array;
+    array->pop_back();
+
+    QJsonObject willpowerPoints;
+    willpowerPoints["superficial"] = QString::number(countIndicators(ui->Willpower, willpowerPool).first);
+    willpowerPoints["agravated"] = QString::number(countIndicators(ui->Willpower, willpowerPool).second);
+    array->append(willpowerPoints);
+    json["Willpower"] = *array;
+    delete array;
+
     return json;
 }
 void MainWindow::on_actionSave_triggered()
 {
-    QString filename = QFileDialog::getSaveFileName(nullptr,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    QString filename = QFileDialog::getSaveFileName(this,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
     if(filename.isEmpty())
     {
         qWarning() << "Couldn't Save";
@@ -310,7 +435,8 @@ void MainWindow::on_actionSave_triggered()
     }
     QFile saveFile(filename);
     QJsonObject json;
-
+    QJsonObject mainJson;
+    mainJson["Language"] = locale().languageToString(locale().language());
     QJsonArray *array = new QJsonArray();
     array->append(saveAttributes());
     json["Attributes"] = *array;
@@ -322,29 +448,26 @@ void MainWindow::on_actionSave_triggered()
 
     array->append(saveRest());
     json["Rest"] = *array;
-    delete array;
+    array->pop_back();
 
+    array->append(json);
+    mainJson["Statistics"] = *array;
+    delete array;
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
             qWarning("Couldn't open save file.");
             return;
         }
-    saveFile.write(QJsonDocument(json).toJson());
+    saveFile.write(QJsonDocument(mainJson).toJson());
     saveFile.close();
+    MainWindow::setWindowTitle(QFileInfo(filename).baseName());
+
 }
 bool MainWindow::loadRest(QJsonObject json)
 {
     if(json.contains("Rest") && json["Rest"].isArray())
     {
         QJsonArray restArray = json["Rest"].toArray();
-        if(restArray.first()["LANGUAGEOPTION"].isString())
-        {
-            if(restArray.first()["LANGUAGEOPTION"].toString() == "Polish")
-                ui->actionPolish->trigger();
-            if(restArray.first()["LANGUAGEOPTION"].toString() == "English")
-                ui->actionEnglish->trigger();
-        }
-
         QLabel *hungerLabel = static_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
         if(restArray.first()[hungerLabel->text()].isString())
         {
@@ -358,6 +481,40 @@ bool MainWindow::loadRest(QJsonObject json)
                     dots--;
                     but->click();
                 }
+            }
+        }
+        if(restArray.first()["Health"].isArray())
+        {
+            QJsonArray healthArray = restArray.first()["Health"].toArray();
+            int agravated = healthArray.first()["agravated"].toString().toInt();
+            int superficial = healthArray.first()["superficial"].toString().toInt();
+
+            for(int i = 0 ; i < agravated + superficial; i++)
+            {
+                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
+                but->click();
+            }
+            for(int i = 0 ; i < agravated; i++)
+            {
+                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
+                but->click();
+            }
+        }
+        if(restArray.first()["Willpower"].isArray())
+        {
+            QJsonArray willpowerArray = restArray.first()["Willpower"].toArray();
+            int agravated = willpowerArray.first()["agravated"].toString().toInt();
+            int superficial = willpowerArray.first()["superficial"].toString().toInt();
+
+            for(int i = 0 ; i < agravated + superficial; i++)
+            {
+                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
+                but->click();
+            }
+            for(int i = 0 ; i < agravated; i++)
+            {
+                QAbstractButton *but = static_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
+                but->click();
             }
         }
         return true;
@@ -418,7 +575,7 @@ bool MainWindow::loadSkills(QJsonObject json)
 void MainWindow::on_actionOpen_triggered()
 {
 
-   QString filename = QFileDialog::getOpenFileName(nullptr,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+   QString filename = QFileDialog::getOpenFileName(this,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
    if(filename.isEmpty())
    {
        qWarning("Name of the save file is empty.");
@@ -433,21 +590,40 @@ void MainWindow::on_actionOpen_triggered()
    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
    QJsonObject json = loadDoc.object();
    clear();
-   if(!loadRest(json))
+
+   if(json.contains("Language") && json["Language"].isString())
    {
-       qWarning("Couldn't load Language/Hunger");
+       if(json["Language"] == "Polish")
+           ui->actionPolish->trigger();
+       if(json["Language"] == "English")
+           ui->actionEnglish->trigger();
+   }
+   else
+   {
+       qWarning("Couldn't find language");
        return;
    }
-   if(!loadAttributes(json))
+
+   if(json.contains("Statistics") && json["Statistics"].isArray())
    {
-       qWarning("Couldn't load Attributes");
-       return;
+       QJsonArray array = json["Statistics"].toArray();
+       if(!loadAttributes(array.first().toObject()))
+       {
+           qWarning("Couldn't load Attributes");
+           return;
+       }
+       if(!loadSkills(array.first().toObject()))
+       {
+           qWarning("Couldn't load Skills");
+           return;
+       }
+       if(!loadRest(array.first().toObject()))
+       {
+           qWarning("Couldn't load Rest");
+           return;
+       }
    }
-   if(!loadSkills(json))
-   {
-       qWarning("Couldn't load Skills");
-       return;
-   }
+   MainWindow::setWindowTitle(QFileInfo(filename).baseName());
 }
 
 
