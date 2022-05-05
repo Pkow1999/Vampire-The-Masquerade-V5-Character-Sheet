@@ -209,76 +209,230 @@
         <translation>0 Kości</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="3554"/>
+        <location filename="mainwindow.ui" line="4451"/>
         <source>Modifier</source>
         <translation>Modyfikator</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="3637"/>
+        <location filename="mainwindow.ui" line="3609"/>
         <source>Health</source>
         <translation>Zdrowie</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="3720"/>
+        <location filename="mainwindow.ui" line="3692"/>
         <source>Willpower</source>
         <translation>Siła Woli</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4426"/>
+        <location filename="mainwindow.ui" line="4398"/>
         <source>Humanity</source>
         <translation>Człowieczeństwo</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4451"/>
+        <location filename="mainwindow.ui" line="4429"/>
+        <source>Notes:</source>
+        <translation>Notatki:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4492"/>
+        <source>Blood Potency</source>
+        <translation>Moc Krwi</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4682"/>
+        <source>Blood Potency:</source>
+        <translation>Napływ Krwi:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4709"/>
+        <source>Bane Severity:</source>
+        <translation>Siła Klątwy:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4740"/>
+        <source>Power Bonus:</source>
+        <translation>Premia do Mocy:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4767"/>
+        <source>Rouse Re-Roll:</source>
+        <translation>Przerzut Pobudzenia:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4798"/>
+        <source>Mend Amount:</source>
+        <translation>Leczenie Obrażeń:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4831"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4458"/>
+        <location filename="mainwindow.ui" line="4838"/>
         <source>Change Language</source>
         <translation>Zmień Język</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4468"/>
+        <location filename="mainwindow.ui" line="4848"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4473"/>
+        <location filename="mainwindow.ui" line="4853"/>
         <source>Open</source>
         <translation>Otwórz</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4478"/>
+        <location filename="mainwindow.ui" line="4858"/>
         <source>Polish</source>
         <translation>Polski</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4483"/>
+        <location filename="mainwindow.ui" line="4863"/>
         <source>English</source>
         <translation>Angielski</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="408"/>
+        <location filename="mainwindow.cpp" line="210"/>
+        <source>Level </source>
+        <translation>Poziom </translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="216"/>
+        <location filename="mainwindow.cpp" line="221"/>
+        <source> dices</source>
+        <translation> kości</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="218"/>
+        <location filename="mainwindow.cpp" line="223"/>
+        <source> die</source>
+        <translation> kość</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="226"/>
+        <location filename="mainwindow.cpp" line="228"/>
+        <source> superficial damage</source>
+        <translation> punktów obrażeń powierzchownych</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="231"/>
+        <source> and Lower</source>
+        <translation> i niższe</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="470"/>
         <source> Dices</source>
         <translation> Kości</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="872"/>
+        <source>You don&apos;t need Blush of Life.
+You can have sex.
+You can keep watch at day like mortal.
+You can eat normal food.
+Damage from sunlight are split by half.</source>
+        <translation>Nie potrzebujesz Rumieńca Życia.
+Możesz uprawiać seks.
+Możesz czuwać w dzień jak śmiertelnik.
+Możesz jeść i pić jak śmiertelnik.
+Obrażenia od światła słonecznego są dzielone na pół.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="876"/>
+        <source>You don&apos;t need Blush of Life.
+You can have sex.
+You can awaken 1 hour before the sunrise and keep watch 1h after sunset.
+You can eat raw meat and drink.
+</source>
+        <translation>Nie potrzebujesz Rumieńca Życia.
+Możesz uprawiać seks.
+Możesz się obudzić 1 godzinę przed zachodem lub czatować 1 godzinę po wschodzie słońca.
+Możesz jeść surowe mięso oraz pić.
+</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="880"/>
+        <source>You roll 2 dices for Blush of Life.
+You can have sex with Blush of Life.
+You can drink wine with Blush of Life.
+You can awaken 1 hour before the sunrise.</source>
+        <translation>Rzucasz dwiema kościami na Rumieniec Życia.
+Możesz uprawiać seks z Rumieńcem Życia.
+Możesz pić wino z Rumieńcem Życia.
+Możesz się obudzić godzinę przed zachodem słońca.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="884"/>
+        <source>You can not have sex but you can fake it with Dexterity + Charisma.
+Unless you use Blush of Life foods and drinks makes you vomit.</source>
+        <translation>Nie możesz uprawiać seksu, ale możesz go udawać rzucając na Zręczność + Charyzmę.
+Nie używając Rumieńca Życia jedzenie i picie wywołuje u Ciebie wymioty.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="888"/>
+        <source>You can not have sex but you can fake it with Dexterity + Charisma with 1 die penalty.
+Even with Blush Of Life foods and drinks make you vomit.</source>
+        <translation>Nie możesz uprawiać seksu, ale możesz go udawać rzucając na Zręczność + Charyzmę z karą -1 kości.
+Nawet z Rumieńcem Życia jedzenie i picie wywołuje u Ciebie wymioty.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="892"/>
+        <source>You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.
+You suffer 1 die penalty when interacting with humans.</source>
+        <translation>Nie możesz uprawiać seksu, ale możesz go udawać rzucając na Zręczność + Charyzmę z karą -2 kości.
+Otrzymujesz karę -1 kości podczas interakcji ze śmiertelnikami.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="896"/>
+        <source>You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.
+You suffer 2 dice penalty when interacting with humans.</source>
+        <translation>Nie możesz uprawiać seksu, ale możesz go udawać rzucając na Zręczność + Charyzmę z karą -2 kości.
+Otrzymujesz karę -2 kości podczas interakcji ze śmiertelnikami.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="900"/>
+        <source>You can no longer have sex.
+You suffer 4 dice penalty when interacting with humans.</source>
+        <translation>Nie możesz uprawiać seksu.
+Otrzymujesz karę -4 kości podczas interakcji ze śmiertelnikami.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="904"/>
+        <source>You can no longer have sex.
+You suffer 6 dice penalty when interacting with humans.</source>
+        <translation>Nie możesz uprawiać seksu.
+Otrzymujesz karę -6 kości podczas interakcji ze śmiertelnikami.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="908"/>
+        <source>You can no longer have sex.
+You suffer 8 dice penalty when interacting with humans.</source>
+        <translation>Nie możesz uprawiać seksu.
+Otrzymujesz karę -8 kości podczas interakcji ze śmiertelnikami.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="912"/>
+        <source>You have become the beast, you have no longer have control over your character.</source>
+        <translation>Stałeś się Bestią i tracisz kontrolę nad swoja postacią.</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="mainwindow.cpp" line="515"/>
+        <location filename="mainwindow.cpp" line="579"/>
         <source>Save File</source>
         <translation>Zapisz plik</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="721"/>
+        <location filename="mainwindow.cpp" line="789"/>
         <source>Open Save</source>
         <translation>Wczytaj plik</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="515"/>
-        <location filename="mainwindow.cpp" line="721"/>
+        <location filename="mainwindow.cpp" line="579"/>
+        <location filename="mainwindow.cpp" line="789"/>
         <source>Save files (*.json);</source>
         <translation>Plik Zapisu(*.json);</translation>
     </message>

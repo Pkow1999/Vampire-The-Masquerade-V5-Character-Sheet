@@ -70,6 +70,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
 
     connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::calculateBlood);
+
 
     connect(ui->wpModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateWP);
     connect(ui->healthModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateHealth);
@@ -77,6 +80,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->menuChange_Language, &QMenu::triggered,this, &MainWindow::slotLanguageChanged);
     humanityGenerator();
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this, SLOT(saveWithShortcut()));
+
 }
 MainWindow::~MainWindow()
 {
@@ -114,6 +119,22 @@ void MainWindow::deleteHealth(int size_)
 
 }
 
+void MainWindow::deleteDiscipline()
+{
+    ui->Discipline1Group->buttons().first()->click();
+    if(ui->Discipline1Group->buttons().first()->isChecked()) ui->Discipline1Group->buttons().first()->click();
+
+    ui->Discipline2Group->buttons().first()->click();
+    if(ui->Discipline2Group->buttons().first()->isChecked()) ui->Discipline2Group->buttons().first()->click();
+
+    ui->Discipline3Group->buttons().first()->click();
+    if(ui->Discipline3Group->buttons().first()->isChecked()) ui->Discipline3Group->buttons().first()->click();
+
+    ui->Discipline4Group->buttons().first()->click();
+    if(ui->Discipline4Group->buttons().first()->isChecked()) ui->Discipline4Group->buttons().first()->click();
+
+}
+
 void MainWindow::humanityGenerator()
 {
     for(int i = 0; i < 10; i++)
@@ -138,6 +159,7 @@ void MainWindow::humanityGenerator()
         dynCheck->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
         dynCheck->setAutoExclusive(false);
         ui->HumanityLayout->addWidget(dynCheck);
+        connect(dynCheck,&QCheckBox::stateChanged,this,&MainWindow::humanityChanged);
     }
 }
 void MainWindow::deleteWP(int size_)
@@ -179,6 +201,37 @@ void MainWindow::calculateWP()
         ui->Willpower->addWidget(dynCheck);
     }
 }
+
+void MainWindow::calculateBlood()
+{
+    int bloodPotency = countDots(ui->BloodPotencyGroup);
+    ui->BloodPotency->setText(QString::number(bloodPotency /2 + bloodPotency % 2 + 1));
+    ui->MendAmount->setText(QString::number(bloodPotency < 6 ? bloodPotency / 2 + 1 : bloodPotency / 2));
+    ui->PowerBonus->setText(QString::number(bloodPotency / 2));
+    ui->RouseReRoll->setText(tr("Level ") + QString::number(bloodPotency > 0 ? bloodPotency /2 + bloodPotency % 2 : 0));
+    ui->BaneSevarity->setText(QString::number(bloodPotency > 0 ? bloodPotency /2 + bloodPotency % 2 + 1 : 0 ));
+
+
+
+    if(bloodPotency > 0)
+        ui->BloodPotency->setText(ui->BloodPotency->text() + tr(" dices"));
+    else
+        ui->BloodPotency->setText(ui->BloodPotency->text() + tr(" die"));
+
+    if(bloodPotency > 3)
+        ui->PowerBonus->setText(ui->PowerBonus->text() + tr(" dices"));
+    else
+        ui->PowerBonus->setText(ui->PowerBonus->text() + tr(" die"));
+
+    if(bloodPotency > 1)
+        ui->MendAmount->setText(ui->MendAmount->text() + tr(" superficial damage"));
+    else
+        ui->MendAmount->setText(ui->MendAmount->text() + tr(" superficial damage"));
+
+    if(bloodPotency > 2)
+        ui->RouseReRoll->setText(ui->RouseReRoll->text() + tr(" and Lower"));
+}
+
 void MainWindow::calculateHealth()
 {
     deleteHealth(healthPool);
@@ -237,8 +290,8 @@ void MainWindow::dynamicRemoveDots(QAbstractButton *bt)
             bt->group()->buttons().at(i)->setChecked(false);
         }
     }
+    MainWindow::setWindowTitle(MainWindow::windowTitle() + "*");
 }
-
 int MainWindow::countDots(QButtonGroup *grp)
 {
     int counter = 0;
@@ -302,7 +355,7 @@ QLayout* MainWindow::findParentLayout(QWidget* w)
 
 void MainWindow::clear()
 {
-    for(QAbstractButton *bt : ui->buttonGroup->buttons())
+    for(QAbstractButton *bt : ui->buttonGroup->buttons())//atrybuty
     {
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
         for(QAbstractButton *dot : but->group()->buttons())
@@ -310,26 +363,32 @@ void MainWindow::clear()
             dot->setChecked(false);
         }
     }
-    for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+    for(QAbstractButton *bt : ui->buttonGroup_2->buttons())//skille
     {
-        QJsonObject skill;
+        QLineEdit *line = qobject_cast<QLineEdit *> (findParentLayout(bt)->itemAt(1)->widget());
+        line->clear();
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         for(QAbstractButton *dot : but->group()->buttons())
         {
             dot->setChecked(false);
         }
     }
-    for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+    for(QAbstractButton *bt : ui->buttonGroup_3->buttons())//dyscypliny
     {
-        QJsonObject skill;
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         for(QAbstractButton *dot : but->group()->buttons())
         {
             dot->setChecked(false);
         }
     }
+    for(QAbstractButton *bt : ui->BloodPotencyGroup->buttons())//bloodpotency
+    {
+        bt->setChecked(false);
+    }
+
     deleteHealth(healthPool);
     deleteWP(willpowerPool);
+    deleteDiscipline();
     healthPool = 0;
     willpowerPool = 0;
     counter = 0;
@@ -504,25 +563,21 @@ QJsonObject MainWindow::saveRest()
     array->pop_back();
 
     QJsonObject willpowerPoints;
-    willpowerPoints["modifier"] = QString::number(ui->healthModifier->value());
+    willpowerPoints["modifier"] = QString::number(ui->wpModifier->value());
     willpowerPoints["superficial"] = QString::number(countIndicators(ui->Willpower, willpowerPool).first);
     willpowerPoints["agravated"] = QString::number(countIndicators(ui->Willpower, willpowerPool).second);
     array->append(willpowerPoints);
     json["Willpower"] = *array;
     json["Humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
+    json["Blood Potency"] = QString::number(countDots(ui->BloodPotencyGroup));
+    json["Notes"] = ui->notes->toPlainText();
     delete array;
 
     return json;
 }
-void MainWindow::on_actionSave_triggered()
+void MainWindow::Save(QString directory)
 {
-    QString filename = QFileDialog::getSaveFileName(this,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
-    if(filename.isEmpty())
-    {
-        qWarning() << "Couldn't Save";
-        return;
-    }
-    QFile saveFile(filename);
+    QFile saveFile(directory);
     QJsonObject json;
     QJsonObject mainJson;
     mainJson["Language"] = locale().languageToString(locale().language());
@@ -555,8 +610,19 @@ void MainWindow::on_actionSave_triggered()
     }
     saveFile.write(QJsonDocument(mainJson).toJson());
     saveFile.close();
-    MainWindow::setWindowTitle(QFileInfo(filename).baseName());
+    MainWindow::setWindowTitle(QFileInfo(directory).baseName());
 
+}
+void MainWindow::on_actionSave_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    if(filename.isEmpty())
+    {
+        qWarning() << "Couldn't Save";
+        return;
+    }
+    lastDirectory = filename;
+    Save(filename);
 }
 bool MainWindow::loadRest(QJsonObject json)
 {
@@ -624,6 +690,10 @@ bool MainWindow::loadRest(QJsonObject json)
                 QCheckBox *czek = qobject_cast <QCheckBox * >(ui->HumanityLayout->itemAt(i)->widget());
                 czek->setCheckState(Qt::CheckState::Checked);
             }
+        }
+        if(restArray.first()["Notes"].isString())
+        {
+            ui->notes->setPlainText(restArray.first()["Notes"].toString());
         }
         return true;
     }
@@ -776,6 +846,7 @@ void MainWindow::on_actionOpen_triggered()
         }
     }
     MainWindow::setWindowTitle(QFileInfo(filename).baseName());
+    lastDirectory = filename;
 }
 
 void MainWindow::dynamicDiscpilineCreator(QAbstractButton *bt)
@@ -799,4 +870,64 @@ void MainWindow::dynamicDiscpilineCreator(QAbstractButton *bt)
     }
 }
 
+void MainWindow::humanityChanged()
+{
+    unsigned short hum = countIndicators(ui->HumanityLayout,10).second;
+    QString text;
+    if(hum == 10)
+    {
+        text = tr("You don't need Blush of Life.\nYou can have sex.\nYou can keep watch at day like mortal.\nYou can eat normal food.\nDamage from sunlight are split by half.");
+    }
+    else if(hum == 9)
+    {
+        text = tr("You don't need Blush of Life.\nYou can have sex.\nYou can awaken 1 hour before the sunrise and keep watch 1h after sunset.\nYou can eat raw meat and drink.\n");
+    }
+    else if(hum == 8)
+    {
+        text = tr("You roll 2 dices for Blush of Life.\nYou can have sex with Blush of Life.\nYou can drink wine with Blush of Life.\nYou can awaken 1 hour before the sunrise.");
+    }
+    else if(hum == 7)
+    {
+        text = tr("You can not have sex but you can fake it with Dexterity + Charisma.\nUnless you use Blush of Life foods and drinks makes you vomit.");
+    }
+    else if(hum == 6)
+    {
+        text = tr("You can not have sex but you can fake it with Dexterity + Charisma with 1 die penalty.\nEven with Blush Of Life foods and drinks make you vomit.");
+    }
+    else if(hum == 5)
+    {
+        text = tr("You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.\nYou suffer 1 die penalty when interacting with humans.");
+    }
+    else if(hum == 4)
+    {
+        text = tr("You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.\nYou suffer 2 dice penalty when interacting with humans.");
+    }
+    else if(hum == 3)
+    {
+        text = tr("You can no longer have sex.\nYou suffer 4 dice penalty when interacting with humans.");
+    }
+    else if(hum == 2)
+    {
+        text = tr("You can no longer have sex.\nYou suffer 6 dice penalty when interacting with humans.");
+    }
+    else if(hum == 1)
+    {
+        text = tr("You can no longer have sex.\nYou suffer 8 dice penalty when interacting with humans.");
+    }
+    else
+    {
+        text = tr("You have become the beast, you have no longer have control over your character.");
+    }
+    ui->textBrowser->setText(text);
+}
+
+void MainWindow::saveWithShortcut()
+{
+    if(lastDirectory.isEmpty()){
+        on_actionOpen_triggered();
+    }
+    else{
+        Save(lastDirectory);
+    }
+}
 

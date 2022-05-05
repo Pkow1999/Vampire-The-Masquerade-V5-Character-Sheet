@@ -4,6 +4,7 @@
 #include <QAbstractButton>
 #include <QLayout>
 #include <QMainWindow>
+#include <QShortcut>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,7 @@ public:
 private slots:
     void calculateHealth();
     void calculateWP();
+    void calculateBlood();
     void dynamicRemoveDots(QAbstractButton *bt);
     void on_pushButton_clicked();
     void slotLanguageChanged(QAction *action);
@@ -25,15 +27,16 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_actionSave_triggered();
-
     void on_actionOpen_triggered();
     void dynamicDiscpilineCreator(QAbstractButton *bt);
-
+    void humanityChanged();
+    void saveWithShortcut();
 private:
     int counter = 0;
     int hunger = 0;
     int healthPool = 0;
     int willpowerPool = 0;
+    QString lastDirectory;
     Ui::MainWindow *ui;
     int countDots(QButtonGroup *grp);
     QPair<int, int> countIndicators(QLayout *layout,int size_);
@@ -46,12 +49,14 @@ private:
     QJsonObject saveAttributes();
     QJsonObject saveRest();
     QJsonObject saveDiscipline();
+    void Save(QString directory);
     bool loadRest(QJsonObject json);
     bool loadAttributes(QJsonObject json);
     bool loadSkills(QJsonObject json);
     bool loadDiscipline(QJsonObject json);
     void deleteWP(int size_);
     void deleteHealth(int size_);
+    void deleteDiscipline();
     void humanityGenerator();
 };
 #endif // MAINWINDOW_H
