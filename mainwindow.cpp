@@ -290,7 +290,8 @@ void MainWindow::dynamicRemoveDots(QAbstractButton *bt)
             bt->group()->buttons().at(i)->setChecked(false);
         }
     }
-    MainWindow::setWindowTitle(MainWindow::windowTitle() + "*");
+    if(MainWindow::windowTitle().toStdString()[MainWindow::windowTitle().toStdString().size() - 1] != '*')
+        MainWindow::setWindowTitle(MainWindow::windowTitle() + "*");
 }
 int MainWindow::countDots(QButtonGroup *grp)
 {
@@ -936,7 +937,7 @@ void MainWindow::humanityChanged()
 void MainWindow::saveWithShortcut()
 {
     if(lastDirectory.isEmpty()){
-        on_actionOpen_triggered();
+        on_actionSave_triggered();
     }
     else{
         Save(lastDirectory);
