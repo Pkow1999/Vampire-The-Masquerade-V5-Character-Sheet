@@ -415,7 +415,7 @@ Otrzymujesz karę -8 kości podczas interakcji ze śmiertelnikami.</translation>
     <message>
         <location filename="mainwindow.cpp" line="912"/>
         <source>You have become the beast, you have no longer have control over your character.</source>
-        <translation>Stałeś się Bestią i tracisz kontrolę nad swoja postacią.</translation>
+        <translation>Stałeś/aś się Bestią i tracisz kontrolę nad swoja postacią.</translation>
     </message>
 </context>
 <context>

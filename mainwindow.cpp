@@ -691,6 +691,18 @@ bool MainWindow::loadRest(QJsonObject json)
                 czek->setCheckState(Qt::CheckState::Checked);
             }
         }
+        if(restArray.first()["Blood Potency"].isString())
+        {
+            int blood = restArray.first()["Blood Potency"].toString().toInt();
+            for(QAbstractButton *bt : ui->BloodPotencyGroup->buttons())
+            {
+                if(blood > 0)
+                {
+                    bt->click();
+                    blood--;
+                }
+            }
+        }
         if(restArray.first()["Notes"].isString())
         {
             ui->notes->setPlainText(restArray.first()["Notes"].toString());
