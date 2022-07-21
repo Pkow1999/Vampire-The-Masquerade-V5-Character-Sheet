@@ -209,9 +209,14 @@
         <translation>0 Dices</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4451"/>
+        <location filename="mainwindow.ui" line="4423"/>
         <source>Modifier</source>
         <translation>Modifier</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4850"/>
+        <source>Show</source>
+        <translation>Show</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="3609"/>
@@ -229,105 +234,110 @@
         <translation>Humanity</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4429"/>
         <source>Notes:</source>
-        <translation>Notes:</translation>
+        <translation type="vanished">Notes:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4492"/>
+        <location filename="mainwindow.ui" line="4464"/>
         <source>Blood Potency</source>
         <translation>Blood Potency</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4682"/>
+        <location filename="mainwindow.ui" line="4654"/>
         <source>Blood Potency:</source>
         <translation>Blood Surge:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4709"/>
+        <location filename="mainwindow.ui" line="4681"/>
         <source>Bane Severity:</source>
         <translation>Bane Severity:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4740"/>
+        <location filename="mainwindow.ui" line="4712"/>
         <source>Power Bonus:</source>
         <translation>Power Bonus:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4767"/>
+        <location filename="mainwindow.ui" line="4739"/>
         <source>Rouse Re-Roll:</source>
         <translation>Rouse Re-Roll:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4798"/>
+        <location filename="mainwindow.ui" line="4770"/>
         <source>Mend Amount:</source>
         <translation>Mend Amount:</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4831"/>
+        <location filename="mainwindow.ui" line="4803"/>
         <source>File</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4838"/>
+        <location filename="mainwindow.ui" line="4810"/>
         <source>Change Language</source>
         <translation>Change Language</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4848"/>
+        <location filename="mainwindow.ui" line="4817"/>
+        <source>Notes</source>
+        <translation>Notes</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="4827"/>
         <source>Save</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4853"/>
-        <source>Open</source>
-        <translation>Open</translation>
+        <location filename="mainwindow.ui" line="4832"/>
+        <location filename="mainwindow.ui" line="4835"/>
+        <source>Load</source>
+        <translation>Load</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4858"/>
+        <location filename="mainwindow.ui" line="4840"/>
         <source>Polish</source>
         <translation>Polish</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="4863"/>
+        <location filename="mainwindow.ui" line="4845"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="210"/>
+        <location filename="mainwindow.cpp" line="218"/>
         <source>Level </source>
         <translation>Level </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="216"/>
-        <location filename="mainwindow.cpp" line="221"/>
+        <location filename="mainwindow.cpp" line="224"/>
+        <location filename="mainwindow.cpp" line="229"/>
         <source> dices</source>
         <translation> dices</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="218"/>
-        <location filename="mainwindow.cpp" line="223"/>
+        <location filename="mainwindow.cpp" line="226"/>
+        <location filename="mainwindow.cpp" line="231"/>
         <source> die</source>
         <translation> dice</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="226"/>
-        <location filename="mainwindow.cpp" line="228"/>
+        <location filename="mainwindow.cpp" line="234"/>
+        <location filename="mainwindow.cpp" line="236"/>
         <source> superficial damage</source>
         <translation> superficial damage</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="231"/>
+        <location filename="mainwindow.cpp" line="239"/>
         <source> and Lower</source>
         <translation> and lower</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="470"/>
+        <location filename="mainwindow.cpp" line="479"/>
         <source> Dices</source>
         <translation> Dices</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="872"/>
+        <location filename="mainwindow.cpp" line="899"/>
         <source>You don&apos;t need Blush of Life.
 You can have sex.
 You can keep watch at day like mortal.
@@ -337,7 +347,7 @@ Damage from sunlight are split by half.</source>
 Unless you use Blush of Life foods and drinks makes you vomit.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="876"/>
+        <location filename="mainwindow.cpp" line="903"/>
         <source>You don&apos;t need Blush of Life.
 You can have sex.
 You can awaken 1 hour before the sunrise and keep watch 1h after sunset.
@@ -350,7 +360,7 @@ You can eat raw meat and drink.
 </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="880"/>
+        <location filename="mainwindow.cpp" line="907"/>
         <source>You roll 2 dices for Blush of Life.
 You can have sex with Blush of Life.
 You can drink wine with Blush of Life.
@@ -361,75 +371,83 @@ You can drink wine with Blush of Life.
 You can awaken 1 hour before the sunrise.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="884"/>
+        <location filename="mainwindow.cpp" line="911"/>
         <source>You can not have sex but you can fake it with Dexterity + Charisma.
 Unless you use Blush of Life foods and drinks makes you vomit.</source>
         <translation>You can not have sex but you can fake it with Dexterity + Charisma.
 Unless you use Blush of Life foods and drinks makes you vomit.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="888"/>
+        <location filename="mainwindow.cpp" line="915"/>
         <source>You can not have sex but you can fake it with Dexterity + Charisma with 1 die penalty.
 Even with Blush Of Life foods and drinks make you vomit.</source>
         <translation>You can not have sex but you can fake it with Dexterity + Charisma with 1 die penalty.
 Even with Blush Of Life foods and drinks make you vomit.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="892"/>
+        <location filename="mainwindow.cpp" line="919"/>
         <source>You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.
 You suffer 1 die penalty when interacting with humans.</source>
         <translation>You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.
 You suffer 1 die penalty when interacting with humans.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="896"/>
+        <location filename="mainwindow.cpp" line="923"/>
         <source>You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.
 You suffer 2 dice penalty when interacting with humans.</source>
         <translation>You can not have sex but you can fake it with Dexterity + Charisma with 2 dice penalty.
 You suffer 2 dice penalty when interacting with humans.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="900"/>
+        <location filename="mainwindow.cpp" line="927"/>
         <source>You can no longer have sex.
 You suffer 4 dice penalty when interacting with humans.</source>
         <translation>You can no longer have sex.
 You suffer 4 dice penalty when interacting with humans.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="904"/>
+        <location filename="mainwindow.cpp" line="931"/>
         <source>You can no longer have sex.
 You suffer 6 dice penalty when interacting with humans.</source>
         <translation>You can no longer have sex.
 You suffer 6 dice penalty when interacting with humans.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="908"/>
+        <location filename="mainwindow.cpp" line="935"/>
         <source>You can no longer have sex.
 You suffer 8 dice penalty when interacting with humans.</source>
         <translation>You can no longer have sex.
 You suffer 8 dice penalty when interacting with humans.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="912"/>
+        <location filename="mainwindow.cpp" line="939"/>
         <source>You have become the beast, you have no longer have control over your character.</source>
         <translation>You have become the beast, you have no longer have control over your character.</translation>
     </message>
 </context>
 <context>
+    <name>NotesWindow</name>
+    <message>
+        <location filename="noteswindow.ui" line="14"/>
+        <source>Notes</source>
+        <translation>Notebook</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="mainwindow.cpp" line="579"/>
+        <location filename="mainwindow.cpp" line="626"/>
         <source>Save File</source>
         <translation>Save File</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="789"/>
+        <location filename="mainwindow.cpp" line="815"/>
         <source>Open Save</source>
         <translation>Open Save</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="579"/>
-        <location filename="mainwindow.cpp" line="789"/>
+        <location filename="mainwindow.cpp" line="626"/>
+        <location filename="mainwindow.cpp" line="815"/>
         <source>Save files (*.json);</source>
         <translation>Save file (*.json);</translation>
     </message>

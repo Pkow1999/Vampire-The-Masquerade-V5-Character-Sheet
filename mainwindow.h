@@ -5,6 +5,7 @@
 #include <QLayout>
 #include <QMainWindow>
 #include <QShortcut>
+#include "noteswindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,6 +16,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     MainWindow(QWidget *parent = nullptr);
+    static QString notesText;
     ~MainWindow();
 private slots:
     void calculateHealth();
@@ -26,12 +28,15 @@ private slots:
 
     void on_pushButton_2_clicked();
 
-    void on_actionSave_triggered();
-    void on_actionOpen_triggered();
+    bool on_actionSave_triggered();
+    void on_actionLoad_triggered();
     void dynamicDiscpilineCreator(QAbstractButton *bt);
     void humanityChanged();
     void saveWithShortcut();
+    void on_actionShow_triggered();
+
 private:
+    NotesWindow *newWindow = nullptr;
     int counter = 0;
     int hunger = 0;
     int healthPool = 0;
@@ -58,5 +63,6 @@ private:
     void deleteHealth(int size_);
     void deleteDiscipline();
     void humanityGenerator();
+    void closeEvent(QCloseEvent *event);
 };
 #endif // MAINWINDOW_H

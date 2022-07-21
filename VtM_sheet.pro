@@ -10,13 +10,16 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    noteswindow.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    noteswindow.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    noteswindow.ui
 
 TRANSLATIONS += \
     VtM_sheet_pl_PL.ts \

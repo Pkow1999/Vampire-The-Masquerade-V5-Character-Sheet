@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <mainwindow.h>
 #include <QAbstractButton>
 #include <QDir>
 #include <QFileDialog>
@@ -9,6 +10,11 @@
 #include <QLayout>
 #include <QRandomGenerator>
 #include <QTranslator>
+#include <QMessageBox>
+#include <QCloseEvent>
+
+QString MainWindow::notesText;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -85,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent)
 }
 MainWindow::~MainWindow()
 {
+    clear();
+    qWarning() <<"destruktor glowny";
+    QApplication::quit();
     delete ui;
 }
 void MainWindow::slotLanguageChanged(QAction *action)
@@ -571,7 +580,7 @@ QJsonObject MainWindow::saveRest()
     json["Willpower"] = *array;
     json["Humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
     json["Blood Potency"] = QString::number(countDots(ui->BloodPotencyGroup));
-    json["Notes"] = ui->notes->toPlainText();
+    json["Notes"] = notesText;
     delete array;
 
     return json;
@@ -614,16 +623,17 @@ void MainWindow::Save(QString directory)
     MainWindow::setWindowTitle(QFileInfo(directory).baseName());
 
 }
-void MainWindow::on_actionSave_triggered()
+bool MainWindow::on_actionSave_triggered()
 {
     QString filename = QFileDialog::getSaveFileName(this,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
     if(filename.isEmpty())
     {
         qWarning() << "Couldn't Save";
-        return;
+        return false;
     }
     lastDirectory = filename;
     Save(filename);
+    return true;
 }
 bool MainWindow::loadRest(QJsonObject json)
 {
@@ -706,7 +716,7 @@ bool MainWindow::loadRest(QJsonObject json)
         }
         if(restArray.first()["Notes"].isString())
         {
-            ui->notes->setPlainText(restArray.first()["Notes"].toString());
+            notesText = restArray.first()["Notes"].toString();
         }
         return true;
     }
@@ -802,7 +812,7 @@ bool MainWindow::loadDiscipline(QJsonObject json)
     return false;
 }
 
-void MainWindow::on_actionOpen_triggered()
+void MainWindow::on_actionLoad_triggered()
 {
 
     QString filename = QFileDialog::getOpenFileName(this,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
@@ -883,7 +893,7 @@ void MainWindow::dynamicDiscpilineCreator(QAbstractButton *bt)
     }
 }
 
-void MainWindow::humanityChanged()
+void MainWindow::humanityChanged()//nienawidze tego, ale nie chce mi się ogarniać algorytmu do tego, mam wrazenie ze to by zajelo zbyt duzo czasu
 {
     unsigned short hum = countIndicators(ui->HumanityLayout,10).second;
     QString text;
@@ -942,5 +952,42 @@ void MainWindow::saveWithShortcut()
     else{
         Save(lastDirectory);
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if(MainWindow::windowTitle().toStdString()[MainWindow::windowTitle().toStdString().size() - 1] == '*')
+    {
+        int ret = QMessageBox::question(this, tr("Warning"), tr("Character Sheet has been modified.\nDo you want to save your changes?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+        if(ret == QMessageBox::Save)
+        {
+            if(on_actionSave_triggered()){
+                event->accept();
+            }
+            else{
+                event->ignore();
+            }
+        }
+        else if(ret == QMessageBox::Discard)
+        {
+            event->accept();
+        }
+        else if(ret == QMessageBox::Cancel)
+        {
+            event->ignore();
+        }
+    }
+    if(newWindow != nullptr && newWindow->isEnabled() && event->isAccepted())
+    {
+        newWindow->close();
+        newWindow->deleteLater();
+    }
+    qWarning() << "WYCHODZE z głównego programu";
+}
+
+void MainWindow::on_actionShow_triggered()
+{
+    newWindow = new NotesWindow(this);
+    newWindow->show();
 }
 
