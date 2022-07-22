@@ -30,7 +30,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Frame</string>
+   <string>Clan book</string>
   </property>
   <widget class="QLabel" name="picture">
    <property name="geometry">
@@ -645,7 +645,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe Script</family>
      <pointsize>14</pointsize>
      <bold>true</bold>
     </font>
@@ -769,7 +768,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe Script</family>
      <bold>true</bold>
     </font>
    </property>
@@ -811,7 +809,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
      <pointsize>10</pointsize>
     </font>
    </property>

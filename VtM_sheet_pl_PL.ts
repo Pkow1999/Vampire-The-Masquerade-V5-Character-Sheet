@@ -122,9 +122,30 @@ Obfuscate</source>
     </message>
     <message>
         <location filename="clanwindow.cpp" line="35"/>
+        <location filename="clanwindow.cpp" line="96"/>
         <source>Blood Sorcery
+</source>
+        <oldsource>Blood Sorcery
 Celerity
-Obfuscate</source>
+Obfuscate</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="35"/>
+        <location filename="clanwindow.cpp" line="40"/>
+        <location filename="clanwindow.cpp" line="91"/>
+        <source>Celerity
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="35"/>
+        <location filename="clanwindow.cpp" line="66"/>
+        <location filename="clanwindow.cpp" line="71"/>
+        <location filename="clanwindow.cpp" line="76"/>
+        <location filename="clanwindow.cpp" line="86"/>
+        <source>Obfuscate
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -139,10 +160,22 @@ Obfuscate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="clanwindow.cpp" line="35"/>
         <location filename="clanwindow.cpp" line="40"/>
-        <source>Potence
+        <location filename="clanwindow.cpp" line="91"/>
+        <source>Celerity
+</source>
+        <oldsource>Potence
 Celerity
-Presence</source>
+Presence</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="40"/>
+        <location filename="clanwindow.cpp" line="61"/>
+        <location filename="clanwindow.cpp" line="76"/>
+        <source>Potence
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -172,13 +205,6 @@ Presence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clanwindow.cpp" line="51"/>
-        <source>Animalism
-Fortitude
-Protean</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="clanwindow.cpp" line="54"/>
         <source>Painful Bite.
  -- Mortals recoil in terror from a Hecata&apos;s bite. To resist, they have to pass a test on Stamina + Resolve (Diff. 2 + Bane Severity). Kindred resist falling to Terror Frenzy (Diff. 3).</source>
@@ -187,13 +213,6 @@ Protean</source>
     <message>
         <location filename="clanwindow.cpp" line="55"/>
         <source>Until predicting or solving a death (i.e. as close as possible) lacking empathy and compassion, you suffer a 3-dice penalty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clanwindow.cpp" line="56"/>
-        <source>Auspex
-Oblivion
-Fortitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -208,13 +227,6 @@ Fortitude</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clanwindow.cpp" line="61"/>
-        <source>Dominate
-Oblivion
-Potence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="clanwindow.cpp" line="64"/>
         <source>Derangement.
  -- When under effect of a bestial failure or a compulsion, delusions or visions cause a dice penalty to all rolls of the same category (i.e., Physical, Social, or Mental).</source>
@@ -226,10 +238,67 @@ Potence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="clanwindow.cpp" line="35"/>
         <location filename="clanwindow.cpp" line="66"/>
-        <source>Auspex
+        <location filename="clanwindow.cpp" line="71"/>
+        <location filename="clanwindow.cpp" line="76"/>
+        <location filename="clanwindow.cpp" line="86"/>
+        <source>Obfuscate
+</source>
+        <oldsource>Auspex
 Dominate
-Obfuscate</source>
+Obfuscate</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="51"/>
+        <location filename="clanwindow.cpp" line="76"/>
+        <location filename="clanwindow.cpp" line="86"/>
+        <location filename="clanwindow.cpp" line="101"/>
+        <source>Animalism
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="51"/>
+        <location filename="clanwindow.cpp" line="56"/>
+        <location filename="clanwindow.cpp" line="106"/>
+        <source>Fortitude
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="51"/>
+        <location filename="clanwindow.cpp" line="71"/>
+        <location filename="clanwindow.cpp" line="101"/>
+        <source>Protean
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="56"/>
+        <location filename="clanwindow.cpp" line="61"/>
+        <source>Oblivion
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="56"/>
+        <location filename="clanwindow.cpp" line="66"/>
+        <location filename="clanwindow.cpp" line="91"/>
+        <location filename="clanwindow.cpp" line="96"/>
+        <source>Auspex
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="clanwindow.cpp" line="61"/>
+        <location filename="clanwindow.cpp" line="66"/>
+        <location filename="clanwindow.cpp" line="96"/>
+        <location filename="clanwindow.cpp" line="101"/>
+        <location filename="clanwindow.cpp" line="106"/>
+        <source>Dominate
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -245,10 +314,16 @@ Obfuscate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="clanwindow.cpp" line="35"/>
+        <location filename="clanwindow.cpp" line="66"/>
         <location filename="clanwindow.cpp" line="71"/>
-        <source>Presence
+        <location filename="clanwindow.cpp" line="76"/>
+        <location filename="clanwindow.cpp" line="86"/>
+        <source>Obfuscate
+</source>
+        <oldsource>Presence
 Protean
-Obfuscate</source>
+Obfuscate</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -261,13 +336,6 @@ Obfuscate</source>
     <message>
         <location filename="clanwindow.cpp" line="75"/>
         <source>Until you learn a useful secret, you suffer a 2 dice penalty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clanwindow.cpp" line="76"/>
-        <source>Animalism
-Potence
-Obfuscate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -301,13 +369,6 @@ Obfuscate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clanwindow.cpp" line="86"/>
-        <source>Animalism
-Presence
-Obfuscate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="clanwindow.cpp" line="89"/>
         <source>Desire of Beauty.
  -- Dice penalty to Discipline rolls, when in a less than beautiful enviroment.</source>
@@ -316,13 +377,6 @@ Obfuscate</source>
     <message>
         <location filename="clanwindow.cpp" line="90"/>
         <source>Until the end of scene or losing sight of the center of your attention, you suffer a 2 dice penalty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clanwindow.cpp" line="91"/>
-        <source>Auspex
-Celerity
-Presence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -338,10 +392,13 @@ Presence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="clanwindow.cpp" line="35"/>
         <location filename="clanwindow.cpp" line="96"/>
         <source>Blood Sorcery
+</source>
+        <oldsource>Blood Sorcery
 Dominate
-Auspex</source>
+Auspex</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -356,10 +413,15 @@ Auspex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="clanwindow.cpp" line="51"/>
+        <location filename="clanwindow.cpp" line="76"/>
+        <location filename="clanwindow.cpp" line="86"/>
         <location filename="clanwindow.cpp" line="101"/>
         <source>Animalism
+</source>
+        <oldsource>Animalism
 Dominate
-Protean</source>
+Protean</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -371,13 +433,6 @@ Protean</source>
     <message>
         <location filename="clanwindow.cpp" line="105"/>
         <source>Until a non-supernatural order has been obeyed, you suffer a 2 dice penalty on all roll except Leadership.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clanwindow.cpp" line="106"/>
-        <source>Dominate
-Fortitude
-Presence</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
