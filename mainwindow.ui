@@ -186,7 +186,7 @@
       <x>30</x>
       <y>40</y>
       <width>1051</width>
-      <height>418</height>
+      <height>414</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_20">
@@ -4716,11 +4716,11 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
+   <widget class="QTextBrowser" name="humanityText">
     <property name="geometry">
      <rect>
       <x>410</x>
-      <y>640</y>
+      <y>670</y>
       <width>231</width>
       <height>151</height>
      </rect>
@@ -5031,9 +5031,16 @@
     </property>
     <addaction name="actionShow"/>
    </widget>
+   <widget class="QMenu" name="menuClanbook">
+    <property name="title">
+     <string>Clanbook</string>
+    </property>
+    <addaction name="actionShowBook"/>
+   </widget>
    <addaction name="menuSave"/>
    <addaction name="menuChange_Language"/>
    <addaction name="menuNotes"/>
+   <addaction name="menuClanbook"/>
   </widget>
   <action name="actionSave">
    <property name="text">
@@ -5061,6 +5068,11 @@
   <action name="actionShow">
    <property name="text">
     <string>Show</string>
+   </property>
+  </action>
+  <action name="actionShowBook">
+   <property name="text">
+    <string>ShowBook</string>
    </property>
   </action>
  </widget>

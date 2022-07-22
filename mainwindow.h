@@ -5,6 +5,7 @@
 #include <QLayout>
 #include <QMainWindow>
 #include <QShortcut>
+#include "clanwindow.h"
 #include "noteswindow.h"
 
 QT_BEGIN_NAMESPACE
@@ -35,8 +36,11 @@ private slots:
     void saveWithShortcut();
     void on_actionShow_triggered();
 
+    void on_actionShowBook_triggered();
+
 private:
-    NotesWindow *newWindow = nullptr;
+    NotesWindow *notesWindow = nullptr;
+    ClanWindow *clanWindow = nullptr;
     int counter = 0;
     int hunger = 0;
     int healthPool = 0;

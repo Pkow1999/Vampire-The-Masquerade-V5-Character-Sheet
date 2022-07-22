@@ -1,3 +1,4 @@
+#include "clanwindow.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <mainwindow.h>
@@ -941,7 +942,7 @@ void MainWindow::humanityChanged()//nienawidze tego, ale nie chce mi się ogarni
     {
         text = tr("You have become the beast, you have no longer have control over your character.");
     }
-    ui->textBrowser->setText(text);
+    ui->humanityText->setText(text);
 }
 
 void MainWindow::saveWithShortcut()
@@ -977,17 +978,31 @@ void MainWindow::closeEvent(QCloseEvent *event)
             event->ignore();
         }
     }
-    if(newWindow != nullptr && newWindow->isEnabled() && event->isAccepted())
+    if(notesWindow != nullptr && notesWindow->isEnabled() && event->isAccepted())
     {
-        newWindow->close();
-        newWindow->deleteLater();
+        notesWindow->close();
+        notesWindow->deleteLater();
+    }
+    if(clanWindow != nullptr && clanWindow->isEnabled() && event->isAccepted())
+    {
+        clanWindow->close();
+        clanWindow->deleteLater();
     }
     qWarning() << "WYCHODZE z głównego programu";
 }
 
 void MainWindow::on_actionShow_triggered()
 {
-    newWindow = new NotesWindow(this);
-    newWindow->show();
+    if(notesWindow == nullptr)
+        notesWindow = new NotesWindow(this);
+    notesWindow->show();
+}
+
+
+void MainWindow::on_actionShowBook_triggered()
+{
+    if(clanWindow == nullptr)
+        clanWindow = new ClanWindow();
+    clanWindow->show();
 }
 
