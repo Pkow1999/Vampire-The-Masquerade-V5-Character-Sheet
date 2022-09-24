@@ -13,6 +13,7 @@
 #include <QTranslator>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QScrollArea>
 
 QString MainWindow::notesText;
 
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    translator = new QTranslator();
     ui->setupUi(this);
     connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
@@ -68,18 +70,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->TalentsGroup_27,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
 
     connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
     connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
     connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
     connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDiscpilineCreator);
+    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
 
     connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::calculateBlood);
-
 
     connect(ui->wpModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateWP);
     connect(ui->healthModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateHealth);
@@ -89,34 +90,65 @@ MainWindow::MainWindow(QWidget *parent)
     humanityGenerator();
     new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this, SLOT(saveWithShortcut()));
 
+    connect(ui->buttonGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->buttonGroup_2,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->buttonGroup_3,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
 }
 MainWindow::~MainWindow()
 {
     clear();
+    ui->HumanityLayout->deleteLater();
     qWarning() <<"destruktor glowny";
     QApplication::quit();
+    delete translator;
     delete ui;
+}
+
+void MainWindow::bolding(QAbstractButton *bt, bool state)
+{
+
+    if(bt->group()->objectName() != "buttonGroup_3")
+    {
+        QFont font = bt->font();
+        font.setBold(state);
+        bt->setFont(font);
+    }
+    else
+    {
+        QFont font = findParentLayout(bt)->itemAt(1)->widget()->font();
+        font.setBold(state);
+        findParentLayout(bt)->itemAt(1)->widget()->setFont(font);
+    }
+}
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    if (event->size().width() == event->oldSize().width()) {
+            return;
+        }
 }
 void MainWindow::slotLanguageChanged(QAction *action)
 {
-    QTranslator translator;
     if(action->objectName() == "actionPolish")
     {
         const QString baseName = "VtM_sheet_pl_PL";
-        if (translator.load(":/i18n/" + baseName)) {
-            QCoreApplication::installTranslator(&translator);
+        if (translator->load(":/i18n/" + baseName)) {
+            QCoreApplication::removeTranslator(translator);
+            QCoreApplication::installTranslator(translator);
             setLocale(QLocale::Polish);
         }
     }
     else if(action->objectName() == "actionEnglish")
     {
         const QString baseName = "VtM_sheet_en_US";
-        if (translator.load(":/i18n/" + baseName)) {
-            QCoreApplication::installTranslator(&translator);
+        if (translator->load(":/i18n/" + baseName)) {
+            QCoreApplication::removeTranslator(translator);
+            QCoreApplication::installTranslator(translator);
             setLocale(QLocale::English);
         }
     }
     ui->retranslateUi(this);
+    calculateBlood();
+    humanityChanged();
 }
 
 void MainWindow::deleteHealth(int size_)
@@ -131,6 +163,13 @@ void MainWindow::deleteHealth(int size_)
 
 void MainWindow::deleteDiscipline()
 {
+    for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+    {
+        QLineEdit *line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        line->clear();
+    }
+
+
     ui->Discipline1Group->buttons().first()->click();
     if(ui->Discipline1Group->buttons().first()->isChecked()) ui->Discipline1Group->buttons().first()->click();
 
@@ -363,7 +402,7 @@ QLayout* MainWindow::findParentLayout(QWidget* w)
     return nullptr;
 }
 
-
+//funkcja dealokujaca i czyszczaca wszystkie dane
 void MainWindow::clear()
 {
     for(QAbstractButton *bt : ui->buttonGroup->buttons())//atrybuty
@@ -400,6 +439,7 @@ void MainWindow::clear()
     deleteHealth(healthPool);
     deleteWP(willpowerPool);
     deleteDiscipline();
+    deleteDices(counter);
     healthPool = 0;
     willpowerPool = 0;
     counter = 0;
@@ -552,7 +592,11 @@ QJsonObject MainWindow::saveDiscipline()
         }
         discipline["powers"] = *discp;
         array->append(discipline);
-        json[line->text()] = *array;
+        if(json.contains(line->text()) && line->text() != "")
+        {
+            json[line->text() + "."] = *array;
+        }
+        else json[line->text()] = *array;
         delete array;
         delete discp;
     }
@@ -776,13 +820,18 @@ bool MainWindow::loadSkills(QJsonObject json)
 
 bool MainWindow::loadDiscipline(QJsonObject json)
 {
-    int keyIndex = 0;
     if(json.contains("Discipline") && json["Discipline"].isArray())
     {
         QJsonArray array = json["Discipline"].toArray();
+        QStringList keyList = array.first().toObject().keys();
+        if(keyList.first() == "")
+            keyList.swapItemsAt(0,keyList.size() - 1);
         for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
         {
-            QString key = array.first().toObject().keys().at(keyIndex);
+            if(keyList.isEmpty())
+                break;
+            QString key = keyList.first();
+            keyList.pop_front();
             QLineEdit *line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
             if(array.first()[key].isArray())
             {
@@ -806,7 +855,6 @@ bool MainWindow::loadDiscipline(QJsonObject json)
                     }
                 }
             }
-            keyIndex++;
         }
         return true;
     }
@@ -831,7 +879,7 @@ void MainWindow::on_actionLoad_triggered()
     QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
     QJsonObject json = loadDoc.object();
     clear();
-
+    closeNotes();
     if(json.contains("Language") && json["Language"].isString())
     {
         if(json["Language"] == "Polish")
@@ -873,7 +921,7 @@ void MainWindow::on_actionLoad_triggered()
     lastDirectory = filename;
 }
 
-void MainWindow::dynamicDiscpilineCreator(QAbstractButton *bt)
+void MainWindow::dynamicDisciplineCreator(QAbstractButton *bt)
 {
     QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
     int size_ = countDots(bt->group());
@@ -978,11 +1026,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
             event->ignore();
         }
     }
-    if(notesWindow != nullptr && notesWindow->isEnabled() && event->isAccepted())
-    {
-        notesWindow->close();
-        notesWindow->deleteLater();
-    }
+    if(event->isAccepted())
+        closeNotes();
     if(clanWindow != nullptr && clanWindow->isEnabled() && event->isAccepted())
     {
         clanWindow->close();
@@ -996,8 +1041,9 @@ void MainWindow::on_actionShow_triggered()
     if(notesWindow == nullptr)
         notesWindow = new NotesWindow(this);
     notesWindow->show();
-}
 
+
+}
 
 void MainWindow::on_actionShowBook_triggered()
 {
@@ -1006,3 +1052,13 @@ void MainWindow::on_actionShowBook_triggered()
     clanWindow->show();
 }
 
+void MainWindow::closeNotes()
+{
+    if(notesWindow != nullptr && notesWindow->isEnabled())
+    {
+        notesWindow->close();
+        notesWindow->deleteLater();
+    }
+    notesWindow = nullptr;
+    notesText.clear();
+}

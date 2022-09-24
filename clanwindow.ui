@@ -645,7 +645,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe Script</family>
      <pointsize>14</pointsize>
      <bold>true</bold>
     </font>
@@ -666,8 +665,14 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
+   </property>
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="frame">
     <bool>false</bool>
@@ -774,7 +779,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe Print</family>
      <pointsize>8</pointsize>
      <bold>true</bold>
     </font>
@@ -1415,7 +1419,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe Print</family>
      <pointsize>11</pointsize>
      <bold>false</bold>
     </font>
@@ -2015,7 +2018,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Segoe Print</family>
      <pointsize>11</pointsize>
      <bold>false</bold>
     </font>

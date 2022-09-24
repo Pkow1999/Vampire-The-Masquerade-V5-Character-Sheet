@@ -96,7 +96,7 @@ void ClanWindow::on_comboBox_currentIndexChanged(int index)
         ui->discplineList->setText(ui->discplineList->toPlainText() + tr("All and none"));
     }
     else if(index == 10){
-        ui->nicknames->setText(tr("Rogues, Ravens, Daredevils, The Haunted, Gypsies, Criminals, Deceivers, Charlatans, Shapers, Seekers, Unwelcome, Hundred-Mask Clowns (by the Kuei-jin[1])"));
+        ui->nicknames->setText(tr("Rogues, Ravens, Daredevils, The Haunted, Gypsies, Criminals, Deceivers, Charlatans, Shapers, Seekers, Unwelcome, Hundred-Mask Clowns (by the Kuei-jin)"));
         ui->desc->setText(tr("Nomads and tricksters who can force the mind to see what isn’t there, though they are slaves to the vices they indulge in."));
         ui->bane->setText(tr("Doomed.\n -- When resting within a mile and a week of a previous resting place, you have to roll bane severity. Critial results (i.e. rolling 10s) cause aggrevated damage.\n -- You can't take the \"No Haven\" flaw at character creation"));
         ui->compulsion->setText(tr("You are compeled to perform the next task in the most daring and dangerous way. If not, you suffer a 2 dice penalty."));

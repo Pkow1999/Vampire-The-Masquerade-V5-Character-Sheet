@@ -5,6 +5,7 @@
 #include <QLayout>
 #include <QMainWindow>
 #include <QShortcut>
+#include <QTranslator>
 #include "clanwindow.h"
 #include "noteswindow.h"
 
@@ -20,6 +21,7 @@ public:
     static QString notesText;
     ~MainWindow();
 private slots:
+    void bolding(QAbstractButton *bt, bool state);
     void calculateHealth();
     void calculateWP();
     void calculateBlood();
@@ -31,7 +33,7 @@ private slots:
 
     bool on_actionSave_triggered();
     void on_actionLoad_triggered();
-    void dynamicDiscpilineCreator(QAbstractButton *bt);
+    void dynamicDisciplineCreator(QAbstractButton *bt);
     void humanityChanged();
     void saveWithShortcut();
     void on_actionShow_triggered();
@@ -39,6 +41,8 @@ private slots:
     void on_actionShowBook_triggered();
 
 private:
+
+    QTranslator *translator;
     NotesWindow *notesWindow = nullptr;
     ClanWindow *clanWindow = nullptr;
     int counter = 0;
@@ -68,5 +72,7 @@ private:
     void deleteDiscipline();
     void humanityGenerator();
     void closeEvent(QCloseEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void closeNotes();
 };
 #endif // MAINWINDOW_H

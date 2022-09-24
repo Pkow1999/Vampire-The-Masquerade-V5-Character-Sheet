@@ -13,18 +13,18 @@ RC_ICONS = ankh.ico
 SOURCES += \
     clanwindow.cpp \
     main.cpp \
-    mainwindow.cpp \
-    noteswindow.cpp
+    noteswindow.cpp \
+    mainwindow.cpp
 
 HEADERS += \
     clanwindow.h \
-    mainwindow.h \
-    noteswindow.h
+    noteswindow.h \
+    mainwindow.h
 
 FORMS += \
     clanwindow.ui \
-    mainwindow.ui \
-    noteswindow.ui
+    noteswindow.ui \
+    mainwindow.ui
 
 TRANSLATIONS += \
     VtM_sheet_pl_PL.ts \
