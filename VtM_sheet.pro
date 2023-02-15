@@ -40,4 +40,39 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     VtM_sheet_en_US.ts \
-    ankh.ico
+    ankh.ico \
+    images/Banu Haqim.png \
+    images/Brujah.png \
+    images/Cienkokrwiści.png \
+    images/Gangrel.png \
+    images/Hecata.png \
+    images/Lasombra.png \
+    images/Malkavian.png \
+    images/Ministerium.png \
+    images/Nosferatu.png \
+    images/Parias.png \
+    images/Ravnos.png \
+    images/Salubri.png \
+    images/Torreador.png \
+    images/Tremere.png \
+    images/Tzimisce.png \
+    images/Ventrue.png \
+    images/bestial-fail.png \
+    images/checkbox_checked.png \
+    images/checkbox_checked_hover.png \
+    images/checkbox_checked_pressed.png \
+    images/checkbox_humanity_checked.png \
+    images/checkbox_humanity_checked_hover.png \
+    images/checkbox_humanity_checked_pressed.png \
+    images/checkbox_indeterminate.png \
+    images/checkbox_indeterminate_hover.png \
+    images/checkbox_indeterminate_pressed.png \
+    images/checkbox_unchecked.png \
+    images/checkbox_unchecked_hover.png \
+    images/checkbox_unchecked_pressed.png \
+    images/normal-crit.png \
+    images/normal-fail.png \
+    images/normal-success.png \
+    images/red-crit.png \
+    images/red-fail.png \
+    images/red-success.png

@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     translator = new QTranslator();
     ui->setupUi(this);
+
     connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
     connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
@@ -450,22 +451,76 @@ void MainWindow::createDices(int size_)
 {
     for(int i = 0; i < size_; i++)
     {
-
         QCheckBox *dynCheck = new QCheckBox();
         QVBoxLayout *dynLayout = new QVBoxLayout();
-        dynLayout->setAlignment(Qt::AlignCenter);
-        QLabel *dynLabel = new QLabel(QString::number(QRandomGenerator::system()->bounded(10) + 1));
-        dynLabel->setStyleSheet("QLabel { font-size : 20px;}");
+        int generatedNumber = QRandomGenerator::system()->bounded(10) + 1;
+        QLabel *dynLabel = new QLabel();
+        dynLabel->setAlignment(Qt::AlignCenter);
+        if (ui->useGraphics->isChecked())
+        {
+            QPixmap pixmap;
+            if(generatedNumber > 5 && generatedNumber < 10)
+            {
+                pixmap = QPixmap("images/normal-success.png");
+
+            }
+            else if(generatedNumber == 10)
+            {
+                pixmap = QPixmap("images/normal-crit.png");
+            }
+            else
+            {
+                pixmap = QPixmap("images/normal-fail.png");
+            }
+            pixmap = pixmap.scaled(pixmap.width()/2, pixmap.height()/2);
+            dynLabel->setPixmap(pixmap);
+            dynLabel->setMask(pixmap.mask());
+        }
+        else
+        {
+            dynLabel->setText(QString::number(generatedNumber));
+            dynLabel->setStyleSheet("QLabel { font-size : 20px;}");
+        }
         dynCheck->setObjectName("czek" + QString::number(i));
         dynCheck->setCheckable(true);
         if(i > counter - hunger - 1)
         {
+            if (ui->useGraphics->isChecked())
+            {
+                QPixmap pixmap;
+                if(generatedNumber > 5 && generatedNumber < 10)
+                {
+                    pixmap = QPixmap("images/red-success.png");
+
+                }
+                else if(generatedNumber == 10)
+                {
+                    pixmap = QPixmap("images/red-crit.png");
+                }
+                else if(generatedNumber == 1)
+                {
+                    pixmap = QPixmap("images/bestial-fail.png");
+                }
+                else
+                {
+                    pixmap = QPixmap("images/red-fail.png");
+                }
+                pixmap = pixmap.scaled(pixmap.width()/2, pixmap.height()/2);
+                dynLabel->setPixmap(pixmap);
+                dynLabel->setMask(pixmap.mask());
+            }
             dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-            //            dynCheck->setCheckable(false);
-            //            dynCheck->setEnabled(false);    pod pewnymi warunkami mozna je przerzucac
+//            else
+//            {
+//              dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
+//              dynCheck->setCheckable(false);
+//              dynCheck->setEnabled(false);    pod pewnymi warunkami mozna je przerzucac
+//            }
         }
         dynLayout->addWidget(dynLabel);
         dynLayout->addWidget(dynCheck);
+        dynLayout->setAlignment(dynLabel, Qt::AlignCenter);
+        dynLayout->setAlignment(dynCheck, Qt::AlignCenter);
         ui->Rolls->addLayout(dynLayout);
     }
 }
@@ -532,12 +587,52 @@ void MainWindow::on_pushButton_2_clicked()//re roll / reroll dices
         QAbstractButton *bt = qobject_cast<QAbstractButton *>(ui->Rolls->itemAt(i)->layout()->itemAt(1)->widget());
         if(bt->isChecked())
         {
-            QLabel *lb = qobject_cast<QLabel *>(ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
-            lb->setText(QString::number(QRandomGenerator::system()->bounded(10) + 1));
-            if(lb->styleSheet() == "QLabel { color : red; font-size : 20px;}"){
-                lb->setStyleSheet("QLabel { color : purple; font-size: 20px;}");
+            int generatedNumber = QRandomGenerator::system()->bounded(10) + 1;
+            if(ui->useGraphics->isChecked())
+            {
+                QLabel *lb = qobject_cast<QLabel *>(ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
+                QPixmap pixmap;
+                if(generatedNumber > 5 && generatedNumber < 10)
+                {
+                    pixmap = QPixmap("images/normal-success.png");
+
+                }
+                else if(generatedNumber == 10)
+                {
+                    pixmap = QPixmap("images/normal-crit.png");
+                }
+                else if(generatedNumber == 1 && lb->styleSheet() == "QLabel { color : red; font-size : 20px;}")
+                {
+                    pixmap = QPixmap("images/bestial-fail.png");
+                }
+                else
+                {
+                    pixmap = QPixmap("images/normal-fail.png");
+                }
+                auto mask = pixmap.createMaskFromColor(QColor(0,0,0,0), Qt::MaskInColor);
+                QColor colour;
+
+                if(lb->styleSheet() == "QLabel { color : red; font-size : 20px;}"){
+                    colour = QColor(100,0,255);
+                }
+                else colour = QColor(0,0,255);
+
+
+                pixmap.fill(colour);
+                pixmap.setMask(mask);
+                pixmap = pixmap.scaled(pixmap.width()/2, pixmap.height()/2);
+                lb->setPixmap(pixmap);
+                lb->setMask(pixmap.mask());
             }
-            else lb->setStyleSheet(" QLabel{color : blue; font-size : 20px;}");
+            else
+            {
+                QLabel *lb = qobject_cast<QLabel *>(ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
+                lb->setText(QString::number(generatedNumber));
+                if(lb->styleSheet() == "QLabel { color : red; font-size : 20px;}"){
+                    lb->setStyleSheet("QLabel { color : purple; font-size: 20px;}");
+                }
+                else lb->setStyleSheet(" QLabel{color : blue; font-size : 20px;}");
+            }
         }
     }
 }
@@ -1062,3 +1157,16 @@ void MainWindow::closeNotes()
     notesWindow = nullptr;
     notesText.clear();
 }
+
+void MainWindow::on_useGraphics_stateChanged(int state)
+{
+    switch(state){
+    case Qt::Unchecked:
+
+        break;
+    case Qt::Checked:
+
+        break;
+    }
+}
+

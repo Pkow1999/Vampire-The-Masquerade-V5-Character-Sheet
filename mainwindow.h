@@ -40,6 +40,8 @@ private slots:
 
     void on_actionShowBook_triggered();
 
+    void on_useGraphics_stateChanged(int state);
+
 private:
 
     QTranslator *translator;

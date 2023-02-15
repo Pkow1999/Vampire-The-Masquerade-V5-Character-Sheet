@@ -141,3 +141,4 @@ void ClanWindow::on_comboBox_currentIndexChanged(int index)
     ui->label->setText(ui->comboBox->itemText(index));
     ui->picture->setPixmap(pic);
 }
+
