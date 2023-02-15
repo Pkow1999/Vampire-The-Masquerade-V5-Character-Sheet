@@ -39,4 +39,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    VtM_sheet_en_US.ts
+    VtM_sheet_en_US.ts \
+    ankh.ico
