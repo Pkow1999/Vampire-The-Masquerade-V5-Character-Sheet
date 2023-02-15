@@ -671,8 +671,11 @@
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">QComboBox {padding-left: 4px;}</string>
    </property>
    <property name="frame">
     <bool>false</bool>
