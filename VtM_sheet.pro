@@ -12,17 +12,20 @@ RC_ICONS = ankh.ico
 
 SOURCES += \
     clanwindow.cpp \
+    disciplinewindow.cpp \
     main.cpp \
     noteswindow.cpp \
     mainwindow.cpp
 
 HEADERS += \
     clanwindow.h \
+    disciplinewindow.h \
     noteswindow.h \
     mainwindow.h
 
 FORMS += \
     clanwindow.ui \
+    disciplinewindow.ui \
     noteswindow.ui \
     mainwindow.ui
 

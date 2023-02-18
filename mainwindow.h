@@ -8,6 +8,7 @@
 #include <QTranslator>
 #include "clanwindow.h"
 #include "noteswindow.h"
+#include "disciplinewindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,11 +43,15 @@ private slots:
 
     void on_useGraphics_stateChanged(int state);
 
+    void on_actionShowDisciplines_triggered();
+
+
 private:
 
     QTranslator *translator;
     NotesWindow *notesWindow = nullptr;
     ClanWindow *clanWindow = nullptr;
+    QVector <DisciplineWindow *> disciplineWindowStack;
     int counter = 0;
     int hunger = 0;
     int healthPool = 0;
