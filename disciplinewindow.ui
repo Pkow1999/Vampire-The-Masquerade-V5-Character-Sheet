@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DisciplineWindow</class>
+ <widget class="QWidget" name="DisciplineWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>349</width>
+    <height>505</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>DisciplineCard</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetNoConstraint</enum>
+   </property>
+   <item row="0" column="0">
+    <widget class="QComboBox" name="discipline">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <item>
+      <property name="text">
+       <string>Animalism</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Auspex</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Blood Sorcery</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Blood Sorcery Rituals</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Celerity</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Dominate</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fortitude</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Obfuscate</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Oblivion</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Oblivion Ceremonies</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Potence</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Presence</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Protean</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Thin-blood Alchemy</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="power">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="insertPolicy">
+      <enum>QComboBox::InsertAtBottom</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContents</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="picture">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

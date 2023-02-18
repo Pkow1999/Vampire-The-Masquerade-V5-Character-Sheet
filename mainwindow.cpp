@@ -94,6 +94,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->buttonGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
     connect(ui->buttonGroup_2,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
     connect(ui->buttonGroup_3,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+
+
+
 }
 MainWindow::~MainWindow()
 {
@@ -1128,6 +1131,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
         clanWindow->close();
         clanWindow->deleteLater();
     }
+    foreach (auto wind, disciplineWindowStack) {
+        wind->deleteLater();
+    }
     qWarning() << "WYCHODZE z głównego programu";
 }
 
@@ -1168,5 +1174,20 @@ void MainWindow::on_useGraphics_stateChanged(int state)
 
         break;
     }
+}
+
+
+void MainWindow::on_actionShowDisciplines_triggered()
+{    
+
+    foreach (auto window, disciplineWindowStack) {
+        if(!window->isVisible()){
+            qWarning() << "Okienko jest niewidoczne, dealokowanie pamięci";
+            disciplineWindowStack.removeOne(window);
+            window->deleteLater();
+        }
+    }
+    disciplineWindowStack.push_back(new DisciplineWindow());
+    disciplineWindowStack.back()->show();
 }
 
