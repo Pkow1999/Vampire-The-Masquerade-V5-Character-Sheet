@@ -45,7 +45,9 @@ DISTFILES += \
     VtM_sheet_en_US.ts \
     ankh.ico \
     images/Banu Haqim.png \
+    images/Banu Haqim.png \
     images/Brujah.png \
+    images/Cienkokrwiści.png \
     images/Cienkokrwiści.png \
     images/Gangrel.png \
     images/Hecata.png \
@@ -73,6 +75,28 @@ DISTFILES += \
     images/checkbox_unchecked.png \
     images/checkbox_unchecked_hover.png \
     images/checkbox_unchecked_pressed.png \
+    images/disciplines/Animalism/DummyPlaceHolder.png \
+    images/disciplines/Auspex/DummyPlaceHolder.png \
+    images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png \
+    images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png \
+    images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png \
+    images/disciplines/Blood Sorcery/DummyPlaceHolder.png \
+    images/disciplines/Blood Sorcery/DummyPlaceHolder.png \
+    images/disciplines/Blood Sorcery/DummyPlaceHolder.png \
+    images/disciplines/Celerity/DummyPlaceHolder.png \
+    images/disciplines/Dominate/DummyPlaceHolder.png \
+    images/disciplines/Fortitude/DummyPlaceHolder.png \
+    images/disciplines/Obfuscate/DummyPlaceHolder.png \
+    images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png \
+    images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png \
+    images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png \
+    images/disciplines/Oblivion/DummyPlaceHolder.png \
+    images/disciplines/Potence/DummyPlaceHolder.png \
+    images/disciplines/Presence/DummyPlaceHolder.png \
+    images/disciplines/Protean/DummyPlaceHolder.png \
+    images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png \
+    images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png \
+    images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png \
     images/normal-crit.png \
     images/normal-fail.png \
     images/normal-success.png \
