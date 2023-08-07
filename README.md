@@ -20,5 +20,6 @@ Now you can use discipline cards made by wonderful [Thea Vik](https://www.storyt
 
 Compiled by using Qt 6.02
 Clan descriptions taken from [White Wolf Wiki](https://whitewolf.fandom.com/wiki/Main_Page) and [Paradox VTM Wiki](https://vtm.paradoxwikis.com/VTM_Wiki)
-Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit [worldofdarkness.com].
+Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit [worldofdarkness.com]
+(worldofdarkness.com).
 ![obraz](https://s3-eu-north-1.amazonaws.com/pdx-campaign-wp-data/uploads/sites/10/2021/10/05102936/darkpack_logo2.png)
