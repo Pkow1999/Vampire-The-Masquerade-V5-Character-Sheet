@@ -62,7 +62,7 @@
     <rect>
      <x>0</x>
      <y>10</y>
-     <width>401</width>
+     <width>411</width>
      <height>31</height>
     </rect>
    </property>
@@ -766,8 +766,8 @@
     <rect>
      <x>160</x>
      <y>50</y>
-     <width>221</width>
-     <height>101</height>
+     <width>231</width>
+     <height>111</height>
     </rect>
    </property>
   </widget>
@@ -797,9 +797,9 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>210</y>
-     <width>221</width>
-     <height>121</height>
+     <y>200</y>
+     <width>231</width>
+     <height>141</height>
     </rect>
    </property>
   </widget>
@@ -807,9 +807,9 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>380</y>
-     <width>221</width>
-     <height>91</height>
+     <y>374</y>
+     <width>231</width>
+     <height>121</height>
     </rect>
    </property>
   </widget>
@@ -838,7 +838,7 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>180</y>
+     <y>166</y>
      <width>221</width>
      <height>31</height>
     </rect>
@@ -1437,7 +1437,7 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>350</y>
+     <y>344</y>
      <width>221</width>
      <height>31</height>
     </rect>
@@ -2030,6 +2030,19 @@
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>450</y>
+     <width>111</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Alternate bane?</string>
    </property>
   </widget>
  </widget>

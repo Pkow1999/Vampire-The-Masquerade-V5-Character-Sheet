@@ -18,6 +18,8 @@ public:
 private slots:
     void on_comboBox_currentIndexChanged(int index);
 
+    void on_checkBox_toggled(bool checked);
+
 private:
     Ui::ClanWindow *ui;
     QPixmap pic;
