@@ -14,9 +14,11 @@ class DisciplineWindow : public QWidget
 
 public:
     explicit DisciplineWindow(QWidget *parent = nullptr);
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
     ~DisciplineWindow();
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 private slots:
     void on_discipline_currentIndexChanged(int index);
 
@@ -27,7 +29,9 @@ private:
     QString path = "images/disciplines/";
     QVector <QString> Files;
     QPixmap pic;
-    const QSize defaultSize = QSize(349,505);
+    QSize defaultSize;
+    QSize currentSize;
+    QSize lastPicSize;
 
     // QWidget interface
 protected:

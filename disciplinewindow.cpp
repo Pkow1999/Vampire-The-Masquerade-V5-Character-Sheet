@@ -9,14 +9,24 @@ DisciplineWindow::DisciplineWindow(QWidget *parent) :
     ui(new Ui::DisciplineWindow)
 {
     ui->setupUi(this);
+    defaultSize = this->size();
+    currentSize = defaultSize;
+    lastPicSize = defaultSize;
     qWarning() << "C-tor";
     on_discipline_currentIndexChanged(0);
+
 }
 
 DisciplineWindow::~DisciplineWindow()
 {
     qWarning() <<"Usuwanko";
     delete ui;
+}
+
+void DisciplineWindow::resizeEvent(QResizeEvent *event)
+{
+    currentSize = event->size();
+    QWidget::resizeEvent(event);
 }
 
 void DisciplineWindow::closeEvent(QCloseEvent *event)
@@ -60,17 +70,26 @@ void DisciplineWindow::on_power_currentIndexChanged(int index)
     qWarning() << index;
     if(index > Files.size() - 1 || index < 0)
         return;
+    lastPicSize = pic.size();
     pic.load(Files.at(index));
 
-    if(this->size() == defaultSize || this->size().width() == 2 * defaultSize.width())
+    qDebug() << "DEFAULT SIZE: " << defaultSize;
+    //if(this->size() == defaultSize || this->size().width() == 2 * defaultSize.width())
     {
-        if(pic.size().width() > 933)
+        if(pic.size().width() > 933 && lastPicSize.width() == 933)
         {
-            this->resize(2 * defaultSize.width(), defaultSize.height());
+            qDebug() << "WIEKSZE";
+            this->resize(2 * currentSize.width(), currentSize.height());
+        }
+        else if(pic.size().width() == 933 && lastPicSize.width() > 933)
+        {
+            qDebug() << "ZMNIEJSZ";
+            this->resize(currentSize.width() / 2,currentSize.height());
         }
         else
         {
-            this->resize(defaultSize);
+            qDebug() << "ZOSTAW";
+            this->resize(currentSize);
         }
     }
     ui->picture->setPixmap(pic);
