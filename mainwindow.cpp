@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QScrollArea>
+#include <algorithm>
 
 QString MainWindow::notesText;
 
@@ -411,7 +412,7 @@ void MainWindow::clear()
 {
     for(QAbstractButton *bt : ui->buttonGroup->buttons())//atrybuty
     {
-        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());//magiczny syf do wyciagniecia przycisku z atrybutami
         for(QAbstractButton *dot : but->group()->buttons())
         {
             dot->setChecked(false);
@@ -664,7 +665,7 @@ QJsonObject MainWindow::saveAttributes()
     QJsonObject json;
     for(QAbstractButton *bt : ui->buttonGroup->buttons())
     {
-        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());//magiczny syf do wyciagniecia przycisku z atrybutami
         int dots = countDots(but->group());
         json[bt->text()] = QString::number(dots);
     }
@@ -1189,5 +1190,63 @@ void MainWindow::on_actionShowDisciplines_triggered()
     }
     disciplineWindowStack.push_back(new DisciplineWindow());
     disciplineWindowStack.back()->show();
+}
+
+
+void MainWindow::on_actionGenerate_new_Random_Character_triggered()
+{
+    int ret = QMessageBox::information(this, tr("Warning"), tr("This option will generate a completely new character!\n All previous informations will be erased!\n Do you wish to continue?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if(ret == QMessageBox::No)
+        return;
+
+    QList<size_t> skills_JACK = {3, 2,2,2,2,2,2,2,2, 1,1,1,1,1,1,1,1,1,1};
+    QList<size_t> skills_BALANCED = {3,3,3, 2,2,2,2,2, 1,1,1,1,1,1,1,1};
+    QList<size_t> skills_SPEC = {4, 3,3,3, 2,2,2, 1,1,1};
+    QList<QList<size_t>> LUT_skills = {skills_JACK, skills_BALANCED, skills_SPEC};
+    QList<size_t> LUT_attributes = {4, 3,3,3, 2,2,2,2, 1};
+
+
+    QList<QAbstractButton *> bagWithAttributes = QList<QAbstractButton *>(ui->buttonGroup->buttons());
+    QList<QAbstractButton *> bagWithSkills = QList<QAbstractButton *>(ui->buttonGroup_2->buttons());
+
+
+    QMessageBox msgBox;
+    msgBox.setText("The document has been modified.");
+    msgBox.setInformativeText(tr("What skill distribution would you like to use?"));
+    QPushButton *jackButton = msgBox.addButton(tr("Jack of All Trades"), QMessageBox::AcceptRole);
+    QPushButton *balancedButton = msgBox.addButton(tr("Balanced"), QMessageBox::AcceptRole);
+    QPushButton *specialistButton = msgBox.addButton(tr("Specialist"), QMessageBox::AcceptRole);
+    QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+    msgBox.exec();
+    if(msgBox.clickedButton() == abortButton)
+    {
+        return;
+    }
+    else {
+        clear();
+        size_t LUTindex;
+        if(msgBox.clickedButton() == jackButton){
+            LUTindex = 0;
+        }
+        else if(msgBox.clickedButton() == balancedButton){
+            LUTindex = 1;
+        }
+        else{
+            LUTindex = 2;
+        }
+        for(auto &atrValue : LUT_attributes)
+        {
+            //magiczny syf do wyciagniecia przycisku (kropki) o odpowiedniej wartosci ze zrandomizowanym atrybutem
+            QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bagWithAttributes.takeAt(QRandomGenerator::global()->generate() % bagWithAttributes.count()))->itemAt(1)->layout()->itemAt(atrValue - 1)->widget());
+            but->click();
+        }
+        for(auto &skillValue : LUT_skills.at(LUTindex))
+        {
+            //magiczny syf do wyciagniecia przycisku (kropki) o odpowiedniej wartosci ze zrandomizowanym skillem
+            QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bagWithSkills.takeAt(QRandomGenerator::global()->generate() % bagWithSkills.count()))->itemAt(2)->layout()->itemAt(skillValue - 1)->widget());
+            but->click();
+        }
+    }
+
 }
 

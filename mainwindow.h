@@ -46,6 +46,8 @@ private slots:
     void on_actionShowDisciplines_triggered();
 
 
+    void on_actionGenerate_new_Random_Character_triggered();
+
 private:
 
     QTranslator *translator;
