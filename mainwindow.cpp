@@ -25,78 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
     translator = new QTranslator();
     ui->setupUi(this);
 
-    connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::calculateHealth);
+    connectAllButtons();
 
-
-    connect(ui->Chr,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Man,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
-
-    connect(ui->Int,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Wit,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
-
-    connect(ui->TalentsGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_2,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_3,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_4,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_5,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_6,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_7,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_8,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_9,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-
-    connect(ui->TalentsGroup_10,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_11,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_12,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_13,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_14,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_15,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_16,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_17,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_18,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-
-    connect(ui->TalentsGroup_19,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_20,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_21,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_22,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_23,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_24,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_25,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_26,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->TalentsGroup_27,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-
-    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
-    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
-    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
-    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
-
-    connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
-    connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::calculateBlood);
-
-    connect(ui->wpModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateWP);
-    connect(ui->healthModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateHealth);
-
-
-    connect(ui->menuChange_Language, &QMenu::triggered,this, &MainWindow::slotLanguageChanged);
     humanityGenerator();
+
     new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this, SLOT(saveWithShortcut()));
-
-    connect(ui->buttonGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
-    connect(ui->buttonGroup_2,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
-    connect(ui->buttonGroup_3,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
-
-
 
 }
 MainWindow::~MainWindow()
@@ -215,6 +148,7 @@ void MainWindow::humanityGenerator()
         ui->HumanityLayout->addWidget(dynCheck);
         connect(dynCheck,&QCheckBox::stateChanged,this,&MainWindow::humanityChanged);
     }
+    humanityChanged();
 }
 void MainWindow::deleteWP(int size_)
 {
@@ -514,12 +448,6 @@ void MainWindow::createDices(int size_)
                 dynLabel->setMask(pixmap.mask());
             }
             dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-//            else
-//            {
-//              dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-//              dynCheck->setCheckable(false);
-//              dynCheck->setEnabled(false);    pod pewnymi warunkami mozna je przerzucac
-//            }
         }
         dynLayout->addWidget(dynLabel);
         dynLayout->addWidget(dynCheck);
@@ -1165,8 +1093,9 @@ void MainWindow::closeNotes()
     notesText.clear();
 }
 
-void MainWindow::on_useGraphics_stateChanged(int state)
+void MainWindow::on_useGraphics_stateChanged(int state) // TODO
 {
+/* TODO
     switch(state){
     case Qt::Unchecked:
 
@@ -1175,6 +1104,7 @@ void MainWindow::on_useGraphics_stateChanged(int state)
 
         break;
     }
+    */
 }
 
 
@@ -1202,7 +1132,7 @@ void MainWindow::on_actionGenerate_new_Random_Character_triggered()
     QList<size_t> skills_JACK = {3, 2,2,2,2,2,2,2,2, 1,1,1,1,1,1,1,1,1,1};
     QList<size_t> skills_BALANCED = {3,3,3, 2,2,2,2,2, 1,1,1,1,1,1,1,1};
     QList<size_t> skills_SPEC = {4, 3,3,3, 2,2,2, 1,1,1};
-    QList<QList<size_t>> LUT_skills = {skills_JACK, skills_BALANCED, skills_SPEC};
+    QList<size_t> LUT_skills;
     QList<size_t> LUT_attributes = {4, 3,3,3, 2,2,2,2, 1};
 
 
@@ -1211,28 +1141,28 @@ void MainWindow::on_actionGenerate_new_Random_Character_triggered()
 
 
     QMessageBox msgBox;
-    msgBox.setText("The document has been modified.");
-    msgBox.setInformativeText(tr("What skill distribution would you like to use?"));
-    QPushButton *jackButton = msgBox.addButton(tr("Jack of All Trades"), QMessageBox::AcceptRole);
-    QPushButton *balancedButton = msgBox.addButton(tr("Balanced"), QMessageBox::AcceptRole);
-    QPushButton *specialistButton = msgBox.addButton(tr("Specialist"), QMessageBox::AcceptRole);
+    msgBox.setText(tr("Skill distribution: "));
+    msgBox.setInformativeText(tr("Which skill distribution would you like to use?"));
+    QPushButton *jackButton = msgBox.addButton(tr(" Jack of All Trades "), QMessageBox::AcceptRole);
+    QPushButton *balancedButton = msgBox.addButton(tr(" Balanced "), QMessageBox::AcceptRole);
+    QPushButton *specialistButton = msgBox.addButton(tr(" Specialist "), QMessageBox::AcceptRole);
     QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
     msgBox.exec();
+
     if(msgBox.clickedButton() == abortButton)
     {
         return;
     }
     else {
         clear();
-        size_t LUTindex;
         if(msgBox.clickedButton() == jackButton){
-            LUTindex = 0;
+            LUT_skills = skills_JACK;
         }
         else if(msgBox.clickedButton() == balancedButton){
-            LUTindex = 1;
+            LUT_skills = skills_BALANCED;
         }
-        else{
-            LUTindex = 2;
+        else if(msgBox.clickedButton() == specialistButton){
+            LUT_skills = skills_SPEC;
         }
         for(auto &atrValue : LUT_attributes)
         {
@@ -1240,7 +1170,7 @@ void MainWindow::on_actionGenerate_new_Random_Character_triggered()
             QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bagWithAttributes.takeAt(QRandomGenerator::global()->generate() % bagWithAttributes.count()))->itemAt(1)->layout()->itemAt(atrValue - 1)->widget());
             but->click();
         }
-        for(auto &skillValue : LUT_skills.at(LUTindex))
+        for(auto &skillValue : LUT_skills)
         {
             //magiczny syf do wyciagniecia przycisku (kropki) o odpowiedniej wartosci ze zrandomizowanym skillem
             QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bagWithSkills.takeAt(QRandomGenerator::global()->generate() % bagWithSkills.count()))->itemAt(2)->layout()->itemAt(skillValue - 1)->widget());
@@ -1248,5 +1178,90 @@ void MainWindow::on_actionGenerate_new_Random_Character_triggered()
         }
     }
 
+}
+
+void MainWindow::connectAllButtons()
+{
+   //connecting all checkboxes to automatically adjust amount of checked dots
+    connect(ui->Str,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Dex,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+    connect(ui->Chr,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Man,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+
+    connect(ui->Int,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Wit,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+
+    connect(ui->TalentsGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_2,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_3,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_4,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_5,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_6,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_7,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_8,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_9,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+    connect(ui->TalentsGroup_10,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_11,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_12,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_13,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_14,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_15,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_16,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_17,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_18,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+    connect(ui->TalentsGroup_19,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_20,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_21,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_22,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_23,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_24,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_25,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_26,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->TalentsGroup_27,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+
+    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline1Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
+    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline2Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
+    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline3Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
+    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->Discipline4Group,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicDisciplineCreator);
+
+    connect(ui->Hunger,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+    connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::dynamicRemoveDots);
+   //
+
+
+   //generating data to the blood table
+    connect(ui->BloodPotencyGroup,&QButtonGroup::buttonClicked,this,&MainWindow::calculateBlood);
+   //
+
+   //calculating indicators based on stats and modifiers
+    connect(ui->Sta,&QButtonGroup::buttonClicked,this,&MainWindow::calculateHealth);
+    connect(ui->Res,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
+    connect(ui->Com,&QButtonGroup::buttonClicked,this,&MainWindow::calculateWP);
+
+    connect(ui->wpModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateWP);
+    connect(ui->healthModifier,&QSpinBox::valueChanged,this,&MainWindow::calculateHealth);
+   //
+
+   //trigger for changing language
+    connect(ui->menuChange_Language, &QMenu::triggered,this, &MainWindow::slotLanguageChanged);
+   //
+
+   //bolding of checked skills/attributes/disciplines
+    connect(ui->buttonGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->buttonGroup_2,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->buttonGroup_3,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+   //
 }
 

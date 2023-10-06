@@ -60,6 +60,7 @@ private:
     int willpowerPool = 0;
     QString lastDirectory;
     Ui::MainWindow *ui;
+    void connectAllButtons();
     int countDots(QButtonGroup *grp);
     QPair<int, int> countIndicators(QLayout *layout,int size_);
     QLayout* findParentLayout(QWidget *widget, QLayout *parent);
