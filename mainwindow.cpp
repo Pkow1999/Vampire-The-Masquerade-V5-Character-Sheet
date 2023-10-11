@@ -695,15 +695,54 @@ void MainWindow::Save(QString directory)
     MainWindow::setWindowTitle(QFileInfo(directory).baseName());
 
 }
+
+bool MainWindow::androidSave(QString directory)//TODO
+{
+    QFile saveFile(directory);
+    QJsonObject mainJson;
+    mainJson["Language"] = locale().languageToString(locale().language());
+    QJsonObject jsonAtr = saveAttributes();
+    mainJson["Attributes"] = jsonAtr;
+
+
+
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
+    saveFile.write(QJsonDocument(mainJson).toJson());
+    saveFile.close();
+    MainWindow::setWindowTitle(QFileInfo(directory).baseName());
+
+    return true;
+}
 bool MainWindow::on_actionSave_triggered()
 {
-    QString filename = QFileDialog::getSaveFileName(this,QObject::tr("Save File"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    QString filename = QFileDialog::getSaveFileName(this,QObject::tr("Save File"),
+                                                    QDir::currentPath(),
+                                                    QObject::tr("Save files for Windows (*.json);;Save files for Android (*.sav); "));
     if(filename.isEmpty())
     {
         qWarning() << "Couldn't Save";
         return false;
     }
+
     lastDirectory = filename;
+
+    if(filename.endsWith(".sav"))
+    {
+        auto previousLocale = locale();
+        ui->actionEnglish->trigger();
+
+        if(!androidSave(filename))
+        {
+            qWarning("Saving Failed");
+            return false;
+        }
+
+        setLocale(previousLocale);
+        return true;
+    }
     Save(filename);
     return true;
 }
@@ -888,10 +927,214 @@ bool MainWindow::loadDiscipline(QJsonObject json)
     return false;
 }
 
+bool MainWindow::androidLoad(QJsonObject json)
+{
+    if(json.contains("Attributes") && json["Attributes"].isObject())
+    {
+        auto attributesJson = json["Attributes"].toObject();
+        for(QAbstractButton *bt : ui->buttonGroup->buttons())
+        {
+            if(attributesJson.contains(bt->text()) && attributesJson[bt->text()].isString())
+            {
+                size_t dots = attributesJson[bt->text()].toString().toInt();
+                if(dots > 0)
+                {
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+            }
+        }
+    }
+    if(json.contains("Mental Skills") && json["Mental Skills"].isObject())
+    {
+        if(json.contains("Physical Skills") && json["Physical Skills"].isObject())
+        {
+            if(json.contains("Social Skills") && json["Social Skills"].isObject())
+            {
+                auto mentalSkillsJson = json["Mental Skills"].toObject();
+                auto physicalSkillsJson = json["Physical Skills"].toObject();
+                auto socialSkillsJson = json["Social Skills"].toObject();
+                QVariantMap map = mentalSkillsJson.toVariantMap();
+                map.insert(physicalSkillsJson.toVariantMap());
+                map.insert(socialSkillsJson.toVariantMap());
+                auto skillsJson = QJsonObject::fromVariantMap(map);
+                //auto skillsJson = mentalSkillsJson;
+                for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+                {
+                    if(skillsJson.contains(bt->text()) && skillsJson[bt->text()].isObject())
+                    {
+                        QJsonObject details = skillsJson[bt->text()].toObject();
+                        size_t dots = 0;
+                        QString spec = "";
+                        if(details.contains("dots") && details["dots"].isString())
+                        {
+                            dots = details["dots"].toString().toInt();
+                        }
+                        if(details.contains("specializations") && details["specializations"].isString())
+                        {
+                            spec = details["specializations"].toString();
+                        }
+                        if(dots != 0)
+                        {
+                            QLayout *lay = findParentLayout(bt);
+                            QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                            line->setText(spec);
+
+                            QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                            but->click();
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+    if(json.contains("Indicators") && json["Indicators"].isObject())
+    {
+        auto indicatorsJson = json["Indicators"].toObject();
+        if(indicatorsJson.contains("health") && indicatorsJson["health"].isObject())
+        {
+            auto healthJson = indicatorsJson["health"].toObject();
+            size_t modifier = healthJson["modifier"].toString().toInt();
+            size_t agravated = healthJson["agravated"].toString().toInt();
+            size_t superficial = healthJson["superficial"].toString().toInt();
+            ui->healthModifier->setValue(modifier);
+            calculateHealth();
+            for(size_t i = 0 ; i < agravated + superficial; i++)
+            {
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
+                but->click();
+            }
+            for(size_t i = 0 ; i < agravated; i++)
+            {
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Health->itemAt(i)->widget());
+                but->click();
+            }
+
+        }
+        if(indicatorsJson.contains("willpower") && indicatorsJson["willpower"].isObject())
+        {
+            auto willpowerJson = indicatorsJson["willpower"].toObject();
+            size_t modifier = indicatorsJson["modifier"].toString().toInt();
+            size_t agravated = indicatorsJson["agravated"].toString().toInt();
+            size_t superficial = indicatorsJson["superficial"].toString().toInt();
+            ui->wpModifier->setValue(modifier);
+            calculateWP();
+            for(size_t i = 0 ; i < agravated + superficial; i++)
+            {
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
+                but->click();
+            }
+            for(size_t i = 0 ; i < agravated; i++)
+            {
+                QAbstractButton *but = qobject_cast <QAbstractButton *> (ui->Willpower->itemAt(i)->widget());
+                but->click();
+            }
+
+        }
+        if(indicatorsJson.contains("humanity") && indicatorsJson["humanity"].isString())
+        {
+            size_t humanityValue = indicatorsJson["humanity"].toString().toInt();
+            for(size_t i = 0; i < humanityValue; i++)
+            {
+                QCheckBox *czek = qobject_cast <QCheckBox * >(ui->HumanityLayout->itemAt(i)->widget());
+                czek->setCheckState(Qt::CheckState::Checked);
+            }
+        }
+        if(indicatorsJson.contains("hunger") && indicatorsJson["hunger"].isString())
+        {
+            size_t hungerValue = indicatorsJson["hunger"].toString().toInt();
+            if(hungerValue > 0)
+            {
+                for(QAbstractButton *but : ui->Hunger->buttons())
+                {
+                    if(hungerValue == 0)
+                        break;
+                    hungerValue--;
+                    but->click();
+                }
+            }
+        }
+    }
+    if(json.contains("Personal Data") && json["Personal Data"].isObject())
+    {
+        auto personalDataJson = json["Personal Data"].toObject();
+        if(personalDataJson.contains("Blood Potency") && personalDataJson["Blood Potency"].isString())
+        {
+            size_t bloodValue = personalDataJson["Blood Potency"].toString().toInt();
+            for(QAbstractButton *bt : ui->BloodPotencyGroup->buttons())
+            {
+                if(bloodValue > 0)
+                {
+                    bt->click();
+                    bloodValue--;
+                }
+            }
+        }
+        QJsonDocument doc(personalDataJson);
+        QString strJson(doc.toJson(QJsonDocument::Indented));
+        notesText = strJson.sliced(2, strJson.size() - 4);
+    }
+    if(json.contains("Loresheets") && json["Loresheets"].isObject())
+    {
+        auto loresheetsJson = json["Loresheets"].toObject();
+        QJsonDocument doc(loresheetsJson);
+        QString strJson(doc.toJson(QJsonDocument::Indented));
+        notesText += "\n\nLoresheets:\n\n";
+        notesText += strJson.sliced(2, strJson.size() - 4);
+    }
+    if(json.contains("Merits and Flaws") && json["Merits and Flaws"].isObject())
+    {
+        auto meritsAndFlawsJson = json["Merits and Flaws"].toObject();
+        QJsonDocument doc(meritsAndFlawsJson);
+        QString strJson(doc.toJson(QJsonDocument::Indented));
+        notesText += "\n\nMerits & Flaws:\n\n";
+        notesText += strJson.sliced(2, strJson.size() - 4);
+    }
+    if(json.contains("Disciplines") && json["Disciplines"].isObject())
+    {
+        auto disciplinesJson = json["Disciplines"].toObject();
+        size_t counter = 0;
+        QStringList keyList = disciplinesJson.keys();
+        for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+        {
+            if(keyList.isEmpty())
+                break;
+            QString key = keyList.first();
+            keyList.pop_front();
+            QLineEdit *line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+            if(disciplinesJson[key].isObject())
+            {
+                line->setText(key);
+                QJsonObject disciplineDetails = disciplinesJson[key].toObject();
+                if(disciplineDetails.contains("dots") && disciplineDetails["dots"].isString())
+                {
+                    size_t dots = disciplineDetails["dots"].toString().toInt();
+                    if(dots > 0)
+                    {
+                        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                        but->click();
+                        QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
+                        QJsonArray powers = disciplineDetails["powers"].toArray();
+                        for(size_t i = 0 ; i < dots; i++)
+                        {
+                            QLineEdit *power = qobject_cast <QLineEdit *> (lay->itemAt(i)->widget());
+                            power->setText(powers.first().toString());
+                            powers.pop_front();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
 void MainWindow::on_actionLoad_triggered()
 {
 
-    QString filename = QFileDialog::getOpenFileName(this,QObject::tr("Open Save"),QDir::currentPath(),QObject::tr("Save files (*.json);"));
+    QString filename = QFileDialog::getOpenFileName(this,QObject::tr("Open Save"),
+                                                    QDir::currentPath(),
+                                                    QObject::tr("Save files for Windows (*.json);;Save files for Android (*.sav); "));
     if(filename.isEmpty())
     {
         qWarning("Name of the save file is empty.");
@@ -902,48 +1145,65 @@ void MainWindow::on_actionLoad_triggered()
         qWarning("Couldn't open save file.");
         return;
     }
+
     QByteArray saveData = loadFile.readAll();
     QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
     QJsonObject json = loadDoc.object();
+
+
+
     clear();
     closeNotes();
-    if(json.contains("Language") && json["Language"].isString())
+    if(filename.endsWith(".sav"))
     {
-        if(json["Language"] == "Polish")
-            ui->actionPolish->trigger();
-        if(json["Language"] == "English")
-            ui->actionEnglish->trigger();
+        ui->actionEnglish->trigger();
+        if(!androidLoad(json))
+        {
+            qWarning("Loading Failed");
+            return;
+        }
     }
     else
     {
-        qWarning("Couldn't find language");
-        return;
+        if(json.contains("Language") && json["Language"].isString())
+        {
+            if(json["Language"] == "Polish")
+                ui->actionPolish->trigger();
+            if(json["Language"] == "English")
+                ui->actionEnglish->trigger();
+        }
+        else
+        {
+            qWarning("Couldn't find language");
+            ui->actionEnglish->trigger();
+            return;
+        }
+        if(json.contains("Statistics") && json["Statistics"].isArray())
+        {
+            QJsonArray array = json["Statistics"].toArray();
+            if(!loadAttributes(array.first().toObject()))
+            {
+                qWarning("Couldn't load Attributes");
+                return;
+            }
+            if(!loadSkills(array.first().toObject()))
+            {
+                qWarning("Couldn't load Skills");
+                return;
+            }
+            if(!loadRest(array.first().toObject()))
+            {
+                qWarning("Couldn't load Rest");
+                return;
+            }
+            if(!loadDiscipline(array.first().toObject()))
+            {
+                qWarning("Couldn't load Disciplines");
+                return;
+            }
+        }
     }
 
-    if(json.contains("Statistics") && json["Statistics"].isArray())
-    {
-        QJsonArray array = json["Statistics"].toArray();
-        if(!loadAttributes(array.first().toObject()))
-        {
-            qWarning("Couldn't load Attributes");
-            return;
-        }
-        if(!loadSkills(array.first().toObject()))
-        {
-            qWarning("Couldn't load Skills");
-            return;
-        }
-        if(!loadRest(array.first().toObject()))
-        {
-            qWarning("Couldn't load Rest");
-            return;
-        }
-        if(!loadDiscipline(array.first().toObject()))
-        {
-            qWarning("Couldn't load Disciplines");
-            return;
-        }
-    }
     MainWindow::setWindowTitle(QFileInfo(filename).baseName());
     lastDirectory = filename;
 }
@@ -1026,7 +1286,14 @@ void MainWindow::saveWithShortcut()
         on_actionSave_triggered();
     }
     else{
-        Save(lastDirectory);
+        if(lastDirectory.endsWith(".sav"))
+        {
+            androidSave(lastDirectory);
+        }
+        else
+        {
+            Save(lastDirectory);
+        }
     }
 }
 
