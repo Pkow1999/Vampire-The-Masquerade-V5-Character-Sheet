@@ -73,10 +73,15 @@ private:
     QJsonObject saveRest();
     QJsonObject saveDiscipline();
     void Save(QString directory);
+    bool androidSave(QString directory);
+
     bool loadRest(QJsonObject json);
     bool loadAttributes(QJsonObject json);
     bool loadSkills(QJsonObject json);
     bool loadDiscipline(QJsonObject json);
+
+    bool androidLoad(QJsonObject json);
+
     void deleteWP(int size_);
     void deleteHealth(int size_);
     void deleteDiscipline();
