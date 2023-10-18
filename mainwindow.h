@@ -81,6 +81,9 @@ private:
     bool loadDiscipline(QJsonObject json);
 
     bool androidLoad(QJsonObject json);
+    QJsonObject saveSkillsAndroid(QButtonGroup *group);
+    QJsonObject saveRestAndroid();
+    QJsonObject saveDisciplinesAndroid();
 
     void deleteWP(int size_);
     void deleteHealth(int size_);
