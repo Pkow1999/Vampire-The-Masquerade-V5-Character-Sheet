@@ -352,7 +352,27 @@ void MainWindow::clear()
             dot->setChecked(false);
         }
     }
-    for(QAbstractButton *bt : ui->buttonGroup_2->buttons())//skille
+    for(QAbstractButton *bt : ui->MentalSkillsGroup->buttons())//skille
+    {
+        QLineEdit *line = qobject_cast<QLineEdit *> (findParentLayout(bt)->itemAt(1)->widget());
+        line->clear();
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        for(QAbstractButton *dot : but->group()->buttons())
+        {
+            dot->setChecked(false);
+        }
+    }
+    for(QAbstractButton *bt : ui->SocialSkillsGroup->buttons())//skille
+    {
+        QLineEdit *line = qobject_cast<QLineEdit *> (findParentLayout(bt)->itemAt(1)->widget());
+        line->clear();
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        for(QAbstractButton *dot : but->group()->buttons())
+        {
+            dot->setChecked(false);
+        }
+    }
+    for(QAbstractButton *bt : ui->PhysicalSkillsGroup->buttons())//skille
     {
         QLineEdit *line = qobject_cast<QLineEdit *> (findParentLayout(bt)->itemAt(1)->widget());
         line->clear();
@@ -485,12 +505,30 @@ void MainWindow::on_pushButton_clicked()//roll dices
         }
     }
 
-    for(int i = 0; i < ui->buttonGroup_2->buttons().size(); i++)
+    for(int i = 0; i < ui->MentalSkillsGroup->buttons().size(); i++)
     {
-        if(ui->buttonGroup_2->buttons().at(i)->isChecked())
+        if(ui->MentalSkillsGroup->buttons().at(i)->isChecked())
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
-            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_2->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
+            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->MentalSkillsGroup->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
+            counter += countDots(bt->group());
+        }
+    }
+    for(int i = 0; i < ui->SocialSkillsGroup->buttons().size(); i++)
+    {
+        if(ui->SocialSkillsGroup->buttons().at(i)->isChecked())
+        {
+            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
+            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->SocialSkillsGroup->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
+            counter += countDots(bt->group());
+        }
+    }
+    for(int i = 0; i < ui->PhysicalSkillsGroup->buttons().size(); i++)
+    {
+        if(ui->PhysicalSkillsGroup->buttons().at(i)->isChecked())
+        {
+            //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
+            QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->PhysicalSkillsGroup->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
             counter += countDots(bt->group());
         }
     }
@@ -572,7 +610,33 @@ void MainWindow::on_pushButton_2_clicked()//re roll / reroll dices
 QJsonObject MainWindow::saveSkills()
 {
     QJsonObject json;
-    for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+    for(QAbstractButton *bt : ui->MentalSkillsGroup->buttons())
+    {
+        QJsonObject skill;
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        int dots = countDots(but->group());
+        skill["specialization"] = line->text();
+        skill["dots"] = QString::number(dots);
+        QJsonArray *array = new QJsonArray();
+        array->append(skill);
+        json[bt->text()] = *array;
+        delete array;
+    }
+    for(QAbstractButton *bt : ui->SocialSkillsGroup->buttons())
+    {
+        QJsonObject skill;
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        int dots = countDots(but->group());
+        skill["specialization"] = line->text();
+        skill["dots"] = QString::number(dots);
+        QJsonArray *array = new QJsonArray();
+        array->append(skill);
+        json[bt->text()] = *array;
+        delete array;
+    }
+    for(QAbstractButton *bt : ui->PhysicalSkillsGroup->buttons())
     {
         QJsonObject skill;
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
@@ -704,7 +768,21 @@ bool MainWindow::androidSave(QString directory)//TODO
     QJsonObject jsonAtr = saveAttributes();
     mainJson["Attributes"] = jsonAtr;
 
+    QJsonObject mentalSkills = saveSkillsAndroid(ui->MentalSkillsGroup);
+    QJsonObject socialSkills = saveSkillsAndroid(ui->SocialSkillsGroup);
+    QJsonObject physicalSkills = saveSkillsAndroid(ui->PhysicalSkillsGroup);
 
+    mainJson["Mental Skills"] = mentalSkills;
+    mainJson["Social Skills"] = socialSkills;
+    mainJson["Physical Skills"] = physicalSkills;
+
+    mainJson["Indicators"] = saveRestAndroid();
+
+    QJsonObject personalData;
+    personalData["Blood Potency"] = QString::number(countDots(ui->BloodPotencyGroup));
+    mainJson["Personal Data"] = personalData;
+
+    mainJson["Disciplines"] = saveDisciplinesAndroid();
 
     if (!saveFile.open(QIODevice::WriteOnly)) {
         qWarning("Couldn't open save file.");
@@ -863,7 +941,39 @@ bool MainWindow::loadSkills(QJsonObject json)
     if(json.contains("Skills") && json["Skills"].isArray())
     {
         QJsonArray array = json["Skills"].toArray();
-        for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+        for(QAbstractButton *bt : ui->MentalSkillsGroup->buttons())
+        {
+            if(array.first()[bt->text()].isArray())
+            {
+                QJsonArray skillArray = array.first()[bt->text()].toArray();
+                int dots = skillArray.first()["dots"].toString().toInt();
+                if(dots > 0)
+                {
+                    QLayout *lay = findParentLayout(bt);
+                    QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    line->setText(skillArray.first()["specialization"].toString());
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+            }
+        }
+        for(QAbstractButton *bt : ui->SocialSkillsGroup->buttons())
+        {
+            if(array.first()[bt->text()].isArray())
+            {
+                QJsonArray skillArray = array.first()[bt->text()].toArray();
+                int dots = skillArray.first()["dots"].toString().toInt();
+                if(dots > 0)
+                {
+                    QLayout *lay = findParentLayout(bt);
+                    QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    line->setText(skillArray.first()["specialization"].toString());
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+            }
+        }
+        for(QAbstractButton *bt : ui->PhysicalSkillsGroup->buttons())
         {
             if(array.first()[bt->text()].isArray())
             {
@@ -947,45 +1057,95 @@ bool MainWindow::androidLoad(QJsonObject json)
     }
     if(json.contains("Mental Skills") && json["Mental Skills"].isObject())
     {
-        if(json.contains("Physical Skills") && json["Physical Skills"].isObject())
+        auto mentalSkillsJson = json["Mental Skills"].toObject();
+        for(QAbstractButton *bt : ui->MentalSkillsGroup->buttons())
         {
-            if(json.contains("Social Skills") && json["Social Skills"].isObject())
+            if(mentalSkillsJson.contains(bt->text()) && mentalSkillsJson[bt->text()].isObject())
             {
-                auto mentalSkillsJson = json["Mental Skills"].toObject();
-                auto physicalSkillsJson = json["Physical Skills"].toObject();
-                auto socialSkillsJson = json["Social Skills"].toObject();
-                QVariantMap map = mentalSkillsJson.toVariantMap();
-                map.insert(physicalSkillsJson.toVariantMap());
-                map.insert(socialSkillsJson.toVariantMap());
-                auto skillsJson = QJsonObject::fromVariantMap(map);
-                //auto skillsJson = mentalSkillsJson;
-                for(QAbstractButton *bt : ui->buttonGroup_2->buttons())
+                QJsonObject details = mentalSkillsJson[bt->text()].toObject();
+                size_t dots = 0;
+                QString spec = "";
+                if(details.contains("dots") && details["dots"].isString())
                 {
-                    if(skillsJson.contains(bt->text()) && skillsJson[bt->text()].isObject())
-                    {
-                        QJsonObject details = skillsJson[bt->text()].toObject();
-                        size_t dots = 0;
-                        QString spec = "";
-                        if(details.contains("dots") && details["dots"].isString())
-                        {
-                            dots = details["dots"].toString().toInt();
-                        }
-                        if(details.contains("specializations") && details["specializations"].isString())
-                        {
-                            spec = details["specializations"].toString();
-                        }
-                        if(dots != 0)
-                        {
-                            QLayout *lay = findParentLayout(bt);
-                            QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
-                            line->setText(spec);
-
-                            QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
-                            but->click();
-                        }
-
-                    }
+                    dots = details["dots"].toString().toInt();
                 }
+                if(details.contains("specializations") && details["specializations"].isString())
+                {
+                    spec = details["specializations"].toString();
+                }
+                if(dots != 0)
+                {
+                    QLayout *lay = findParentLayout(bt);
+                    QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    line->setText(spec);
+
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+
+            }
+        }
+    }
+    if(json.contains("Physical Skills") && json["Physical Skills"].isObject())
+    {
+        auto physicalSkillsJson = json["Physical Skills"].toObject();
+        for(QAbstractButton *bt : ui->PhysicalSkillsGroup->buttons())
+        {
+            if(physicalSkillsJson.contains(bt->text()) && physicalSkillsJson[bt->text()].isObject())
+            {
+                QJsonObject details = physicalSkillsJson[bt->text()].toObject();
+                size_t dots = 0;
+                QString spec = "";
+                if(details.contains("dots") && details["dots"].isString())
+                {
+                    dots = details["dots"].toString().toInt();
+                }
+                if(details.contains("specializations") && details["specializations"].isString())
+                {
+                    spec = details["specializations"].toString();
+                }
+                if(dots != 0)
+                {
+                    QLayout *lay = findParentLayout(bt);
+                    QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    line->setText(spec);
+
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+
+            }
+        }
+    }
+    if(json.contains("Social Skills") && json["Social Skills"].isObject())
+    {
+        auto socialSkillsJson = json["Social Skills"].toObject();
+        //auto skillsJson = mentalSkillsJson;
+        for(QAbstractButton *bt : ui->SocialSkillsGroup->buttons())
+        {
+            if(socialSkillsJson.contains(bt->text()) && socialSkillsJson[bt->text()].isObject())
+            {
+                QJsonObject details = socialSkillsJson[bt->text()].toObject();
+                size_t dots = 0;
+                QString spec = "";
+                if(details.contains("dots") && details["dots"].isString())
+                {
+                    dots = details["dots"].toString().toInt();
+                }
+                if(details.contains("specializations") && details["specializations"].isString())
+                {
+                    spec = details["specializations"].toString();
+                }
+                if(dots != 0)
+                {
+                    QLayout *lay = findParentLayout(bt);
+                    QLineEdit *line = qobject_cast<QLineEdit *>(lay->itemAt(1)->widget());
+                    line->setText(spec);
+
+                    QAbstractButton * but = qobject_cast<QAbstractButton *>(lay->itemAt(2)->layout()->itemAt(dots - 1)->widget());
+                    but->click();
+                }
+
             }
         }
     }
@@ -1128,6 +1288,69 @@ bool MainWindow::androidLoad(QJsonObject json)
         }
     }
     return true;
+}
+
+QJsonObject MainWindow::saveSkillsAndroid(QButtonGroup *group)
+{
+    QJsonObject json;
+    for(auto bt : group->buttons())
+    {
+        QJsonObject skill;
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        int dots = countDots(but->group());
+        skill["specializations"] = line->text();
+        skill["dots"] = QString::number(dots);
+        json[bt->text()] = skill;
+    }
+    return json;
+}
+
+QJsonObject MainWindow::saveRestAndroid()
+{
+
+    QJsonObject json;
+
+    json["hunger"] = QString::number(countDots(ui->Hunger));
+    json["humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
+
+    QJsonObject healthPoints;
+    healthPoints["modifier"] = QString::number(ui->healthModifier->value());
+    healthPoints["superficial"] = QString::number(countIndicators(ui->Health, healthPool).first);
+    healthPoints["agravated"] = QString::number(countIndicators(ui->Health, healthPool).second);
+    json["health"] = healthPoints;
+
+    QJsonObject willpowerPoints;
+    willpowerPoints["modifier"] = QString::number(ui->wpModifier->value());
+    willpowerPoints["superficial"] = QString::number(countIndicators(ui->Willpower, willpowerPool).first);
+    willpowerPoints["agravated"] = QString::number(countIndicators(ui->Willpower, willpowerPool).second);
+    json["willpower"] = willpowerPoints;
+
+    return json;
+}
+
+QJsonObject MainWindow::saveDisciplinesAndroid()
+{
+    QJsonObject json;
+    for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
+    {
+        QJsonArray discp = QJsonArray();
+        QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
+        QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
+        int dots = countDots(but->group());
+        QJsonObject discipline;
+        discipline["dots"] = QString::number(dots);
+        QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
+        for(int i = 0; i < lay->count(); i++)
+        {
+            QLineEdit *linePower = qobject_cast<QLineEdit* > (lay->itemAt(i)->widget());
+            discp.append(linePower->text());
+        }
+        discipline["powers"] = discp;
+
+        json[line->text()] = discipline;
+    }
+    return json;
 }
 void MainWindow::on_actionLoad_triggered()
 {
@@ -1404,9 +1627,12 @@ void MainWindow::on_actionGenerate_new_Random_Character_triggered()
 
 
     QList<QAbstractButton *> bagWithAttributes = QList<QAbstractButton *>(ui->buttonGroup->buttons());
-    QList<QAbstractButton *> bagWithSkills = QList<QAbstractButton *>(ui->buttonGroup_2->buttons());
 
-
+    QList<QAbstractButton *> bagWithSkills = QList<QAbstractButton *>(ui->MentalSkillsGroup->buttons());
+    for(auto skill : ui->SocialSkillsGroup->buttons())
+        bagWithSkills.push_back(skill);
+    for(auto skill : ui->PhysicalSkillsGroup->buttons())
+        bagWithSkills.push_back(skill);
     QMessageBox msgBox;
     msgBox.setText(tr("Skill distribution: "));
     msgBox.setInformativeText(tr("Which skill distribution would you like to use?"));
@@ -1527,7 +1753,9 @@ void MainWindow::connectAllButtons()
 
    //bolding of checked skills/attributes/disciplines
     connect(ui->buttonGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
-    connect(ui->buttonGroup_2,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->MentalSkillsGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->SocialSkillsGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
+    connect(ui->PhysicalSkillsGroup,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
     connect(ui->buttonGroup_3,&QButtonGroup::buttonToggled,this,&MainWindow::bolding);
    //
 }
