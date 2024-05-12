@@ -115,7 +115,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="insertPolicy">
-      <enum>QComboBox::InsertAtBottom</enum>
+      <enum>QComboBox::InsertAlphabetically</enum>
      </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToContents</enum>
