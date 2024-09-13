@@ -25,4 +25,4 @@ Clan descriptions taken from [White Wolf Wiki](https://whitewolf.fandom.com/wiki
 Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit [worldofdarkness.com](https://www.worldofdarkness.com/)
 
 
-<img src="https://github.com/Pkow1999/Vampire-The-Masquerade-V5-Character-Sheet/assets/72875240/94813a9e-620e-410a-913f-d4b91322c3cf" width="200" />
+[<img src="https://github.com/Pkow1999/Vampire-The-Masquerade-V5-Character-Sheet/assets/72875240/94813a9e-620e-410a-913f-d4b91322c3cf" width="200" />](https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement)
