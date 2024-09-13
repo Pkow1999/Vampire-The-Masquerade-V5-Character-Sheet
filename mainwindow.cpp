@@ -14,7 +14,6 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QScrollArea>
-#include <algorithm>
 
 QString MainWindow::notesText;
 
@@ -715,6 +714,7 @@ QJsonObject MainWindow::saveRest()
     array->append(willpowerPoints);
     json["Willpower"] = *array;
     json["Humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
+    json["Stains"] = QString::number(countIndicators(ui->HumanityLayout,10).first);
     json["Blood Potency"] = QString::number(countDots(ui->BloodPotencyGroup));
     json["Notes"] = notesText;
     delete array;
@@ -889,6 +889,15 @@ bool MainWindow::loadRest(QJsonObject json)
             {
                 QCheckBox *czek = qobject_cast <QCheckBox * >(ui->HumanityLayout->itemAt(i)->widget());
                 czek->setCheckState(Qt::CheckState::Checked);
+            }
+        }
+        if(restArray.first()["Stains"].isString())
+        {
+            int stains = restArray.first()["Stains"].toString().toInt();
+            for(int i = 0; i < stains; i++)
+            {
+                QCheckBox *czek = qobject_cast <QCheckBox * >(ui->HumanityLayout->itemAt(9 - i)->widget());
+                czek->setCheckState(Qt::CheckState::PartiallyChecked);
             }
         }
         if(restArray.first()["Blood Potency"].isString())
@@ -1201,6 +1210,15 @@ bool MainWindow::androidLoad(QJsonObject json)
                 czek->setCheckState(Qt::CheckState::Checked);
             }
         }
+        if(indicatorsJson.contains("stains") && indicatorsJson["stains"].isString())
+        {
+            size_t stains = indicatorsJson["stains"].toString().toInt();
+            for(size_t i = 0; i < stains; i++)
+            {
+                QCheckBox *czek = qobject_cast <QCheckBox * >(ui->HumanityLayout->itemAt(9 - i)->widget());
+                czek->setCheckState(Qt::CheckState::Checked);
+            }
+        }
         if(indicatorsJson.contains("hunger") && indicatorsJson["hunger"].isString())
         {
             size_t hungerValue = indicatorsJson["hunger"].toString().toInt();
@@ -1254,7 +1272,6 @@ bool MainWindow::androidLoad(QJsonObject json)
     if(json.contains("Disciplines") && json["Disciplines"].isObject())
     {
         auto disciplinesJson = json["Disciplines"].toObject();
-        size_t counter = 0;
         QStringList keyList = disciplinesJson.keys();
         for(QAbstractButton *bt : ui->buttonGroup_3->buttons())
         {
