@@ -2057,5 +2057,9 @@ void MainWindow::on_frenzyRoll_button_clicked()
     deleteDices();
     diceAmount = frenzyPool;
     createDices(false, false);
+    if(discordIntegration){
+        postDataToDiscord();
+    }
+
 }
 
