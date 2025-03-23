@@ -490,11 +490,6 @@ void MainWindow::createDices(bool reRollable, bool includeHunger)
         dynLayout->setAlignment(dynLabel, Qt::AlignCenter);
         ui->Rolls->addLayout(dynLayout);
     }
-
-
-    if(discordIntegration){
-        postDataToDiscord();
-    }
 }
 
 void MainWindow::deleteDices()
@@ -526,6 +521,11 @@ void MainWindow::on_rollDices_button_clicked()//roll dices
             poolName.append(tr("%1 Dices").arg(QString::number(ui->diceModifier->value())));
     }
     createDices(true, true);
+
+
+    if(discordIntegration){
+        postDataToDiscord();
+    }
 }
 
 int MainWindow::calculatePool()
@@ -598,6 +598,8 @@ int MainWindow::calculatePool()
 
 void MainWindow::on_reRollDices_button_clicked()//re roll / reroll dices
 {
+    poolName.clear();
+    poolName.append(tr("Reroll"));
     for(int i = 0; i < diceAmount; i++)
     {
         QAbstractButton *bt = qobject_cast<QAbstractButton *>(ui->Rolls->itemAt(i)->layout()->itemAt(1)->widget());
@@ -649,7 +651,23 @@ void MainWindow::on_reRollDices_button_clicked()//re roll / reroll dices
                 }
                 else lb->setStyleSheet(" QLabel{color : blue; font-size : 20px;}");
             }
+
+            if(normalDices.size() > i)
+            {
+                qDebug() << i << normalDices;
+                normalDices.replace(i, QString::number(generatedNumber));
+            }
+            else
+            {
+                qDebug() << i << i - normalDices.size() << normalDices;
+                hungerDices.replace(i - normalDices.size(), QString::number(generatedNumber));
+            }
         }
+    }
+
+
+    if(discordIntegration){
+        postDataToDiscord();
     }
 }
 
@@ -1649,15 +1667,13 @@ void MainWindow::closeNotes()
 
 void MainWindow::postDataToDiscord()
 {
-    QUrl url = QUrl(discordWebhookURL);
-    QNetworkRequest request;
-    request.setUrl(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      "application/json");
-    QByteArray postData;
-    QString data;
+    QString poolToSend = poolName.join("+");
+    QString normalDicesToSend;
+    QString hungerDicesToSend;
     if(!graphicRepresentation){
-        data = QString(tr("```%1 rolls: %2\nNormal dices: %3\nHunger dices: %4```")).arg(userName, poolName.join("+"), normalDices.join(" "), hungerDices.join(" "));
+        //data = QString(tr("```%1 rolls: %2\nNormal dices: %3\nHunger dices: %4```")).arg(userName, poolName.join("+"), normalDices.join(" "), hungerDices.join(" "));
+        normalDicesToSend = normalDices.join("  ");
+        hungerDicesToSend = hungerDices.join("  ");
     }
     else{
         QStringList normalDiceGraphic;
@@ -1681,14 +1697,43 @@ void MainWindow::postDataToDiscord()
             else
                 hungerDiceGraphic.append(emotesIds.value("RedFailure"));
         }
-        data = QString(tr("%1 rolls: %2\n%3\n%4").arg(userName, poolName.join("+"), normalDiceGraphic.join(" "), hungerDiceGraphic.join(" ")));
+        normalDicesToSend = normalDiceGraphic.join("   ");
+        hungerDicesToSend = hungerDiceGraphic.join("   ");
+        //data = QString(tr("%1 rolls: %2\n%3\n%4").arg(userName, poolName.join("+"), normalDiceGraphic.join(" "), hungerDiceGraphic.join(" ")));
     }
+    sendData(poolToSend, normalDicesToSend, hungerDicesToSend);
+
+}
+
+void MainWindow::sendData(QString& poolFormatted, QString& normalDicesFormatted, QString& hungerDicesFormatted){
+    QUrl url = QUrl(discordWebhookURL);
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+                      "application/json");
+    QByteArray postData;
+    QString inlineString = "true";
+    if(!useInline)
+        inlineString = "false";
     postData.append(
-        QJsonDocument(
-            QJsonObject{
-                {"content", data}
-            }
-        ).toJson()
+        QString(
+            "{\"embeds\": [{"
+                "\"title\":" + tr("\"%1 rolls:\",").arg(userName) +
+                "\"description\": \"%1\","
+                "\"fields\": ["
+                 "{"
+                    +tr("\"name\": \"Normal Dices\",")+
+                    "\"value\": \"%2\","
+                    "\"inline\": %4"
+                 "},"
+                 "{"
+                    +tr("\"name\": \"Hunger Dices\",")+
+                    "\"value\": \"%3\","
+                    "\"inline\": %4"
+                 "}"
+               "]"
+             "}]"
+            "}").arg(poolFormatted, normalDicesFormatted, hungerDicesFormatted, inlineString).toUtf8()
     );
     QNetworkReply *reply = manager->post(request, postData);
 }
@@ -1873,7 +1918,6 @@ void MainWindow::connectAllButtons()
 
 
 
-//TODO - podzielic + dodac do settingsow username oraz ewentualne idki emotek
 void MainWindow::on_actionEnable_Discord_Webhook_toggled(bool isChecked)
 {
     if(isChecked){
@@ -1881,7 +1925,7 @@ void MainWindow::on_actionEnable_Discord_Webhook_toggled(bool isChecked)
         QFileInfo fileInfo(settingsFilePath);
         if(!fileInfo.exists() || !fileInfo.isFile()){
             QMessageBox warningBox;
-            warningBox.setText("Settings file could not be found, created new");
+            warningBox.setText(tr("Settings file could not be found, created new"));
             warningBox.exec();
             createSettingsFile(settingsFilePath);
             ui->actionEnable_Discord_Webhook->setChecked(false);
@@ -1911,6 +1955,7 @@ void MainWindow::createSettingsFile(QString filepath){
         {"DiscordWebhookURL", ""},
         {"Username", getUserName()},
         {"GraphicalRepresentation", false},
+        {"UseInline", false},
         {"EmotesIds", QJsonObject{
                 {"NormalSuccess", ""},
                 {"NormalFailure", ""},
@@ -1930,7 +1975,7 @@ int MainWindow::loadSettings(QString filepath){
     QFile loadFile(filepath);
     if (!loadFile.open(QIODevice::ReadOnly)) {
         QMessageBox warningBox;
-        warningBox.setText("Discord webhook url is missing. Please update information");
+        warningBox.setText(tr("Discord webhook url is missing. Please update information"));
         warningBox.exec();
         ui->actionEnable_Discord_Webhook->setChecked(false);
         return -1;
@@ -1943,7 +1988,7 @@ int MainWindow::loadSettings(QString filepath){
         discordWebhookURL = json["DiscordWebhookURL"].toString();
     if(discordWebhookURL.isEmpty()){
         QMessageBox warningBox;
-        warningBox.setText("Discord webhook url is missing. Please update information");
+        warningBox.setText(tr("Discord webhook url is missing. Please update information"));
         warningBox.exec();
         ui->actionEnable_Discord_Webhook->setChecked(false);
         return -2;
@@ -1961,13 +2006,15 @@ int MainWindow::loadSettings(QString filepath){
             }
             if(emotesIds.size() != 7 && emotesIds.values().contains("")){
                 QMessageBox warningBox;
-                warningBox.setText("Some emotes ids are missing");
+                warningBox.setText(tr("Some emotes ids are missing"));
                 warningBox.exec();
                 ui->actionEnable_Discord_Webhook->setChecked(false);
                 return -3;
             }
         }
     }
+    if(json.contains("UseInline") && json["UseInline"].isBool())
+        useInline = json["UseInline"].toBool();
 
     if(json.contains("Username") && json["Username"].isString())
         userName = json["Username"].toString();
@@ -1980,14 +2027,15 @@ QString MainWindow::getUserName(){
         name = qgetenv("USERNAME");
     return name;
 }
-//TODO lepsza nazwa
+
 void MainWindow::replyFinished(QNetworkReply *reply)
 {
     if(reply->error()){
         qDebug() << reply->errorString();
+        QMessageBox warningBox;
+        warningBox.setText(tr("There was a problem with Discord Webhook.\n%1").arg(reply->errorString()));
+        warningBox.exec();
     }
-    QString info = QString(reply->readAll());
-    qDebug() << info;
     reply->deleteLater();
 }
 

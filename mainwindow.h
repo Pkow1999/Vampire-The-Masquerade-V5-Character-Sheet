@@ -68,11 +68,14 @@ private:
     QStringList poolName;
     QString lastDirectory;
     Ui::MainWindow *ui;
+
     bool discordIntegration = false;
     bool graphicRepresentation = false;
+    bool useInline = true;
     QString discordWebhookURL = "";
     QString userName = "";
     QMap<QString, QString> emotesIds;
+
     void connectAllButtons();
     int countDots(QButtonGroup *grp);
     QPair<int, int> countIndicators(QLayout *layout,int size_);
@@ -110,5 +113,6 @@ private:
     QString getUserName();
     void createSettingsFile(QString filepath);
     int loadSettings(QString filepath);
+    void sendData(QString &poolFormatted, QString &normalDicesFormatted, QString &hungerDicesFormatted);
 };
 #endif // MAINWINDOW_H
