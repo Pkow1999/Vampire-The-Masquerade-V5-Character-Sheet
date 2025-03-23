@@ -53,6 +53,12 @@ private slots:
     void on_frenzyRoll_button_clicked();
 
 private:
+    enum RollStatus{
+        NO_CRIT,
+        NORMAL_CRIT,
+        RED_CRIT,
+        BESTIAL_FAILURE
+    };
 
     QTranslator *translator;
     NotesWindow *notesWindow = nullptr;
@@ -60,18 +66,23 @@ private:
     QVector <DisciplineWindow *> disciplineWindowStack;
     QNetworkAccessManager *manager;
     int diceAmount = 0;
+    int successCounter = 0;
     int hunger = 0;
     int healthPool = 0;
     int willpowerPool = 0;
+    RollStatus currentRollStatus = NO_CRIT;
     QStringList normalDices;
     QStringList hungerDices;
     QStringList poolName;
     QString lastDirectory;
     Ui::MainWindow *ui;
 
+
+
     bool discordIntegration = false;
     bool graphicRepresentation = false;
     bool useInline = true;
+    bool useSuccess = false;
     QString discordWebhookURL = "";
     QString userName = "";
     QMap<QString, QString> emotesIds;
@@ -114,5 +125,6 @@ private:
     void createSettingsFile(QString filepath);
     int loadSettings(QString filepath);
     void sendData(QString &poolFormatted, QString &normalDicesFormatted, QString &hungerDicesFormatted);
+    void countSuccesses();
 };
 #endif // MAINWINDOW_H

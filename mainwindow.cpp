@@ -521,11 +521,47 @@ void MainWindow::on_rollDices_button_clicked()//roll dices
             poolName.append(tr("%1 Dices").arg(QString::number(ui->diceModifier->value())));
     }
     createDices(true, true);
-
+    countSuccesses();
 
     if(discordIntegration){
         postDataToDiscord();
     }
+}
+
+void MainWindow::countSuccesses(){
+    successCounter = 0;
+    int crit = 0;
+    int red_crit = 0;
+    bool red_one = false;
+    currentRollStatus = NO_CRIT;
+    for(QString& num : normalDices){
+        if(num.toInt() > 5)
+            ++successCounter;
+        if(num.toInt() == 10)
+            ++crit;
+    }
+
+    for(QString& num : hungerDices){
+        if(num.toInt() == 1){
+            red_one = true;
+            continue;
+        }
+        if(num.toInt() > 5)
+            ++successCounter;
+        if(num.toInt() == 10){
+            ++crit;
+            ++red_crit;
+        }
+    }
+    if(red_one)
+        currentRollStatus = BESTIAL_FAILURE;
+    if(crit / 2 > 0){
+        successCounter += crit - crit%2;
+        currentRollStatus = NORMAL_CRIT;
+    }
+    int normal_crits = crit - red_crit;
+    if(red_crit > 1 || (normal_crits%2 == 1 && red_crit > 0))
+        currentRollStatus = RED_CRIT;
 }
 
 int MainWindow::calculatePool()
@@ -664,6 +700,8 @@ void MainWindow::on_reRollDices_button_clicked()//re roll / reroll dices
             }
         }
     }
+
+    countSuccesses();
 
 
     if(discordIntegration){
@@ -1715,6 +1753,20 @@ void MainWindow::sendData(QString& poolFormatted, QString& normalDicesFormatted,
     QString inlineString = "true";
     if(!useInline)
         inlineString = "false";
+    QString successStatus;
+    switch(currentRollStatus){
+        case NO_CRIT:
+            break;
+        case NORMAL_CRIT:
+            successStatus = tr("Critical Success!");
+            break;
+        case RED_CRIT:
+            successStatus = tr("Messy Critical!");
+            break;
+        case BESTIAL_FAILURE:
+            successStatus = tr("Possible Bestial Failure");
+            break;
+    }
     postData.append(
         QString(
             "{\"embeds\": [{"
@@ -1722,18 +1774,22 @@ void MainWindow::sendData(QString& poolFormatted, QString& normalDicesFormatted,
                 "\"description\": \"%1\","
                 "\"fields\": ["
                  "{"
-                    +tr("\"name\": \"Normal Dices\",")+
+                    "\"name\":" + tr("\"Normal Dices\",")+
                     "\"value\": \"%2\","
                     "\"inline\": %4"
                  "},"
                  "{"
-                    +tr("\"name\": \"Hunger Dices\",")+
+                    "\"name\":"  + tr("\"Hunger Dices\",")+
                     "\"value\": \"%3\","
                     "\"inline\": %4"
                  "}"
+                 + (useSuccess ? ",{"
+                    "\"name\":" + tr("\"%1 Successes\",").arg(QString::number(successCounter))+
+                    "\"value\": \"%5\""
+                 "}" : "") +
                "]"
              "}]"
-            "}").arg(poolFormatted, normalDicesFormatted, hungerDicesFormatted, inlineString).toUtf8()
+            "}").arg(poolFormatted, normalDicesFormatted, hungerDicesFormatted, inlineString, successStatus).toUtf8()
     );
     QNetworkReply *reply = manager->post(request, postData);
 }
@@ -1956,6 +2012,7 @@ void MainWindow::createSettingsFile(QString filepath){
         {"Username", getUserName()},
         {"GraphicalRepresentation", false},
         {"UseInline", false},
+        {"UseSuccessCounter", false},
         {"EmotesIds", QJsonObject{
                 {"NormalSuccess", ""},
                 {"NormalFailure", ""},
@@ -2016,6 +2073,9 @@ int MainWindow::loadSettings(QString filepath){
     if(json.contains("UseInline") && json["UseInline"].isBool())
         useInline = json["UseInline"].toBool();
 
+    if(json.contains("UseSuccessCounter") && json["UseSuccessCounter"].isBool())
+        useSuccess = json["UseSuccessCounter"].toBool();
+
     if(json.contains("Username") && json["Username"].isString())
         userName = json["Username"].toString();
 
@@ -2057,6 +2117,8 @@ void MainWindow::on_frenzyRoll_button_clicked()
     deleteDices();
     diceAmount = frenzyPool;
     createDices(false, false);
+    countSuccesses();
+
     if(discordIntegration){
         postDataToDiscord();
     }
