@@ -3981,9 +3981,9 @@
        <widget class="QWidget" name="verticalLayoutWidget_5">
         <property name="geometry">
          <rect>
-          <x>90</x>
+          <x>60</x>
           <y>490</y>
-          <width>361</width>
+          <width>447</width>
           <height>61</height>
          </rect>
         </property>
@@ -4023,14 +4023,14 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="rollDices_button">
              <property name="text">
               <string>Roll Dices</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="reRollDices_button">
              <property name="text">
               <string>ReRoll</string>
              </property>
@@ -4046,26 +4046,17 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="frenzyRoll_button">
+             <property name="text">
+              <string>Frenzy Roll</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_44">
-           <item>
-            <spacer name="horizontalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>70</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
            <item>
             <widget class="QLabel" name="label_2">
              <property name="sizePolicy">
@@ -5219,12 +5210,19 @@
     </property>
     <addaction name="actionGenerate_new_Random_Character"/>
    </widget>
+   <widget class="QMenu" name="menuConnect_to_Discord">
+    <property name="title">
+     <string>Connect to Discord</string>
+    </property>
+    <addaction name="actionEnable_Discord_Webhook"/>
+   </widget>
    <addaction name="menuSave"/>
    <addaction name="menuChange_Language"/>
    <addaction name="menuNotes"/>
    <addaction name="menuClanbook"/>
    <addaction name="menuDisciplines"/>
    <addaction name="menuGenerate"/>
+   <addaction name="menuConnect_to_Discord"/>
   </widget>
   <action name="actionSave">
    <property name="text">
@@ -5269,106 +5267,19 @@
     <string>Generate New Random Character</string>
    </property>
   </action>
+  <action name="actionEnable_Discord_Webhook">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Discord Webhook</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="Discipline1Group">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
   <buttongroup name="buttonGroup_3">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_22">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Wit">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_6">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_3">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_12">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_18">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Dex">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Man">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Discipline2Group">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_5">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_19">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Str">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="buttonGroup">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Chr">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_10">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Discipline3Group">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_2">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -5378,62 +5289,7 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_20">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_26">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Com">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_14">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_11">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_9">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_23">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_24">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_21">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="BloodPotencyGroup">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="TalentsGroup_16">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
-  <buttongroup name="Discipline4Group">
+  <buttongroup name="TalentsGroup_15">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -5443,42 +5299,47 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_27">
+  <buttongroup name="TalentsGroup_3">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="Hunger">
+  <buttongroup name="Chr">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_8">
+  <buttongroup name="Str">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_25">
+  <buttongroup name="Discipline4Group">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="Sta">
+  <buttongroup name="MentalSkillsGroup">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="Res">
+  <buttongroup name="TalentsGroup_18">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_17">
+  <buttongroup name="TalentsGroup_26">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_4">
+  <buttongroup name="TalentsGroup_12">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_10">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -5488,7 +5349,57 @@
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="TalentsGroup_15">
+  <buttongroup name="TalentsGroup_17">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_2">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_5">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Res">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Dex">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_21">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_14">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Discipline3Group">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Discipline2Group">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_24">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_11">
    <property name="exclusive">
     <bool>false</bool>
    </property>
@@ -5498,12 +5409,107 @@
     <bool>false</bool>
    </property>
   </buttongroup>
+  <buttongroup name="TalentsGroup_8">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_4">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_20">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Man">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Sta">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Discipline1Group">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Wit">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_27">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_9">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_25">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Com">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
   <buttongroup name="SocialSkillsGroup">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-  <buttongroup name="MentalSkillsGroup">
+  <buttongroup name="TalentsGroup_19">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="buttonGroup">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_16">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_22">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="Hunger">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="BloodPotencyGroup">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_6">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="TalentsGroup_23">
    <property name="exclusive">
     <bool>false</bool>
    </property>

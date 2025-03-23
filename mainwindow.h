@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QShortcut>
 #include <QTranslator>
+#include <qnetworkaccessmanager.h>
 #include "clanwindow.h"
 #include "noteswindow.h"
 #include "disciplinewindow.h"
@@ -27,13 +28,15 @@ private slots:
     void calculateWP();
     void calculateBlood();
     void dynamicRemoveDots(QAbstractButton *bt);
-    void on_pushButton_clicked();
     void slotLanguageChanged(QAction *action);
 
-    void on_pushButton_2_clicked();
+    void on_rollDices_button_clicked();
+    void on_reRollDices_button_clicked();
 
     bool on_actionSave_triggered();
     void on_actionLoad_triggered();
+    void on_useGraphics_stateChanged(int state);
+
     void dynamicDisciplineCreator(QAbstractButton *bt);
     void humanityChanged();
     void saveWithShortcut();
@@ -41,12 +44,13 @@ private slots:
 
     void on_actionShowBook_triggered();
 
-    void on_useGraphics_stateChanged(int state);
-
     void on_actionShowDisciplines_triggered();
 
-
     void on_actionGenerate_new_Random_Character_triggered();
+
+    void on_actionEnable_Discord_Webhook_toggled(bool isChecked);
+    void replyFinished(QNetworkReply *reply);
+    void on_frenzyRoll_button_clicked();
 
 private:
 
@@ -54,20 +58,32 @@ private:
     NotesWindow *notesWindow = nullptr;
     ClanWindow *clanWindow = nullptr;
     QVector <DisciplineWindow *> disciplineWindowStack;
-    int counter = 0;
+    QNetworkAccessManager *manager;
+    int diceAmount = 0;
     int hunger = 0;
     int healthPool = 0;
     int willpowerPool = 0;
+    QStringList normalDices;
+    QStringList hungerDices;
+    QStringList poolName;
     QString lastDirectory;
     Ui::MainWindow *ui;
+
+    bool discordIntegration = false;
+    bool graphicRepresentation = false;
+    bool useInline = true;
+    QString discordWebhookURL = "";
+    QString userName = "";
+    QMap<QString, QString> emotesIds;
+
     void connectAllButtons();
     int countDots(QButtonGroup *grp);
     QPair<int, int> countIndicators(QLayout *layout,int size_);
     QLayout* findParentLayout(QWidget *widget, QLayout *parent);
     QLayout* findParentLayout(QWidget *widget);
     void clear();
-    void createDices(int size_);
-    void deleteDices(int size_);
+    void createDices(bool reRollable, bool includeHunger);
+    void deleteDices();
     QJsonObject saveSkills();
     QJsonObject saveAttributes();
     QJsonObject saveRest();
@@ -92,5 +108,11 @@ private:
     void closeEvent(QCloseEvent *event);
     void resizeEvent(QResizeEvent *event);
     void closeNotes();
+    void postDataToDiscord();
+    int calculatePool();
+    QString getUserName();
+    void createSettingsFile(QString filepath);
+    int loadSettings(QString filepath);
+    void sendData(QString &poolFormatted, QString &normalDicesFormatted, QString &hungerDicesFormatted);
 };
 #endif // MAINWINDOW_H
