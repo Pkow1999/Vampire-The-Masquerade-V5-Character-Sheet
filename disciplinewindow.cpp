@@ -9,14 +9,26 @@ DisciplineWindow::DisciplineWindow(QWidget *parent) :
     ui(new Ui::DisciplineWindow)
 {
     ui->setupUi(this);
-    defaultSize = this->size();
-    currentSize = defaultSize;
-    lastPicSize = defaultSize;
+    windowSize = this->size();
+    currentPictureRealSize = windowSize;
+    lastPictureRealSize = windowSize;
     qWarning() << "C-tor";
     on_discipline_currentIndexChanged(0);
-
+    defaultPictureRealSize = this->currentPicture.size();
 }
 
+void DisciplineWindow::loadImages()
+{
+    QString absolutePath(path);
+    absolutePath.append(ui->discipline->currentText()).append('/');
+    QDirIterator it(absolutePath, QStringList() << "*.png", QDir::NoFilter, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        auto picturePath = it.next();
+        listOfPicturesPath.push_back(picturePath);
+        QFileInfo info(picturePath);
+        ui->power->addItem(info.baseName());
+    }
+}
 DisciplineWindow::~DisciplineWindow()
 {
     qWarning() <<"Usuwanko";
@@ -25,7 +37,7 @@ DisciplineWindow::~DisciplineWindow()
 
 void DisciplineWindow::resizeEvent(QResizeEvent *event)
 {
-    currentSize = event->size();
+    currentPictureRealSize = event->size();
     QWidget::resizeEvent(event);
 }
 
@@ -39,71 +51,74 @@ void DisciplineWindow::on_discipline_currentIndexChanged(int index)
     qWarning() << "Index Changed";
     ui->power->clear();
     qWarning() <<"CLEAR 1";
-    Files.clear();
+    listOfPicturesPath.clear();
     qWarning() << "CLEAR 2";
-    QString absolutePath(path);
-    qWarning() << "Path: " << absolutePath.append(ui->discipline->currentText()).append('/');
-    QDirIterator it(absolutePath, QStringList() << "*.png", QDir::NoFilter, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        auto item = it.next();
-        Files.push_back(item);
-        QFileInfo info(item);
-        ui->power->addItem(info.baseName());
-    }
-    qWarning() << "LOADING COMPLETE";
-    if (Files.empty())
+
+    loadImages();
+    if (listOfPicturesPath.empty())
         return;
-    pic.load(Files.front());
-    if(pic.size().width() > 933)
+
+    currentPicture.load(listOfPicturesPath.front());
+    if(currentPicture.size().width() > lastPictureRealSize.width()
+        && currentPicture.size().height() == lastPictureRealSize.height())
     {
-        this->resize(2 * defaultSize.width(), defaultSize.height());
+        this->resize(2 * windowSize.width(), windowSize.height());
     }
-    ui->picture->setPixmap(pic);
+
+    ui->picture->setPixmap(currentPicture);
     ui->picture->setScaledContents(true);
     ui->picture->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
     ui->power->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     ui->power->adjustSize();
+
+    this->resize(currentPictureRealSize);
 }
 
 void DisciplineWindow::on_power_currentIndexChanged(int index)
 {
     qWarning() << index;
-    if(index > Files.size() - 1 || index < 0)
+    if(index > listOfPicturesPath.size() - 1 || index < 0)
         return;
-    lastPicSize = pic.size();
-    pic.load(Files.at(index));
 
-    qDebug() << "DEFAULT SIZE: " << defaultSize;
-    //if(this->size() == defaultSize || this->size().width() == 2 * defaultSize.width())
+    lastPictureRealSize = currentPicture.size();
+    currentPicture.load(listOfPicturesPath.at(index));
+
+    qDebug() << "DEFAULT SIZE: " << windowSize;
     {
-        if(pic.size().width() > 933 && lastPicSize.width() == 933)
+        if(currentPicture.size().width() > lastPictureRealSize.width()
+            && currentPicture.size().height() <= lastPictureRealSize.height())
         {
             qDebug() << "WIEKSZE";
-            this->resize(2 * currentSize.width(), currentSize.height());
+            defaultPictureRealSize = lastPictureRealSize;
+            this->resize(2 * currentPictureRealSize.width(), currentPictureRealSize.height());
         }
-        else if(pic.size().width() == 933 && lastPicSize.width() > 933)
+        else if(currentPicture.size().width() < lastPictureRealSize.width()
+                 && currentPicture.size().height() >= lastPictureRealSize.height())
         {
             qDebug() << "ZMNIEJSZ";
-            this->resize(currentSize.width() / 2,currentSize.height());
+            defaultPictureRealSize = currentPicture.size();
+            this->resize(currentPictureRealSize.width() / 2,currentPictureRealSize.height());
         }
         else
         {
             qDebug() << "ZOSTAW";
-            this->resize(currentSize);
+            //this->resize(currentSize);
         }
     }
-    ui->picture->setPixmap(pic);
+    ui->picture->setPixmap(currentPicture);
 }
 
 void DisciplineWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        if(pic.size().width() > 933){
-            this->resize(2 * defaultSize.width(), defaultSize.height());
+        if(currentPicture.size().width() > defaultPictureRealSize.width()
+            && currentPicture.size().height() == defaultPictureRealSize.height()){
+            this->resize(2 * windowSize.width(), windowSize.height());
         }
         else{
-            this->resize(defaultSize);
+            this->resize(windowSize);
         }
     }
 }

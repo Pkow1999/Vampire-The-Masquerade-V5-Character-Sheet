@@ -27,13 +27,15 @@ private slots:
 private:
     Ui::DisciplineWindow *ui;
     QString path = "images/disciplines/";
-    QVector <QString> Files;
-    QPixmap pic;
-    QSize defaultSize;
-    QSize currentSize;
-    QSize lastPicSize;
+    QVector <QString> listOfPicturesPath;
+    QPixmap currentPicture;
+    QSize defaultPictureRealSize;
+    QSize windowSize;
+    QSize currentPictureRealSize;
+    QSize lastPictureRealSize;
 
     // QWidget interface
+    void loadImages();
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
 };
