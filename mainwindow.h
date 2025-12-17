@@ -6,10 +6,11 @@
 #include <QMainWindow>
 #include <QShortcut>
 #include <QTranslator>
-#include <qnetworkaccessmanager.h>
 #include "clanwindow.h"
 #include "noteswindow.h"
 #include "disciplinewindow.h"
+#include "StatsCounter.h"
+#include "discordsender.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -53,43 +54,29 @@ private slots:
     void on_frenzyRoll_button_clicked();
 
 private:
-    enum RollStatus{
-        NO_CRIT,
-        NORMAL_CRIT,
-        RED_CRIT,
-        BESTIAL_FAILURE
-    };
-
+    StatsCounter *statsCounter;
     QTranslator *translator;
     NotesWindow *notesWindow = nullptr;
     ClanWindow *clanWindow = nullptr;
     QVector <DisciplineWindow *> disciplineWindowStack;
-    QNetworkAccessManager *manager;
+
+    DiscordSender *discordSender;
+    DiscordConfig *discordConfig = nullptr;
+
     int diceAmount = 0;
     int successCounter = 0;
     int hunger = 0;
     int healthPool = 0;
     int willpowerPool = 0;
-    RollStatus currentRollStatus = NO_CRIT;
-    QStringList normalDices;
-    QStringList hungerDices;
-    QStringList poolName;
+
     QString lastDirectory;
     Ui::MainWindow *ui;
 
 
 
     bool discordIntegration = false;
-    bool graphicRepresentation = false;
-    bool useInline = true;
-    bool useSuccess = false;
-    QString discordWebhookURL = "";
-    QString userName = "";
-    QMap<QString, QString> emotesIds;
 
     void connectAllButtons();
-    int countDots(QButtonGroup *grp);
-    QPair<int, int> countIndicators(QLayout *layout,int size_);
     QLayout* findParentLayout(QWidget *widget, QLayout *parent);
     QLayout* findParentLayout(QWidget *widget);
     void clear();
@@ -119,12 +106,6 @@ private:
     void closeEvent(QCloseEvent *event);
     void resizeEvent(QResizeEvent *event);
     void closeNotes();
-    void postDataToDiscord();
     int calculatePool();
-    QString getUserName();
-    void createSettingsFile(QString filepath);
-    int loadSettings(QString filepath);
-    void sendData(QString &poolFormatted, QString &normalDicesFormatted, QString &hungerDicesFormatted);
-    void countSuccesses();
 };
 #endif // MAINWINDOW_H

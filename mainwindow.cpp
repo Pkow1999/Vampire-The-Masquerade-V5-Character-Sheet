@@ -1,6 +1,9 @@
 #include "clanwindow.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "errorcodes.hpp"
+
+
 #include <mainwindow.h>
 #include <QAbstractButton>
 #include <QDir>
@@ -26,6 +29,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     translator = new QTranslator();
+    statsCounter = new StatsCounter();
+    discordSender = new DiscordSender(this, nullptr, statsCounter);
+
+
+
     ui->setupUi(this);
 
     connectAllButtons();
@@ -34,8 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this, SLOT(saveWithShortcut()));
 
-    manager = new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished,
+
+    connect(discordSender, &QNetworkAccessManager::finished,
             this, &MainWindow::replyFinished);
 }
 MainWindow::~MainWindow()
@@ -43,9 +51,14 @@ MainWindow::~MainWindow()
     clear();
     ui->HumanityLayout->deleteLater();
     qWarning() <<"destruktor glowny";
-    QApplication::quit();
+    if(discordConfig != nullptr) {
+        delete discordConfig;
+    }
+    delete statsCounter;
+    delete discordSender;
     delete translator;
     delete ui;
+    QApplication::quit();
 }
 
 void MainWindow::bolding(QAbstractButton *bt, bool state)
@@ -168,7 +181,7 @@ void MainWindow::deleteWP(int size_)
 void MainWindow::calculateWP()
 {
     deleteWP(willpowerPool);
-    willpowerPool = countDots(ui->Com) + countDots(ui->Res) + ui->wpModifier->value();
+    willpowerPool = statsCounter->countDots(ui->Com) + statsCounter->countDots(ui->Res) + ui->wpModifier->value();
     if(willpowerPool < 0)
         willpowerPool = 0;
     for(int i = 0; i < willpowerPool; i++)
@@ -198,7 +211,7 @@ void MainWindow::calculateWP()
 
 void MainWindow::calculateBlood()
 {
-    int bloodPotency = countDots(ui->BloodPotencyGroup);
+    int bloodPotency = statsCounter->countDots(ui->BloodPotencyGroup);
     ui->BloodPotency->setText(QString::number(bloodPotency /2 + bloodPotency % 2 + 1));
     ui->MendAmount->setText(QString::number(bloodPotency < 6 ? bloodPotency / 2 + 1 : bloodPotency / 2));
     ui->PowerBonus->setText(QString::number(bloodPotency / 2));
@@ -229,7 +242,7 @@ void MainWindow::calculateBlood()
 void MainWindow::calculateHealth()
 {
     deleteHealth(healthPool);
-    healthPool = 3 + countDots(ui->Sta) + ui->healthModifier->value();
+    healthPool = 3 + statsCounter->countDots(ui->Sta) + ui->healthModifier->value();
     if(healthPool < 0)
         healthPool = 0;
     for(int i = 0; i < healthPool; i++)
@@ -286,37 +299,6 @@ void MainWindow::dynamicRemoveDots(QAbstractButton *bt)
     }
     if(MainWindow::windowTitle().toStdString()[MainWindow::windowTitle().toStdString().size() - 1] != '*')
         MainWindow::setWindowTitle(MainWindow::windowTitle() + "*");
-}
-int MainWindow::countDots(QButtonGroup *grp)
-{
-    int counter = 0;
-    for(int i = 0; i < grp->buttons().size(); i++)
-    {
-        if(grp->buttons().at(i)->isChecked())
-        {
-            counter++;
-        }
-        else
-        {
-            break;
-        }
-    }
-    return counter;
-}
-
-QPair<int, int> MainWindow::countIndicators(QLayout *layout,int size_)
-{
-    int superficial = 0;
-    int agravated = 0;
-    for(int i = 0; i < size_; i++)
-    {
-        QCheckBox *check = qobject_cast<QCheckBox *>(layout->itemAt(i)->widget());
-        if(check->checkState() == Qt::CheckState::Checked)
-            agravated++;
-        if(check->checkState() == Qt::CheckState::PartiallyChecked)
-            superficial++;
-    }
-    return QPair<int,int>(superficial, agravated);
 }
 
 QLayout* MainWindow::findParentLayout(QWidget* w, QLayout* topLevelLayout)
@@ -414,8 +396,8 @@ void MainWindow::clear()
 //create dices from the dice amount
 void MainWindow::createDices(bool reRollable, bool includeHunger)
 {
-    normalDices.clear();
-    hungerDices.clear();
+    statsCounter->getListOfNormalDices()->clear();
+    statsCounter->getListOfHungerDices()->clear();
     ui->label_2->setText(QString::number(diceAmount) + tr(" Dices"));
     for(int i = 0; i < diceAmount; i++)
     {
@@ -479,10 +461,10 @@ void MainWindow::createDices(bool reRollable, bool includeHunger)
                 dynLabel->setMask(pixmap.mask());
             }
             dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-            hungerDices.append(QString::number(generatedNumber));
+            statsCounter->getListOfHungerDices()->append(generatedNumber);
         }
         else{
-            normalDices.append(QString::number(generatedNumber));
+            statsCounter->getListOfNormalDices()->append(generatedNumber);
         }
         dynLayout->addWidget(dynLabel);
         dynLayout->addWidget(dynCheck);
@@ -496,7 +478,6 @@ void MainWindow::deleteDices()
 {
     for(int i = 0; i < diceAmount; i++)
     {
-
         for(int j = 0; j < 2; j++)
         {
             ui->Rolls->itemAt(i)->layout()->itemAt(j)->widget()->deleteLater();
@@ -510,64 +491,29 @@ void MainWindow::on_rollDices_button_clicked()//roll dices
     //delete last amount of dices and prepare for the new one
     deleteDices();
 
-    hunger = countDots(ui->Hunger);
+    hunger = statsCounter->countDots(ui->Hunger);
 
     diceAmount = calculatePool();
     diceAmount += ui->diceModifier->value();
     if(ui->diceModifier->value()) {
-        if(!poolName.empty())
-            poolName.append(tr("Modifier %1").arg(QString::number(ui->diceModifier->value())));
+        if(!statsCounter->getPoolNames()->empty())
+            statsCounter->getPoolNames()->append(tr("Modifier %1").arg(QString::number(ui->diceModifier->value())));
         else
-            poolName.append(tr("%1 Dices").arg(QString::number(ui->diceModifier->value())));
+            statsCounter->getPoolNames()->append(tr("%1 Dices").arg(QString::number(ui->diceModifier->value())));
     }
     createDices(true, true);
-    countSuccesses();
+
+    successCounter = statsCounter->countSuccesses();
 
     if(discordIntegration){
-        postDataToDiscord();
+        discordSender->formatDataForDiscord();
     }
-}
-
-void MainWindow::countSuccesses(){
-    successCounter = 0;
-    int crit = 0;
-    int red_crit = 0;
-    bool red_one = false;
-    currentRollStatus = NO_CRIT;
-    for(QString& num : normalDices){
-        if(num.toInt() > 5)
-            ++successCounter;
-        if(num.toInt() == 10)
-            ++crit;
-    }
-
-    for(QString& num : hungerDices){
-        if(num.toInt() == 1){
-            red_one = true;
-            continue;
-        }
-        if(num.toInt() > 5)
-            ++successCounter;
-        if(num.toInt() == 10){
-            ++crit;
-            ++red_crit;
-        }
-    }
-    if(red_one)
-        currentRollStatus = BESTIAL_FAILURE;
-    if(crit / 2 > 0){
-        successCounter += crit - crit%2;
-        currentRollStatus = NORMAL_CRIT;
-    }
-    int normal_crits = crit - red_crit;
-    if(red_crit > 1 || (normal_crits%2 == 1 && red_crit > 0))
-        currentRollStatus = RED_CRIT;
 }
 
 int MainWindow::calculatePool()
 {
     int pool = 0;
-    poolName.clear();
+    statsCounter->getPoolNames()->clear();
     //Atrybuty
     for(int i = 0; i < ui->buttonGroup->buttons().size(); i++)
     {
@@ -575,8 +521,8 @@ int MainWindow::calculatePool()
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest drugi element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
             QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup->buttons().at(i)->focusWidget())->layout()->itemAt(1)->layout()->itemAt(0)->widget());
-            pool += countDots(bt->group());
-            poolName.append(ui->buttonGroup->buttons().at(i)->text());
+            pool += statsCounter->countDots(bt->group());
+            statsCounter->getPoolNames()->append(ui->buttonGroup->buttons().at(i)->text());
         }
     }
     //Prawe skille
@@ -586,8 +532,8 @@ int MainWindow::calculatePool()
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
             QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->MentalSkillsGroup->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
-            pool += countDots(bt->group());
-            poolName.append(ui->MentalSkillsGroup->buttons().at(i)->text());
+            pool += statsCounter->countDots(bt->group());
+            statsCounter->getPoolNames()->append(ui->MentalSkillsGroup->buttons().at(i)->text());
 
         }
     }
@@ -598,8 +544,8 @@ int MainWindow::calculatePool()
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
             QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->SocialSkillsGroup->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
-            pool += countDots(bt->group());
-            poolName.append(ui->SocialSkillsGroup->buttons().at(i)->text());
+            pool += statsCounter->countDots(bt->group());
+            statsCounter->getPoolNames()->append(ui->SocialSkillsGroup->buttons().at(i)->text());
 
         }
     }
@@ -610,8 +556,8 @@ int MainWindow::calculatePool()
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
             QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->PhysicalSkillsGroup->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
-            pool += countDots(bt->group());
-            poolName.append(ui->PhysicalSkillsGroup->buttons().at(i)->text());
+            pool += statsCounter->countDots(bt->group());
+            statsCounter->getPoolNames()->append(ui->PhysicalSkillsGroup->buttons().at(i)->text());
 
         }
     }
@@ -622,10 +568,10 @@ int MainWindow::calculatePool()
         {
             //znajdujemy dokladnego parrenta naszego przycisku, nastepnie sprawdzamy jaki jest trzeci(!) element (ktorym sa radio buttony) i z tych radio buttonow przechodzimy na do grupy ktora tworza aby zliczyc ile sie swieci
             QAbstractButton * bt = qobject_cast<QAbstractButton *>(findParentLayout(ui->buttonGroup_3->buttons().at(i)->focusWidget())->layout()->itemAt(2)->layout()->itemAt(0)->widget());
-            pool += countDots(bt->group());
+            pool += statsCounter->countDots(bt->group());
 
             QLineEdit *disciplineNameLine =qobject_cast<QLineEdit *>(findParentLayout(ui->buttonGroup_3->buttons().at(i)->focusWidget())->layout()->itemAt(1)->widget());
-            poolName.append(disciplineNameLine->text());
+            statsCounter->getPoolNames()->append(disciplineNameLine->text());
 
         }
     }
@@ -634,8 +580,8 @@ int MainWindow::calculatePool()
 
 void MainWindow::on_reRollDices_button_clicked()//re roll / reroll dices
 {
-    poolName.clear();
-    poolName.append(tr("Reroll"));
+    statsCounter->getPoolNames()->clear();
+    statsCounter->getPoolNames()->append(tr("Reroll"));
     for(int i = 0; i < diceAmount; i++)
     {
         QAbstractButton *bt = qobject_cast<QAbstractButton *>(ui->Rolls->itemAt(i)->layout()->itemAt(1)->widget());
@@ -688,24 +634,23 @@ void MainWindow::on_reRollDices_button_clicked()//re roll / reroll dices
                 else lb->setStyleSheet(" QLabel{color : blue; font-size : 20px;}");
             }
 
-            if(normalDices.size() > i)
+            if(statsCounter->getListOfNormalDices()->size() > i)
             {
-                qDebug() << i << normalDices;
-                normalDices.replace(i, QString::number(generatedNumber));
+                qDebug() << i << statsCounter->getListOfNormalDices();
+                statsCounter->getListOfNormalDices()->replace(i, generatedNumber);
             }
             else
             {
-                qDebug() << i << i - normalDices.size() << normalDices;
-                hungerDices.replace(i - normalDices.size(), QString::number(generatedNumber));
+                qDebug() << i << i - statsCounter->getListOfNormalDices()->size() << statsCounter->getListOfNormalDices();
+                statsCounter->getListOfHungerDices()->replace(i - statsCounter->getListOfNormalDices()->size(), generatedNumber);
             }
         }
     }
 
-    countSuccesses();
-
+    successCounter = statsCounter->countSuccesses();
 
     if(discordIntegration){
-        postDataToDiscord();
+        discordSender->formatDataForDiscord();
     }
 }
 
@@ -717,7 +662,7 @@ QJsonObject MainWindow::saveSkills()
         QJsonObject skill;
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
-        int dots = countDots(but->group());
+        int dots = statsCounter->countDots(but->group());
         skill["specialization"] = line->text();
         skill["dots"] = QString::number(dots);
         QJsonArray *array = new QJsonArray();
@@ -730,7 +675,7 @@ QJsonObject MainWindow::saveSkills()
         QJsonObject skill;
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
-        int dots = countDots(but->group());
+        int dots = statsCounter->countDots(but->group());
         skill["specialization"] = line->text();
         skill["dots"] = QString::number(dots);
         QJsonArray *array = new QJsonArray();
@@ -743,7 +688,7 @@ QJsonObject MainWindow::saveSkills()
         QJsonObject skill;
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
-        int dots = countDots(but->group());
+        int dots = statsCounter->countDots(but->group());
         skill["specialization"] = line->text();
         skill["dots"] = QString::number(dots);
         QJsonArray *array = new QJsonArray();
@@ -760,7 +705,7 @@ QJsonObject MainWindow::saveAttributes()
     for(QAbstractButton *bt : ui->buttonGroup->buttons())
     {
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(1)->layout()->itemAt(0)->widget());//magiczny syf do wyciagniecia przycisku z atrybutami
-        int dots = countDots(but->group());
+        int dots = statsCounter->countDots(but->group());
         json[bt->text()] = QString::number(dots);
     }
     return json;
@@ -774,7 +719,7 @@ QJsonObject MainWindow::saveDiscipline()
         QJsonArray *discp = new QJsonArray();
         QAbstractButton * butDots = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
-        int dots = countDots(butDots->group());
+        int dots = statsCounter->countDots(butDots->group());
         QJsonObject discipline;
         discipline["dots"] = QString::number(dots);
         QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
@@ -799,26 +744,26 @@ QJsonObject MainWindow::saveRest()
 {
     QJsonObject json;
     QLabel *hungerLabel = qobject_cast<QLabel *>(ui->verticalLayout_4->itemAt(0)->widget());
-    json[hungerLabel->text()] = QString::number(countDots(ui->Hunger));
+    json[hungerLabel->text()] = QString::number(statsCounter->countDots(ui->Hunger));
 
     QJsonArray *array = new QJsonArray();
     QJsonObject healthPoints;
     healthPoints["modifier"] = QString::number(ui->healthModifier->value());
-    healthPoints["superficial"] = QString::number(countIndicators(ui->Health, healthPool).first);
-    healthPoints["agravated"] = QString::number(countIndicators(ui->Health, healthPool).second);
+    healthPoints["superficial"] = QString::number(statsCounter->countIndicators(ui->Health, healthPool).first);
+    healthPoints["agravated"] = QString::number(statsCounter->countIndicators(ui->Health, healthPool).second);
     array->append(healthPoints);
     json["Health"] = *array;
     array->pop_back();
 
     QJsonObject willpowerPoints;
     willpowerPoints["modifier"] = QString::number(ui->wpModifier->value());
-    willpowerPoints["superficial"] = QString::number(countIndicators(ui->Willpower, willpowerPool).first);
-    willpowerPoints["agravated"] = QString::number(countIndicators(ui->Willpower, willpowerPool).second);
+    willpowerPoints["superficial"] = QString::number(statsCounter->countIndicators(ui->Willpower, willpowerPool).first);
+    willpowerPoints["agravated"] = QString::number(statsCounter->countIndicators(ui->Willpower, willpowerPool).second);
     array->append(willpowerPoints);
     json["Willpower"] = *array;
-    json["Humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
-    json["Stains"] = QString::number(countIndicators(ui->HumanityLayout,10).first);
-    json["Blood Potency"] = QString::number(countDots(ui->BloodPotencyGroup));
+    json["Humanity"] = QString::number(statsCounter->countIndicators(ui->HumanityLayout,10).second);
+    json["Stains"] = QString::number(statsCounter->countIndicators(ui->HumanityLayout,10).first);
+    json["Blood Potency"] = QString::number(statsCounter->countDots(ui->BloodPotencyGroup));
     json["Notes"] = notesText;
     delete array;
 
@@ -882,7 +827,7 @@ bool MainWindow::androidSave(QString directory)//TODO
     mainJson["Indicators"] = saveRestAndroid();
 
     QJsonObject personalData;
-    personalData["Blood Potency"] = QString::number(countDots(ui->BloodPotencyGroup));
+    personalData["Blood Potency"] = QString::number(statsCounter->countDots(ui->BloodPotencyGroup));
     mainJson["Personal Data"] = personalData;
 
     mainJson["Disciplines"] = saveDisciplinesAndroid();
@@ -1418,7 +1363,7 @@ QJsonObject MainWindow::saveSkillsAndroid(QButtonGroup *group)
         QJsonObject skill;
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
-        int dots = countDots(but->group());
+        int dots = statsCounter->countDots(but->group());
         skill["specializations"] = line->text();
         skill["dots"] = QString::number(dots);
         json[bt->text()] = skill;
@@ -1431,19 +1376,19 @@ QJsonObject MainWindow::saveRestAndroid()
 
     QJsonObject json;
 
-    json["hunger"] = QString::number(countDots(ui->Hunger));
-    json["humanity"] = QString::number(countIndicators(ui->HumanityLayout,10).second);
+    json["hunger"] = QString::number(statsCounter->countDots(ui->Hunger));
+    json["humanity"] = QString::number(statsCounter->countIndicators(ui->HumanityLayout,10).second);
 
     QJsonObject healthPoints;
     healthPoints["modifier"] = QString::number(ui->healthModifier->value());
-    healthPoints["superficial"] = QString::number(countIndicators(ui->Health, healthPool).first);
-    healthPoints["agravated"] = QString::number(countIndicators(ui->Health, healthPool).second);
+    healthPoints["superficial"] = QString::number(statsCounter->countIndicators(ui->Health, healthPool).first);
+    healthPoints["agravated"] = QString::number(statsCounter->countIndicators(ui->Health, healthPool).second);
     json["health"] = healthPoints;
 
     QJsonObject willpowerPoints;
     willpowerPoints["modifier"] = QString::number(ui->wpModifier->value());
-    willpowerPoints["superficial"] = QString::number(countIndicators(ui->Willpower, willpowerPool).first);
-    willpowerPoints["agravated"] = QString::number(countIndicators(ui->Willpower, willpowerPool).second);
+    willpowerPoints["superficial"] = QString::number(statsCounter->countIndicators(ui->Willpower, willpowerPool).first);
+    willpowerPoints["agravated"] = QString::number(statsCounter->countIndicators(ui->Willpower, willpowerPool).second);
     json["willpower"] = willpowerPoints;
 
     return json;
@@ -1457,7 +1402,7 @@ QJsonObject MainWindow::saveDisciplinesAndroid()
         QJsonArray discp = QJsonArray();
         QAbstractButton * but = qobject_cast<QAbstractButton *>(findParentLayout(bt)->itemAt(2)->layout()->itemAt(0)->widget());
         QLineEdit * line = qobject_cast<QLineEdit *>(findParentLayout(bt)->itemAt(1)->widget());
-        int dots = countDots(but->group());
+        int dots = statsCounter->countDots(but->group());
         QJsonObject discipline;
         discipline["dots"] = QString::number(dots);
         QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
@@ -1554,7 +1499,7 @@ void MainWindow::on_actionLoad_triggered()
 void MainWindow::dynamicDisciplineCreator(QAbstractButton *bt)
 {
     QLayout *lay = bt->parentWidget()->layout()->itemAt(1)->layout();
-    int size_ = countDots(bt->group());
+    int size_ = statsCounter->countDots(bt->group());
     if(lay->count() > size_)
     {
         while(lay->count() != size_)
@@ -1574,7 +1519,7 @@ void MainWindow::dynamicDisciplineCreator(QAbstractButton *bt)
 
 void MainWindow::humanityChanged()//nienawidze tego, ale nie chce mi się ogarniać algorytmu do tego, mam wrazenie ze to by zajelo zbyt duzo czasu
 {
-    unsigned short hum = countIndicators(ui->HumanityLayout,10).second;
+    unsigned short hum = statsCounter->countIndicators(ui->HumanityLayout,10).second;
     QString text;
     if(hum == 10)
     {
@@ -1701,97 +1646,6 @@ void MainWindow::closeNotes()
     }
     notesWindow = nullptr;
     notesText.clear();
-}
-
-void MainWindow::postDataToDiscord()
-{
-    QString poolToSend = poolName.join("+");
-    QString normalDicesToSend;
-    QString hungerDicesToSend;
-    if(!graphicRepresentation){
-        //data = QString(tr("```%1 rolls: %2\nNormal dices: %3\nHunger dices: %4```")).arg(userName, poolName.join("+"), normalDices.join(" "), hungerDices.join(" "));
-        normalDicesToSend = normalDices.join("  ");
-        hungerDicesToSend = hungerDices.join("  ");
-    }
-    else{
-        QStringList normalDiceGraphic;
-        QStringList hungerDiceGraphic;
-        for(const QString& value : normalDices){
-            if(value.toInt() == 10)
-                normalDiceGraphic.append(emotesIds.value("NormalCritical"));
-            else if(value.toInt() < 10 && value.toInt() > 5)
-                normalDiceGraphic.append(emotesIds.value("NormalSuccess"));
-            else
-                normalDiceGraphic.append(emotesIds.value("NormalFailure"));
-        }
-
-        for(const QString& value : hungerDices){
-            if(value.toInt() == 10)
-                hungerDiceGraphic.append(emotesIds.value("RedCritical"));
-            else if(value.toInt() < 10 && value.toInt() > 5)
-                hungerDiceGraphic.append(emotesIds.value("RedSuccess"));
-            else if(value.toInt() == 1)
-                hungerDiceGraphic.append(emotesIds.value("BestialFailure"));
-            else
-                hungerDiceGraphic.append(emotesIds.value("RedFailure"));
-        }
-        normalDicesToSend = normalDiceGraphic.join("   ");
-        hungerDicesToSend = hungerDiceGraphic.join("   ");
-        //data = QString(tr("%1 rolls: %2\n%3\n%4").arg(userName, poolName.join("+"), normalDiceGraphic.join(" "), hungerDiceGraphic.join(" ")));
-    }
-    sendData(poolToSend, normalDicesToSend, hungerDicesToSend);
-
-}
-
-void MainWindow::sendData(QString& poolFormatted, QString& normalDicesFormatted, QString& hungerDicesFormatted){
-    QUrl url = QUrl(discordWebhookURL);
-    QNetworkRequest request;
-    request.setUrl(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      "application/json");
-    QByteArray postData;
-    QString inlineString = "true";
-    if(!useInline)
-        inlineString = "false";
-    QString successStatus;
-    switch(currentRollStatus){
-        case NO_CRIT:
-            break;
-        case NORMAL_CRIT:
-            successStatus = tr("Critical Success!");
-            break;
-        case RED_CRIT:
-            successStatus = tr("Messy Critical!");
-            break;
-        case BESTIAL_FAILURE:
-            successStatus = tr("Possible Bestial Failure");
-            break;
-    }
-    postData.append(
-        QString(
-            "{\"embeds\": [{"
-                "\"title\":" + tr("\"%1 rolls:\",").arg(userName) +
-                "\"description\": \"%1\","
-                "\"fields\": ["
-                 "{"
-                    "\"name\":" + tr("\"Normal Dices\",")+
-                    "\"value\": \"%2\","
-                    "\"inline\": %4"
-                 "},"
-                 "{"
-                    "\"name\":"  + tr("\"Hunger Dices\",")+
-                    "\"value\": \"%3\","
-                    "\"inline\": %4"
-                 "}"
-                 + (useSuccess ? ",{"
-                    "\"name\":" + tr("\"%1 Successes\",").arg(QString::number(successCounter))+
-                    "\"value\": \"%5\""
-                 "}" : "") +
-               "]"
-             "}]"
-            "}").arg(poolFormatted, normalDicesFormatted, hungerDicesFormatted, inlineString, successStatus).toUtf8()
-    );
-    QNetworkReply *reply = manager->post(request, postData);
 }
 
 void MainWindow::on_useGraphics_stateChanged(int state) // TODO
@@ -1976,116 +1830,46 @@ void MainWindow::connectAllButtons()
 
 void MainWindow::on_actionEnable_Discord_Webhook_toggled(bool isChecked)
 {
-    if(isChecked){
-        QString settingsFilePath = QDir::currentPath() + "/settings.json";
-        QFileInfo fileInfo(settingsFilePath);
-        if(!fileInfo.exists() || !fileInfo.isFile()){
-            QMessageBox warningBox;
+    if(isChecked) {
+        discordConfig = new DiscordConfig();
+        int values = discordConfig->loadValuesFromSettingFile();
+
+        QMessageBox warningBox;
+        switch(values) {
+        case FILE_DOES_NOT_EXIST:
             warningBox.setText(tr("Settings file could not be found, created new"));
             warningBox.exec();
-            createSettingsFile(settingsFilePath);
             ui->actionEnable_Discord_Webhook->setChecked(false);
+            delete discordConfig;
+            return;
+        case CANNOT_OPEN_FILE:
+            warningBox.setText(tr("Discord webhook url is missing. Please update information"));
+            warningBox.exec();
+            ui->actionEnable_Discord_Webhook->setChecked(false);
+            delete discordConfig;
+            return;
+        case WEBHOOK_IS_EMPTY:
+            warningBox.setText(tr("Discord webhook url is missing. Please update information"));
+            warningBox.exec();
+            ui->actionEnable_Discord_Webhook->setChecked(false);
+            delete discordConfig;
+            return;
+        case MISSING_VALUES:
+            warningBox.setText(tr("Some emotes ids are missing"));
+            warningBox.exec();
+            ui->actionEnable_Discord_Webhook->setChecked(false);
+            delete discordConfig;
             return;
         }
-        //load
-        if(loadSettings(settingsFilePath) != 0){
-            ui->actionEnable_Discord_Webhook->setChecked(false);
-            return;
-        }
-    }else{
-        discordWebhookURL = "";
-        graphicRepresentation = false;
-        emotesIds.clear();
-        userName = "";
+        discordSender->setDiscordConfig(discordConfig);
+
+    } else {
+        discordSender->setDiscordConfig(nullptr);
+        if(discordConfig != nullptr)
+            delete discordConfig;
     }
+
     discordIntegration = isChecked;
-}
-
-void MainWindow::createSettingsFile(QString filepath){
-    QFile settingsFile(filepath);
-    if (!settingsFile.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open save file.");
-        return;
-    }
-    QJsonObject jsonSettings{
-        {"DiscordWebhookURL", ""},
-        {"Username", getUserName()},
-        {"GraphicalRepresentation", false},
-        {"UseInline", false},
-        {"UseSuccessCounter", false},
-        {"EmotesIds", QJsonObject{
-                {"NormalSuccess", ""},
-                {"NormalFailure", ""},
-                {"NormalCritical", ""},
-                {"RedSuccess", ""},
-                {"RedFailure", ""},
-                {"RedCritical", ""},
-                {"BestialFailure", ""}
-            }
-        },
-    };
-    settingsFile.write(QJsonDocument(jsonSettings).toJson());
-    settingsFile.close();
-}
-
-int MainWindow::loadSettings(QString filepath){
-    QFile loadFile(filepath);
-    if (!loadFile.open(QIODevice::ReadOnly)) {
-        QMessageBox warningBox;
-        warningBox.setText(tr("Discord webhook url is missing. Please update information"));
-        warningBox.exec();
-        ui->actionEnable_Discord_Webhook->setChecked(false);
-        return -1;
-    }
-
-    QByteArray saveData = loadFile.readAll();
-    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
-    QJsonObject json = loadDoc.object();
-    if(json.contains("DiscordWebhookURL") && json["DiscordWebhookURL"].isString())
-        discordWebhookURL = json["DiscordWebhookURL"].toString();
-    if(discordWebhookURL.isEmpty()){
-        QMessageBox warningBox;
-        warningBox.setText(tr("Discord webhook url is missing. Please update information"));
-        warningBox.exec();
-        ui->actionEnable_Discord_Webhook->setChecked(false);
-        return -2;
-    }
-    if(json.contains("GraphicalRepresentation") && json["GraphicalRepresentation"].isBool())
-        graphicRepresentation = json["GraphicalRepresentation"].toBool();
-
-    if(graphicRepresentation){
-        if(json.contains("EmotesIds") && json["EmotesIds"].isObject()){
-            qDebug() << "I am in";
-            QJsonObject emotes = json["EmotesIds"].toObject();
-            for(const QString& key : emotes.keys()){
-                qDebug() << "inserting: " << key << " as " << emotes.value(key).toString();
-                emotesIds.insert(key, emotes.value(key).toString());
-            }
-            if(emotesIds.size() != 7 && emotesIds.values().contains("")){
-                QMessageBox warningBox;
-                warningBox.setText(tr("Some emotes ids are missing"));
-                warningBox.exec();
-                ui->actionEnable_Discord_Webhook->setChecked(false);
-                return -3;
-            }
-        }
-    }
-    if(json.contains("UseInline") && json["UseInline"].isBool())
-        useInline = json["UseInline"].toBool();
-
-    if(json.contains("UseSuccessCounter") && json["UseSuccessCounter"].isBool())
-        useSuccess = json["UseSuccessCounter"].toBool();
-
-    if(json.contains("Username") && json["Username"].isString())
-        userName = json["Username"].toString();
-
-    return 0;
-}
-QString MainWindow::getUserName(){
-    QString name = qgetenv("USER");
-    if (name.isEmpty())
-        name = qgetenv("USERNAME");
-    return name;
 }
 
 void MainWindow::replyFinished(QNetworkReply *reply)
@@ -2102,14 +1886,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
 
 void MainWindow::on_frenzyRoll_button_clicked()
 {
-    poolName.clear();
-    poolName.append(tr("Frenzy roll"));
-    int willpowerSuperficialDMG = countIndicators(ui->Willpower, willpowerPool).first;
-    int willpowerAggravatedDMG = countIndicators(ui->Willpower, willpowerPool).second;
+    statsCounter->getPoolNames()->clear();
+    statsCounter->getPoolNames()->append(tr("Frenzy roll"));
+    int willpowerSuperficialDMG = statsCounter->countIndicators(ui->Willpower, willpowerPool).first;
+    int willpowerAggravatedDMG = statsCounter->countIndicators(ui->Willpower, willpowerPool).second;
     int willpowerModifier = ui->wpModifier->value();
-    int humanityNumber = countIndicators(ui->HumanityLayout,10).second;
-    int resolveNumber = countDots(ui->Res);
-    int composureNumber = countDots(ui->Com);
+    int humanityNumber = statsCounter->countIndicators(ui->HumanityLayout,10).second;
+    int resolveNumber = statsCounter->countDots(ui->Res);
+    int composureNumber = statsCounter->countDots(ui->Com);
 
     int remainingWillpower = resolveNumber + composureNumber + willpowerModifier - willpowerAggravatedDMG - willpowerSuperficialDMG;
     int frenzyPool = remainingWillpower + (humanityNumber / 3);
@@ -2117,10 +1901,10 @@ void MainWindow::on_frenzyRoll_button_clicked()
     deleteDices();
     diceAmount = frenzyPool;
     createDices(false, false);
-    countSuccesses();
+    successCounter = statsCounter->countSuccesses();
 
     if(discordIntegration){
-        postDataToDiscord();
+        discordSender->formatDataForDiscord();
     }
 
 }
