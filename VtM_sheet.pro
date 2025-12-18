@@ -16,12 +16,20 @@ SOURCES += \
     disciplinewindow.cpp \
     main.cpp \
     noteswindow.cpp \
+    statscounter.cpp \
+    discordconfig.cpp \
+    discordsender.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    rollstatus.hpp \
+    errorcodes.hpp \
     clanwindow.h \
     disciplinewindow.h \
     noteswindow.h \
+    statscounter.h \
+    discordconfig.h \
+    discordsender.h \
     mainwindow.h
 
 FORMS += \
