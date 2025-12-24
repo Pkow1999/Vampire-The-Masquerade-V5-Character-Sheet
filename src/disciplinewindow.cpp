@@ -4,9 +4,9 @@
 #include <QDirIterator>
 #include <QMouseEvent>
 
-DisciplineWindow::DisciplineWindow(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::DisciplineWindow)
+DisciplineWindow::DisciplineWindow(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::DisciplineWindow)
 {
     ui->setupUi(this);
     windowSize = this->size();
@@ -21,7 +21,10 @@ void DisciplineWindow::loadImages()
 {
     QString absolutePath(path);
     absolutePath.append(ui->discipline->currentText()).append('/');
-    QDirIterator it(absolutePath, QStringList() << "*.png", QDir::NoFilter, QDirIterator::Subdirectories);
+    QDirIterator it(absolutePath,
+                    QStringList() << "*.png",
+                    QDir::NoFilter,
+                    QDirIterator::Subdirectories);
     while (it.hasNext()) {
         auto picturePath = it.next();
         listOfPicturesPath.push_back(picturePath);
@@ -31,7 +34,7 @@ void DisciplineWindow::loadImages()
 }
 DisciplineWindow::~DisciplineWindow()
 {
-    qWarning() <<"Usuwanko";
+    qWarning() << "Usuwanko";
     delete ui;
 }
 
@@ -50,7 +53,7 @@ void DisciplineWindow::on_discipline_currentIndexChanged(int index)
 {
     qWarning() << "Index Changed";
     ui->power->clear();
-    qWarning() <<"CLEAR 1";
+    qWarning() << "CLEAR 1";
     listOfPicturesPath.clear();
     qWarning() << "CLEAR 2";
 
@@ -59,9 +62,8 @@ void DisciplineWindow::on_discipline_currentIndexChanged(int index)
         return;
 
     currentPicture.load(listOfPicturesPath.front());
-    if(currentPicture.size().width() > lastPictureRealSize.width()
-        && currentPicture.size().height() == lastPictureRealSize.height())
-    {
+    if (currentPicture.size().width() > lastPictureRealSize.width()
+        && currentPicture.size().height() == lastPictureRealSize.height()) {
         this->resize(2 * windowSize.width(), windowSize.height());
     }
 
@@ -78,7 +80,7 @@ void DisciplineWindow::on_discipline_currentIndexChanged(int index)
 void DisciplineWindow::on_power_currentIndexChanged(int index)
 {
     qWarning() << index;
-    if(index > listOfPicturesPath.size() - 1 || index < 0)
+    if (index > listOfPicturesPath.size() - 1 || index < 0)
         return;
 
     lastPictureRealSize = currentPicture.size();
@@ -86,22 +88,17 @@ void DisciplineWindow::on_power_currentIndexChanged(int index)
 
     qDebug() << "DEFAULT SIZE: " << windowSize;
     {
-        if(currentPicture.size().width() > lastPictureRealSize.width()
-            && currentPicture.size().height() <= lastPictureRealSize.height())
-        {
+        if (currentPicture.size().width() > lastPictureRealSize.width()
+            && currentPicture.size().height() <= lastPictureRealSize.height()) {
             qDebug() << "WIEKSZE";
             defaultPictureRealSize = lastPictureRealSize;
             this->resize(2 * currentPictureRealSize.width(), currentPictureRealSize.height());
-        }
-        else if(currentPicture.size().width() < lastPictureRealSize.width()
-                 && currentPicture.size().height() >= lastPictureRealSize.height())
-        {
+        } else if (currentPicture.size().width() < lastPictureRealSize.width()
+                   && currentPicture.size().height() >= lastPictureRealSize.height()) {
             qDebug() << "ZMNIEJSZ";
             defaultPictureRealSize = currentPicture.size();
-            this->resize(currentPictureRealSize.width() / 2,currentPictureRealSize.height());
-        }
-        else
-        {
+            this->resize(currentPictureRealSize.width() / 2, currentPictureRealSize.height());
+        } else {
             qDebug() << "ZOSTAW";
             //this->resize(currentSize);
         }
@@ -111,15 +108,12 @@ void DisciplineWindow::on_power_currentIndexChanged(int index)
 
 void DisciplineWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton)
-    {
-        if(currentPicture.size().width() > defaultPictureRealSize.width()
-            && currentPicture.size().height() == defaultPictureRealSize.height()){
+    if (event->button() == Qt::LeftButton) {
+        if (currentPicture.size().width() > defaultPictureRealSize.width()
+            && currentPicture.size().height() == defaultPictureRealSize.height()) {
             this->resize(2 * windowSize.width(), windowSize.height());
-        }
-        else{
+        } else {
             this->resize(windowSize);
         }
     }
 }
-

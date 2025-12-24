@@ -18,7 +18,7 @@
 #include <QRandomGenerator>
 #include <QScrollArea>
 #include <QTranslator>
-#include <mainwindow.h>
+#include <src/mainwindow.h>
 
 QString MainWindow::notesText;
 
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     translator = new QTranslator();
-    statsCounter = new StatsCounter();
+    statsCounter = new StatsManager();
     discordSender = new DiscordSender(this, nullptr, statsCounter);
 
     ui->setupUi(this);
@@ -134,25 +134,25 @@ void MainWindow::humanityGenerator()
         dynCheck->setCheckable(true);
         dynCheck->setTristate(true);
         QString checkBoxStyle("QCheckBox::indicator::unchecked {background-image : "
-                              "url(images/checkbox_unchecked.png); }"
+                              "url(:/images/checkbox_unchecked.png); }"
                               "QCheckBox::indicator::unchecked::hover {background-image : "
-                              "url(images/checkbox_unchecked_hover.png); }"
+                              "url(:/images/checkbox_unchecked_hover.png); }"
                               "QCheckBox::indicator::unchecked::pressed {background-image : "
-                              "url(images/checkbox_unchecked_pressed.png); }"
+                              "url(:/images/checkbox_unchecked_pressed.png); }"
 
                               "QCheckBox::indicator::indeterminate {background-image : "
-                              "url(images/checkbox_indeterminate.png); }"
+                              "url(:/images/checkbox_indeterminate.png); }"
                               "QCheckBox::indicator::indeterminate::hover {background-image : "
-                              "url(images/checkbox_indeterminate_hover.png); }"
+                              "url(:/images/checkbox_indeterminate_hover.png); }"
                               "QCheckBox::indicator::indeterminate::pressed {background-image : "
-                              "url(images/checkbox_indeterminate_pressed.png); }"
+                              "url(:/images/checkbox_indeterminate_pressed.png); }"
 
                               "QCheckBox::indicator::checked {background-image : "
-                              "url(images/checkbox_humanity_checked.png); }"
+                              "url(:/images/checkbox_humanity_checked.png); }"
                               "QCheckBox::indicator::checked::hover {background-image : "
-                              "url(images/checkbox_humanity_checked_hover.png); }"
+                              "url(:/images/checkbox_humanity_checked_hover.png); }"
                               "QCheckBox::indicator::checked::pressed {background-image : "
-                              "url(images/checkbox_humanity_checked_pressed.png); }"
+                              "url(:/images/checkbox_humanity_checked_pressed.png); }"
 
                               "QCheckBox::indicator {width: 16; height: 16 }");
         dynCheck->setStyleSheet(checkBoxStyle);
@@ -178,37 +178,7 @@ void MainWindow::calculateWP()
                     + ui->wpModifier->value();
     if (willpowerPool < 0)
         willpowerPool = 0;
-    for (int i = 0; i < willpowerPool; i++) {
-        QCheckBox *dynCheck = new QCheckBox();
-        dynCheck->setCheckable(true);
-        dynCheck->setTristate(true);
-        QString checkBoxStyle(
-            "QCheckBox::indicator::unchecked {background-image : "
-            "url(images/checkbox_unchecked.png); }"
-            "QCheckBox::indicator::unchecked::hover {background-image : "
-            "url(images/checkbox_unchecked_hover.png); }"
-            "QCheckBox::indicator::unchecked::pressed {background-image : "
-            "url(images/checkbox_unchecked_pressed.png); }"
-
-            "QCheckBox::indicator::indeterminate {background-image : "
-            "url(images/checkbox_indeterminate.png); }"
-            "QCheckBox::indicator::indeterminate::hover {background-image : "
-            "url(images/checkbox_indeterminate_hover.png); }"
-            "QCheckBox::indicator::indeterminate::pressed {background-image : "
-            "url(images/checkbox_indeterminate_pressed.png); }"
-
-            "QCheckBox::indicator::checked {background-image : url(images/checkbox_checked.png); }"
-            "QCheckBox::indicator::checked::hover {background-image : "
-            "url(images/checkbox_checked_hover.png); }"
-            "QCheckBox::indicator::checked::pressed {background-image : "
-            "url(images/checkbox_checked_pressed.png); }"
-
-            "QCheckBox::indicator {width: 16; height: 16 }");
-        dynCheck->setStyleSheet(checkBoxStyle);
-        dynCheck->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        dynCheck->setAutoExclusive(false);
-        ui->Willpower->addWidget(dynCheck);
-    }
+    createIndicator(ui->Willpower, willpowerPool);
 }
 
 void MainWindow::calculateBlood()
@@ -248,37 +218,7 @@ void MainWindow::calculateHealth()
     healthPool = 3 + statsCounter->countDots(ui->Sta) + ui->healthModifier->value();
     if (healthPool < 0)
         healthPool = 0;
-    for (int i = 0; i < healthPool; i++) {
-        QCheckBox *dynCheck = new QCheckBox();
-        dynCheck->setCheckable(true);
-        dynCheck->setTristate(true);
-        QString checkBoxStyle(
-            "QCheckBox::indicator::unchecked {background-image : "
-            "url(images/checkbox_unchecked.png); }"
-            "QCheckBox::indicator::unchecked::hover {background-image : "
-            "url(images/checkbox_unchecked_hover.png); }"
-            "QCheckBox::indicator::unchecked::pressed {background-image : "
-            "url(images/checkbox_unchecked_pressed.png); }"
-
-            "QCheckBox::indicator::indeterminate {background-image : "
-            "url(images/checkbox_indeterminate.png); }"
-            "QCheckBox::indicator::indeterminate::hover {background-image : "
-            "url(images/checkbox_indeterminate_hover.png); }"
-            "QCheckBox::indicator::indeterminate::pressed {background-image : "
-            "url(images/checkbox_indeterminate_pressed.png); }"
-
-            "QCheckBox::indicator::checked {background-image : url(images/checkbox_checked.png); }"
-            "QCheckBox::indicator::checked::hover {background-image : "
-            "url(images/checkbox_checked_hover.png); }"
-            "QCheckBox::indicator::checked::pressed {background-image : "
-            "url(images/checkbox_checked_pressed.png); }"
-
-            "QCheckBox::indicator {width: 16; height: 16 }");
-        dynCheck->setStyleSheet(checkBoxStyle);
-        dynCheck->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        dynCheck->setAutoExclusive(false);
-        ui->Health->addWidget(dynCheck);
-    }
+    createIndicator(ui->Health, healthPool);
 }
 
 void MainWindow::dynamicRemoveDots(QAbstractButton *bt)
@@ -398,67 +338,97 @@ void MainWindow::clear()
     diceAmount = 0;
     hunger = 0;
 }
+QVBoxLayout* MainWindow::createDie(const int& value, const bool& reRollable, const int& index, const QString& dieStyle) {
+    QCheckBox *dynCheck = new QCheckBox();
+    QVBoxLayout *dynLayout = new QVBoxLayout();
+    QLabel *dynLabel = new QLabel();
+    dynLabel->setAlignment(Qt::AlignCenter);
+    if(ui->useGraphics->isChecked()) {
+        QPixmap pixmap;
+        if(dieStyle.contains("red")) {
+            if(value > 5 && value < 10) {
+                pixmap = QPixmap(":/images/red-success.png");
+            } else if(value == 10) {
+                pixmap = QPixmap(":/images/red-crit.png");
+            } else if(value == 1) {
+                pixmap = QPixmap(":/images/bestial-fail.png");
+            }
+            else {
+                pixmap = QPixmap(":/images/red-fail.png");
+            }
+        } else {
+            if(value > 5 && value < 10) {
+                pixmap = QPixmap(":/images/normal-success.png");
+            } else if(value == 10) {
+                pixmap = QPixmap(":/images/normal-crit.png");
+            } else {
+                pixmap = QPixmap(":/images/normal-fail.png");
+            }
+        }
+        pixmap = pixmap.scaled(pixmap.width() / 2, pixmap.height() / 2);
+        dynLabel->setPixmap(pixmap);
+        dynLabel->setMask(pixmap.mask());
+    } else {
+        dynLabel->setText(QString::number(value));
+        dynLabel->setStyleSheet(dieStyle);
+    }
+    dynCheck->setObjectName("czek" + QString::number(index));
+    dynCheck->setCheckable(reRollable);
+    dynCheck->setEnabled(reRollable);
+    dynLayout->addWidget(dynLabel);
+    dynLayout->addWidget(dynCheck);
+    dynLayout->setAlignment(dynCheck, Qt::AlignCenter);
+    dynLayout->setAlignment(dynLabel, Qt::AlignCenter);
+
+    return dynLayout;
+}
 
 //create dices from the dice amount
-void MainWindow::createDices(bool reRollable, bool includeHunger)
+void MainWindow::populateDices(const bool& reRollable)
 {
-    statsCounter->getListOfNormalDices()->clear();
-    statsCounter->getListOfHungerDices()->clear();
+
     ui->label_2->setText(QString::number(diceAmount) + tr(" Dices"));
-    for (int i = 0; i < diceAmount; i++) {
-        QCheckBox *dynCheck = new QCheckBox();
-        QVBoxLayout *dynLayout = new QVBoxLayout();
-        int generatedNumber = QRandomGenerator::system()->bounded(10) + 1;
-        QLabel *dynLabel = new QLabel();
-        dynLabel->setAlignment(Qt::AlignCenter);
-        if (ui->useGraphics->isChecked()) {
-            QPixmap pixmap;
-            if (generatedNumber > 5 && generatedNumber < 10) {
-                pixmap = QPixmap("images/normal-success.png");
 
-            } else if (generatedNumber == 10) {
-                pixmap = QPixmap("images/normal-crit.png");
-            } else {
-                pixmap = QPixmap("images/normal-fail.png");
-            }
-            pixmap = pixmap.scaled(pixmap.width() / 2, pixmap.height() / 2);
-            dynLabel->setPixmap(pixmap);
-            dynLabel->setMask(pixmap.mask());
-        } else {
-            dynLabel->setText(QString::number(generatedNumber));
-            dynLabel->setStyleSheet("QLabel { font-size : 20px;}");
-        }
-        dynCheck->setObjectName("czek" + QString::number(i));
-        dynCheck->setCheckable(reRollable);
-        dynCheck->setEnabled(reRollable);
-        if (i > diceAmount - hunger - 1 && includeHunger) {
-            if (ui->useGraphics->isChecked()) {
-                QPixmap pixmap;
-                if (generatedNumber > 5 && generatedNumber < 10) {
-                    pixmap = QPixmap("images/red-success.png");
-
-                } else if (generatedNumber == 10) {
-                    pixmap = QPixmap("images/red-crit.png");
-                } else if (generatedNumber == 1) {
-                    pixmap = QPixmap("images/bestial-fail.png");
-                } else {
-                    pixmap = QPixmap("images/red-fail.png");
-                }
-                pixmap = pixmap.scaled(pixmap.width() / 2, pixmap.height() / 2);
-                dynLabel->setPixmap(pixmap);
-                dynLabel->setMask(pixmap.mask());
-            }
-            dynLabel->setStyleSheet("QLabel { color : red; font-size : 20px;}");
-            statsCounter->getListOfHungerDices()->append(generatedNumber);
-        } else {
-            statsCounter->getListOfNormalDices()->append(generatedNumber);
-        }
-        dynLayout->addWidget(dynLabel);
-        dynLayout->addWidget(dynCheck);
-        dynLayout->setAlignment(dynCheck, Qt::AlignCenter);
-        dynLayout->setAlignment(dynLabel, Qt::AlignCenter);
-        ui->Rolls->addLayout(dynLayout);
+    int i = 0;
+    for(const int& die : *statsCounter->getListOfNormalDices()) {
+        QString dieStylesheet = "QLabel {font-size : 20px;}";
+        QVBoxLayout *dieVisual = createDie(die, reRollable, i, dieStylesheet);
+        ui->Rolls->addLayout(dieVisual);
+        ++i;
     }
+    for(const int& die : *statsCounter->getListOfHungerDices()) {
+        QString dieStylesheet = "QLabel {font-size : 20px; color: red;}";
+        QVBoxLayout *dieVisual = createDie(die, reRollable, i, dieStylesheet);
+        ui->Rolls->addLayout(dieVisual);
+        ++i;
+    }
+    diceAmount = statsCounter->getListOfNormalDices()->size() + statsCounter->getListOfHungerDices()->size();
+}
+
+void MainWindow::populateDices(const bool &reRollable, const QList<int> indexesToReroll)
+{
+    ui->label_2->setText(QString::number(diceAmount) + tr(" Dices"));
+
+    int i = 0;
+    for(const int& die : *statsCounter->getListOfNormalDices()) {
+        QString dieStylesheet = "QLabel {font-size : 20px;}";
+        if(indexesToReroll.contains(i)) {
+            dieStylesheet = "QLabel {font-size : 20px; color: blue;}";
+        }
+        QVBoxLayout *dieVisual = createDie(die, reRollable, i, dieStylesheet);
+        ui->Rolls->addLayout(dieVisual);
+        ++i;
+    }
+    for(const int& die : *statsCounter->getListOfHungerDices()) {
+        QString dieStylesheet = "QLabel {font-size : 20px; color: red;}";
+        if(indexesToReroll.contains(i)) {
+            dieStylesheet = "QLabel {font-size : 20px; color: purple;}";
+        }
+        QVBoxLayout *dieVisual = createDie(die, reRollable, i, dieStylesheet);
+        ui->Rolls->addLayout(dieVisual);
+        ++i;
+    }
+    diceAmount = statsCounter->getListOfNormalDices()->size() + statsCounter->getListOfHungerDices()->size();
 }
 
 void MainWindow::deleteDices()
@@ -480,6 +450,9 @@ void MainWindow::on_rollDices_button_clicked() //roll dices
 
     diceAmount = calculatePool();
     diceAmount += ui->diceModifier->value();
+
+    statsCounter->generateDices(diceAmount, hunger);
+
     if (ui->diceModifier->value()) {
         if (!statsCounter->getPoolNames()->empty())
             statsCounter->getPoolNames()->append(
@@ -488,9 +461,7 @@ void MainWindow::on_rollDices_button_clicked() //roll dices
             statsCounter->getPoolNames()->append(
                 tr("%1 Dices").arg(QString::number(ui->diceModifier->value())));
     }
-    createDices(true, true);
-
-    successCounter = statsCounter->countSuccesses();
+    populateDices(true);
 
     if (discordIntegration) {
         discordSender->formatDataForDiscord();
@@ -585,67 +556,60 @@ int MainWindow::calculatePool()
     return pool;
 }
 
+void MainWindow::createIndicator(QLayout *layout, const int& size_)
+{
+    for (int i = 0; i < size_; i++) {
+        QCheckBox *dynCheck = new QCheckBox();
+        dynCheck->setCheckable(true);
+        dynCheck->setTristate(true);
+        QString checkBoxStyle(
+            "QCheckBox::indicator::unchecked {background-image : "
+            "url(:/images/checkbox_unchecked.png); }"
+            "QCheckBox::indicator::unchecked::hover {background-image : "
+            "url(:/images/checkbox_unchecked_hover.png); }"
+            "QCheckBox::indicator::unchecked::pressed {background-image : "
+            "url(:/images/checkbox_unchecked_pressed.png); }"
+
+            "QCheckBox::indicator::indeterminate {background-image : "
+            "url(:/images/checkbox_indeterminate.png); }"
+            "QCheckBox::indicator::indeterminate::hover {background-image : "
+            "url(:/images/checkbox_indeterminate_hover.png); }"
+            "QCheckBox::indicator::indeterminate::pressed {background-image : "
+            "url(:/images/checkbox_indeterminate_pressed.png); }"
+
+            "QCheckBox::indicator::checked {background-image : url(:/images/checkbox_checked.png); }"
+            "QCheckBox::indicator::checked::hover {background-image : "
+            "url(:/images/checkbox_checked_hover.png); }"
+            "QCheckBox::indicator::checked::pressed {background-image : "
+            "url(:/images/checkbox_checked_pressed.png); }"
+
+            "QCheckBox::indicator {width: 16; height: 16 }");
+        dynCheck->setStyleSheet(checkBoxStyle);
+        dynCheck->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        dynCheck->setAutoExclusive(false);
+        layout->addWidget(dynCheck);
+    }
+}
+
 void MainWindow::on_reRollDices_button_clicked() //re roll / reroll dices
 {
+
+    deleteDices();
+
     statsCounter->getPoolNames()->clear();
     statsCounter->getPoolNames()->append(tr("Reroll"));
+
+    QList<int> listOfIndexesToReroll = QList<int>();
     for (int i = 0; i < diceAmount; i++) {
         QAbstractButton *bt = qobject_cast<QAbstractButton *>(
             ui->Rolls->itemAt(i)->layout()->itemAt(1)->widget());
+
         if (bt->isChecked()) {
-            int generatedNumber = QRandomGenerator::system()->bounded(10) + 1;
-            if (ui->useGraphics->isChecked()) {
-                QLabel *lb = qobject_cast<QLabel *>(
-                    ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
-                QPixmap pixmap;
-                if (generatedNumber > 5 && generatedNumber < 10) {
-                    pixmap = QPixmap("images/normal-success.png");
-
-                } else if (generatedNumber == 10) {
-                    pixmap = QPixmap("images/normal-crit.png");
-                } else if (generatedNumber == 1
-                           && lb->styleSheet() == "QLabel { color : red; font-size : 20px;}") {
-                    pixmap = QPixmap("images/bestial-fail.png");
-                } else {
-                    pixmap = QPixmap("images/normal-fail.png");
-                }
-                auto mask = pixmap.createMaskFromColor(QColor(0, 0, 0, 0), Qt::MaskInColor);
-                QColor colour;
-
-                if (lb->styleSheet() == "QLabel { color : red; font-size : 20px;}") {
-                    colour = QColor(100, 0, 255);
-                } else
-                    colour = QColor(0, 0, 255);
-
-                pixmap.fill(colour);
-                pixmap.setMask(mask);
-                pixmap = pixmap.scaled(pixmap.width() / 2, pixmap.height() / 2);
-                lb->setPixmap(pixmap);
-                lb->setMask(pixmap.mask());
-            } else {
-                QLabel *lb = qobject_cast<QLabel *>(
-                    ui->Rolls->itemAt(i)->layout()->itemAt(0)->widget());
-                lb->setText(QString::number(generatedNumber));
-                if (lb->styleSheet() == "QLabel { color : red; font-size : 20px;}") {
-                    lb->setStyleSheet("QLabel { color : purple; font-size: 20px;}");
-                } else
-                    lb->setStyleSheet(" QLabel{color : blue; font-size : 20px;}");
-            }
-
-            if (statsCounter->getListOfNormalDices()->size() > i) {
-                qDebug() << i << statsCounter->getListOfNormalDices();
-                statsCounter->getListOfNormalDices()->replace(i, generatedNumber);
-            } else {
-                qDebug() << i << i - statsCounter->getListOfNormalDices()->size()
-                         << statsCounter->getListOfNormalDices();
-                statsCounter->getListOfHungerDices()
-                    ->replace(i - statsCounter->getListOfNormalDices()->size(), generatedNumber);
-            }
+            listOfIndexesToReroll.append(i);
         }
     }
-
-    successCounter = statsCounter->countSuccesses();
-
+    statsCounter->rerollDices(listOfIndexesToReroll);
+    populateDices(true, listOfIndexesToReroll);
     if (discordIntegration) {
         discordSender->formatDataForDiscord();
     }
@@ -1812,6 +1776,7 @@ void MainWindow::on_frenzyRoll_button_clicked()
 {
     statsCounter->getPoolNames()->clear();
     statsCounter->getPoolNames()->append(tr("Frenzy roll"));
+
     int willpowerSuperficialDMG = statsCounter->countIndicators(ui->Willpower, willpowerPool).first;
     int willpowerAggravatedDMG = statsCounter->countIndicators(ui->Willpower, willpowerPool).second;
     int willpowerModifier = ui->wpModifier->value();
@@ -1825,8 +1790,9 @@ void MainWindow::on_frenzyRoll_button_clicked()
 
     deleteDices();
     diceAmount = frenzyPool;
-    createDices(false, false);
-    successCounter = statsCounter->countSuccesses();
+
+    statsCounter->generateDices(diceAmount, 0);
+    populateDices(false);
 
     if (discordIntegration) {
         discordSender->formatDataForDiscord();

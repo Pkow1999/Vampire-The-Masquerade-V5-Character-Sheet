@@ -1,8 +1,8 @@
 #ifndef DISCIPLINEWINDOW_H
 #define DISCIPLINEWINDOW_H
 
-#include "qregularexpression.h"
 #include <QWidget>
+#include "qregularexpression.h"
 
 namespace Ui {
 class DisciplineWindow;
@@ -27,7 +27,7 @@ private slots:
 private:
     Ui::DisciplineWindow *ui;
     QString path = "images/disciplines/";
-    QVector <QString> listOfPicturesPath;
+    QVector<QString> listOfPicturesPath;
     QPixmap currentPicture;
     QSize defaultPictureRealSize;
     QSize windowSize;
@@ -36,6 +36,7 @@ private:
 
     // QWidget interface
     void loadImages();
+
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
 };

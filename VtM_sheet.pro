@@ -12,31 +12,31 @@ QT += network
 RC_ICONS = ankh.ico
 
 SOURCES += \
-    clanwindow.cpp \
-    disciplinewindow.cpp \
-    main.cpp \
-    noteswindow.cpp \
-    statscounter.cpp \
-    discordconfig.cpp \
-    discordsender.cpp \
-    mainwindow.cpp
+    src/clanwindow.cpp \
+    src/disciplinewindow.cpp \
+    src/main.cpp \
+    src/noteswindow.cpp \
+    src/discordconfig.cpp \
+    src/discordsender.cpp \
+    src/mainwindow.cpp \
+    src/statsmanager.cpp
 
 HEADERS += \
-    rollstatus.hpp \
-    errorcodes.hpp \
-    clanwindow.h \
-    disciplinewindow.h \
-    noteswindow.h \
-    statscounter.h \
-    discordconfig.h \
-    discordsender.h \
-    mainwindow.h
+    src/rollstatus.hpp \
+    src/errorcodes.hpp \
+    src/clanwindow.h \
+    src/disciplinewindow.h \
+    src/noteswindow.h \
+    src/discordconfig.h \
+    src/discordsender.h \
+    src/mainwindow.h \
+    src/statsmanager.h
 
 FORMS += \
-    clanwindow.ui \
-    disciplinewindow.ui \
-    noteswindow.ui \
-    mainwindow.ui
+    src/clanwindow.ui \
+    src/disciplinewindow.ui \
+    src/noteswindow.ui \
+    src/mainwindow.ui
 
 TRANSLATIONS += \
     VtM_sheet_pl_PL.ts \
@@ -50,65 +50,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+
+RESOURCES = resources.qrc
 DISTFILES += \
     VtM_sheet_en_US.ts \
     ankh.ico \
-    images/Banu Haqim.png \
-    images/Banu Haqim.png \
-    images/Brujah.png \
-    images/Cienkokrwiści.png \
-    images/Cienkokrwiści.png \
-    images/Gangrel.png \
-    images/Hecata.png \
-    images/Lasombra.png \
-    images/Malkavian.png \
-    images/Ministerium.png \
-    images/Nosferatu.png \
-    images/Parias.png \
-    images/Ravnos.png \
-    images/Salubri.png \
-    images/Torreador.png \
-    images/Tremere.png \
-    images/Tzimisce.png \
-    images/Ventrue.png \
-    images/bestial-fail.png \
-    images/checkbox_checked.png \
-    images/checkbox_checked_hover.png \
-    images/checkbox_checked_pressed.png \
-    images/checkbox_humanity_checked.png \
-    images/checkbox_humanity_checked_hover.png \
-    images/checkbox_humanity_checked_pressed.png \
-    images/checkbox_indeterminate.png \
-    images/checkbox_indeterminate_hover.png \
-    images/checkbox_indeterminate_pressed.png \
-    images/checkbox_unchecked.png \
-    images/checkbox_unchecked_hover.png \
-    images/checkbox_unchecked_pressed.png \
-    images/disciplines/Animalism/DummyPlaceHolder.png \
-    images/disciplines/Auspex/DummyPlaceHolder.png \
-    images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png \
-    images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png \
-    images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png \
-    images/disciplines/Blood Sorcery/DummyPlaceHolder.png \
-    images/disciplines/Blood Sorcery/DummyPlaceHolder.png \
-    images/disciplines/Blood Sorcery/DummyPlaceHolder.png \
-    images/disciplines/Celerity/DummyPlaceHolder.png \
-    images/disciplines/Dominate/DummyPlaceHolder.png \
-    images/disciplines/Fortitude/DummyPlaceHolder.png \
-    images/disciplines/Obfuscate/DummyPlaceHolder.png \
-    images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png \
-    images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png \
-    images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png \
-    images/disciplines/Oblivion/DummyPlaceHolder.png \
-    images/disciplines/Potence/DummyPlaceHolder.png \
-    images/disciplines/Presence/DummyPlaceHolder.png \
-    images/disciplines/Protean/DummyPlaceHolder.png \
-    images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png \
-    images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png \
-    images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png \
-    images/normal-crit.png \
-    images/normal-fail.png \
-    images/normal-success.png \
-    images/red-crit.png \
-    images/red-fail.png \
-    images/red-success.png

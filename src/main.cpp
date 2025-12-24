@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     }
     MainWindow w;
     QSize screenSize = qApp->screens()[0]->size();
-    if(screenSize.width() < 1920)
+    if (screenSize.width() < 1920)
         w.resize(screenSize / 1.5);
     w.show();
     return a.exec();

@@ -1,6 +1,0 @@
-enum RollStatus {
-        NO_CRIT = 0,
-        NORMAL_CRIT,
-        RED_CRIT,
-        BESTIAL_FAILURE
-};

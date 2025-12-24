@@ -1,4 +1,4 @@
-enum ERROR_CODES{
+enum ERROR_CODES {
     FILE_DOES_NOT_EXIST = -1,
     CANNOT_OPEN_FILE = -2,
     WEBHOOK_IS_EMPTY = -3,

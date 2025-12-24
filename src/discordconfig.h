@@ -1,10 +1,11 @@
 #ifndef DISCORDCONFIG_H
 #define DISCORDCONFIG_H
 
-#include <QString>
 #include <QHash>
+#include <QString>
 
-class DiscordConfig {
+class DiscordConfig
+{
 private:
     QString discordWebhookURL;
     QString username;
@@ -15,6 +16,7 @@ private:
     bool useGraphicRepresentation;
     void createSettingsFile();
     QString getUserName();
+
 public:
     DiscordConfig();
 

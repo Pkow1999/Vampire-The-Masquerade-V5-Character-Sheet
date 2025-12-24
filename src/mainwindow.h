@@ -6,14 +6,16 @@
 #include <QMainWindow>
 #include <QShortcut>
 #include <QTranslator>
+#include "statsmanager.h"
 #include "clanwindow.h"
-#include "noteswindow.h"
 #include "disciplinewindow.h"
-#include "StatsCounter.h"
 #include "discordsender.h"
+#include "noteswindow.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -54,17 +56,16 @@ private slots:
     void on_frenzyRoll_button_clicked();
 
 private:
-    StatsCounter *statsCounter;
+    StatsManager *statsCounter;
     QTranslator *translator;
     NotesWindow *notesWindow = nullptr;
     ClanWindow *clanWindow = nullptr;
-    QVector <DisciplineWindow *> disciplineWindowStack;
+    QVector<DisciplineWindow *> disciplineWindowStack;
 
     DiscordSender *discordSender;
     DiscordConfig *discordConfig = nullptr;
 
     int diceAmount = 0;
-    int successCounter = 0;
     int hunger = 0;
     int healthPool = 0;
     int willpowerPool = 0;
@@ -72,15 +73,12 @@ private:
     QString lastDirectory;
     Ui::MainWindow *ui;
 
-
-
     bool discordIntegration = false;
 
     void connectAllButtons();
-    QLayout* findParentLayout(QWidget *widget, QLayout *parent);
-    QLayout* findParentLayout(QWidget *widget);
+    QLayout *findParentLayout(QWidget *widget, QLayout *parent);
+    QLayout *findParentLayout(QWidget *widget);
     void clear();
-    void createDices(bool reRollable, bool includeHunger);
     void deleteDices();
     QJsonObject saveSkills();
     QJsonObject saveAttributes();
@@ -107,5 +105,9 @@ private:
     void resizeEvent(QResizeEvent *event);
     void closeNotes();
     int calculatePool();
+    void createIndicator(QLayout *layout, const int& size_);
+    QVBoxLayout *createDie(const int &value, const bool &reRollable, const int &index, const QString &dieStyle);
+    void populateDices(const bool& reRollable);
+    void populateDices(const bool& reRollable, const QList<int> indexesToReroll);
 };
 #endif // MAINWINDOW_H

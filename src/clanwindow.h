@@ -24,7 +24,12 @@ private:
     Ui::ClanWindow *ui;
     QPixmap pic;
 
-    void setClanWindowText(const QString &nicknames, const QString &description, const QString &bane, const QString &alternative, const QString &compulsion, const QStringList &disciplineList);
+    void setClanWindowText(const QString &nicknames,
+                           const QString &description,
+                           const QString &bane,
+                           const QString &alternative,
+                           const QString &compulsion,
+                           const QStringList &disciplineList);
 };
 
 #endif // CLANWINDOW_H

@@ -1,0 +1,63 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/Banu Haqim.png</file> 
+        <file>images/Banu Haqim.png</file> 
+        <file>images/Brujah.png</file> 
+        <file>images/Cienkokrwiści.png</file> 
+        <file>images/Cienkokrwiści.png</file>
+        <file>images/Gangrel.png</file> 
+        <file>images/Hecata.png</file> 
+        <file>images/Lasombra.png</file> 
+        <file>images/Malkavian.png</file> 
+        <file>images/Ministerium.png</file> 
+        <file>images/Nosferatu.png</file> 
+        <file>images/Parias.png</file> 
+        <file>images/Ravnos.png</file> 
+        <file>images/Salubri.png</file> 
+        <file>images/Torreador.png</file> 
+        <file>images/Tremere.png</file> 
+        <file>images/Tzimisce.png</file> 
+        <file>images/Ventrue.png</file> 
+        <file>images/bestial-fail.png</file> 
+        <file>images/checkbox_checked.png</file> 
+        <file>images/checkbox_checked_hover.png</file> 
+        <file>images/checkbox_checked_pressed.png</file> 
+        <file>images/checkbox_humanity_checked.png</file> 
+        <file>images/checkbox_humanity_checked_hover.png</file> 
+        <file>images/checkbox_humanity_checked_pressed.png</file> 
+        <file>images/checkbox_indeterminate.png</file> 
+        <file>images/checkbox_indeterminate_hover.png</file> 
+        <file>images/checkbox_indeterminate_pressed.png</file> 
+        <file>images/checkbox_unchecked.png</file> 
+        <file>images/checkbox_unchecked_hover.png</file> 
+        <file>images/checkbox_unchecked_pressed.png</file> 
+        <file>images/disciplines/Animalism/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Auspex/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Blood Sorcery Rituals/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Blood Sorcery/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Blood Sorcery/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Blood Sorcery/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Celerity/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Dominate/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Fortitude/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Obfuscate/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Oblivion Ceremonies/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Oblivion/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Potence/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Presence/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Protean/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png</file> 
+        <file>images/disciplines/Thin-blood Alchemy/DummyPlaceHolder.png</file> 
+        <file>images/normal-crit.png</file> 
+        <file>images/normal-fail.png</file> 
+        <file>images/normal-success.png</file> 
+        <file>images/red-crit.png</file>
+        <file>images/red-fail.png</file>
+        <file>images/red-success.png</file>
+    </qresource>
+</RCC>

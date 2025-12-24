@@ -13,7 +13,7 @@ class NotesWindow : public QFrame
 
 public:
     explicit NotesWindow(QWidget *parent = nullptr);
-    ~NotesWindow();    
+    ~NotesWindow();
     QString getNotes();
 private slots:
     void on_notes_textChanged();
