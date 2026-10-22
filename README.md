@@ -16,7 +16,7 @@ Android version is available [HERE](https://github.com/Pkow1999/vtm_sheet_androi
 ![obraz](https://github.com/Pkow1999/Vampire-The-Masquerade-V5-Character-Sheet/assets/72875240/1493da9c-4944-4bc0-8bd5-eabd7dc704c3)
 
 
-## Now you can use discipline cards made by wonderful [Thea Vik](https://www.storytellersvault.com/browse.php?author=Thea%20Vik). Just drop them in the appropriate folders.
+## Now you can use discipline cards made by wonderful [Thea Vik](https://www.storytellersvault.com/pl/browse?authorName=%22Thea%20Vik%22). Just drop them in the appropriate folders.
 ![obraz](https://github.com/Pkow1999/Vampire-The-Masquerade-V5-Character-Sheet/assets/72875240/52e4b085-b603-49a9-a836-4434e80900b3)
 
 You can find them in images/disciplines/CATEGORY_OF_DISCIPLINE (e.g. images/disciplines/Animalism)
